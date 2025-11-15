@@ -68,7 +68,7 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.0")
     implementation("androidx.room:room-ktx:2.8.3")
     ksp("androidx.room:room-compiler:2.8.3")
-    implementation("androidx.navigation:navigation-compose:2.9.5")
-    implementation("androidx.datastore:datastore-preferences:1.1.7")
+    implementation("androidx.navigation:navigation-compose:2.8.9")
     implementation("androidx.security:security-crypto:1.1.0")
+    implementation("androidx.compose.material:material-icons-extended:1.7.7")
 }

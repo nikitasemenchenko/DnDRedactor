@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">DnDRedactor</string>
+    <string name="russian_app_name">Редактор персонажей D&amp;D</string>
+    <string name="try_register">Зарегистрироваться</string>
+    <string name="no_account">Впервые в этом месте?</string>
+    <string name="have_account">Уже бывали здесь?</string>
+    <string name="enter">Войти</string>
+    <string name="enter_dungeon">Войти в подземелье</string>
+    <string name="welcome">Добро пожаловать!</string>
+    <string name="username">Прозвище героя</string>
+    <string name="email">Адрес магических посланий</string>
+    <string name="password">Кодовое слово</string>
+    <string name="repeatpassword">Повторите кодовое слово</string>
+    <string name="dndredactor">Редактор персонажей D%26D</string>
+    <string name="create">Создать</string>
+    <string name="delete">Удалить</string>
+
 </resources>
