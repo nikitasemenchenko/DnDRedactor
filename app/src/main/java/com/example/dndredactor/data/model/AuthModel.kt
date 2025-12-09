@@ -17,18 +17,26 @@ data class RegisterRequest(
 
 @Serializable
 data class AuthResponse(
-    val access_token: String,
-    val refresh_token: String,
-    val token_type: String
+    val accessToken: String? = null,
+    val refreshToken: String? = null,
+    val tokenType: String? = null
 )
 
 @Serializable
 data class RefreshRequest(
-    val refresh_token: String
+    val refreshToken: String
 )
 
 @Serializable
 data class RefreshResponse(
-    val access_token: String,
-    val token_type: String
+    val accessToken: String? = null,
+    val refreshToken: String? = null,
+    val tokenType: String? = null
+)
+
+@Serializable
+data class MeInfo(
+    val email: String,
+    val id: Int,
+    val username: String
 )

@@ -5,15 +5,20 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.dndredactor.ui.authScreens.LoginDestination
-import com.example.dndredactor.ui.authScreens.LoginScreen
-import com.example.dndredactor.ui.authScreens.RegisterScreen
-import com.example.dndredactor.ui.authScreens.RegistrationDestination
+import com.example.dndredactor.ui.creation.CharacterCreationScreen
+import com.example.dndredactor.ui.login.LoginScreen
+import com.example.dndredactor.ui.register.RegisterScreen
 import com.example.dndredactor.ui.mainScreen.MainScreen
-import com.example.dndredactor.ui.mainScreen.MainScreenDestination
-import com.example.dndredactor.ui.start.StartDestination
 import com.example.dndredactor.ui.start.StartScreen
 
+
+sealed class Screen(val route: String){
+    object Start: Screen("start")
+    object Login: Screen("login")
+    object Registration: Screen("registration")
+    object Main: Screen("main")
+    object CharacterCreation : Screen("character_creation")
+}
 @Composable
 fun AppNavHost(
     navController: NavHostController,
@@ -21,53 +26,74 @@ fun AppNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = StartDestination.route,
+        startDestination = Screen.Main.route,
         modifier = modifier
     ) {
-        composable(StartDestination.route) {
+        composable(Screen.Start.route) {
             StartScreen(
                 onAuthorized = {
-                    navController.navigate(MainScreenDestination.route) {
-                        popUpTo(StartDestination.route) { inclusive = true }
+                    navController.navigate(Screen.Main.route) {
+                        popUpTo(Screen.Start.route) { inclusive = true }
                     }
                 },
                 onUnauthorized = {
-                    navController.navigate("login") {
-                        popUpTo(StartDestination.route) { inclusive = true }
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Start.route) { inclusive = true }
                     }
                 }
             )
         }
 
-        composable(LoginDestination.route) {
+        composable(Screen.Login.route) {
             LoginScreen(
                 onLoginSuccess = {
-                    navController.navigate(MainScreenDestination.route) {
-                        popUpTo(LoginDestination.route) { inclusive = true }
+                    navController.navigate(Screen.Main.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
                     }
                 },
                 goRegister = {
-                    navController.navigate(RegistrationDestination.route)
+                    navController.navigate(Screen.Registration.route)
                 }
             )
         }
-        composable(RegistrationDestination.route) {
+        composable(Screen.Registration.route) {
             RegisterScreen(
                 onRegisterSuccess = {
-                    navController.navigate(MainScreenDestination.route) {
-                        popUpTo(RegistrationDestination.route) { inclusive = true }
+                    navController.navigate(Screen.Main.route) {
+                        popUpTo(Screen.Registration.route) { inclusive = true }
                     }
                 },
                 goLogin = {
-                    navController.navigate(LoginDestination.route)
+                    navController.navigate(Screen.Login.route)
                 }
             )
         }
-        composable(MainScreenDestination.route) {
+        composable(Screen.Main.route) {
             MainScreen(
                 onCharacterClick = {},
-                onCreateClick = {}
+                onCreateClick = {
+                    navController.navigate(Screen.CharacterCreation.route)
+                },
+                onLogout = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Main.route) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
             )
+        }
+        composable(Screen.CharacterCreation.route) {
+
+            CharacterCreationScreen(
+                onFinished = {},
+                goToMainScreen = {
+                    navController.navigate(Screen.Main.route) {
+                        popUpTo(Screen.CharacterCreation.route) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            )
+
         }
     }
 }

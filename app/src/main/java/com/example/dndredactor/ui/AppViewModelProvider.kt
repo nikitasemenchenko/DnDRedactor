@@ -5,8 +5,9 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.dndredactor.DndApplication
-import com.example.dndredactor.ui.authScreens.LoginViewModel
-import com.example.dndredactor.ui.authScreens.RegisterViewModel
+import com.example.dndredactor.ui.creation.CreationViewModel
+import com.example.dndredactor.ui.login.LoginViewModel
+import com.example.dndredactor.ui.register.RegisterViewModel
 import com.example.dndredactor.ui.mainScreen.MainViewModel
 import com.example.dndredactor.ui.start.StartViewModel
 
@@ -30,7 +31,15 @@ object AppViewModelProvider {
         }
         initializer {
             MainViewModel(
-                inventoryApplication().container.characterRepository
+                inventoryApplication().container.characterRepository,
+                inventoryApplication().container.authRepository,
+                inventoryApplication().container.tokenStorage
+            )
+        }
+
+        initializer {
+            CreationViewModel(
+                inventoryApplication().container.creationRepository
             )
         }
 

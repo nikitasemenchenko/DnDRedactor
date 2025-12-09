@@ -9,6 +9,7 @@ import com.example.dndredactor.data.remote.auth.AuthInterceptor
 import com.example.dndredactor.data.remote.auth.TokenAuthenticator
 import com.example.dndredactor.data.repository.AuthRepository
 import com.example.dndredactor.data.repository.CharacterRepository
+import com.example.dndredactor.data.repository.CreationRepository
 import com.example.dndredactor.data.storage.TokenStorage
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -16,16 +17,25 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
+import okhttp3.logging.HttpLoggingInterceptor
 
 class AppContainer(private val context: Context) {
     val tokenStorage: TokenStorage by lazy {
         TokenStorage.getInstance(context)
     }
 
-    private val json = Json { ignoreUnknownKeys = true }
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+
+    private val json = Json {
+        ignoreUnknownKeys = true
+        explicitNulls = false
+    }
 
     private val basicOkHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
             .callTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .build()
     }
@@ -51,11 +61,12 @@ class AppContainer(private val context: Context) {
     }
 
     private val tokenAuthenticator: TokenAuthenticator by lazy {
-        TokenAuthenticator(authRepository, tokenStorage)
+        TokenAuthenticator(tokenStorage, authRepository)
     }
 
     private val okHttpClientMain: OkHttpClient by lazy {
         OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
             .addInterceptor(authInterceptor)
             .authenticator(tokenAuthenticator)
             .callTimeout(30, TimeUnit.SECONDS)
@@ -75,6 +86,9 @@ class AppContainer(private val context: Context) {
     }
 
     val characterRepository: CharacterRepository by lazy {
-        CharacterRepository(characterApi, tokenStorage)
+        CharacterRepository(characterApi)
+    }
+    val creationRepository: CreationRepository by lazy {
+        CreationRepository(characterApi)
     }
 }

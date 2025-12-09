@@ -7,6 +7,11 @@ import okhttp3.Response
 class AuthInterceptor(private val tokenStorage: TokenStorage) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
+
+        if (request.header("Authorization") != null) {
+            return chain.proceed(request)
+        }
+
         val accessToken = tokenStorage.getAccessToken()
         val authRequest = if (!accessToken.isNullOrBlank()) {
             request.newBuilder()

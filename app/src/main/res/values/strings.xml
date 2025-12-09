@@ -5,6 +5,7 @@
     <string name="no_account">Впервые в этом месте?</string>
     <string name="have_account">Уже бывали здесь?</string>
     <string name="enter">Войти</string>
+    <string name="exit">Выйти</string>
     <string name="enter_dungeon">Войти в подземелье</string>
     <string name="welcome">Добро пожаловать!</string>
     <string name="username">Прозвище героя</string>
@@ -12,7 +13,36 @@
     <string name="password">Кодовое слово</string>
     <string name="repeatpassword">Повторите кодовое слово</string>
     <string name="dndredactor">Редактор персонажей D%26D</string>
+    <string name="retry">Попробовать снова</string>
+    <string name="next">Далее</string>
+    <string name="back">Назад</string>
     <string name="create">Создать</string>
     <string name="delete">Удалить</string>
+    <string name="create_character">Создание персонажа</string>
+    <string name="character_name">Имя и фамилия персонажа</string>
+    <string name="character_gender">Пол персонажа:</string>
+    <string name="character_race">Раса персонажа</string>
+    <string name="character_subrace">Подраса персонажа</string>
+    <string name="race_selection">Раса персонажа:</string>
+    <string name="race_desc_placeholder">Выберите расу, чтобы увидеть описание</string>
+    <string name="subrace_selection">Подраса персонажа:</string>
+    <string name="subrace_desc_placeholder">Выберите подрасу, чтобы увидеть описание</string>
+    <string name="male">Мужской</string>
+    <string name="female">Женский</string>
+
+
+    <string name="fieldFillingError">Все поля должны быть заполнены.</string>
+    <string name="unableToLogin">Не удалось войти. Попробуйте позже.</string>
+    <string name="unableToRegister">Ошибка регистрации. Попробуйте позже.</string>
+    <string name="emailError">Некорректная форма почты.</string>
+    <string name="failedToRegister">Не удалось зарегистрирвоваться. Попробуйте позже.</string>
+    <string name="passwordError">Длина пароля должна быть минимум 8 символов. Пароль должен содержать хотя бы одну цифру, заглавную букву и специальный символ.</string>
+    <string name="passwordMatchError">Пароли должны совпадать.</string>
+    <string name="characterLoadError">Не удалось загрузить персонажей.</string>
+    <string name="characterDeleteError">Не удалось удалить персонажа.</string>
+    <string name="internetError">Проверьте подключение к интернету.</string>
+    <string name="loadError">Ошибка загрузки. Попробуйте снова.</string>
+    <string name="raceError">Не удалось загрузить расы</string>
+
 
 </resources>
