@@ -30,6 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dndredactor.R
 import com.example.dndredactor.ui.AppViewModelProvider
+import com.example.dndredactor.ui.creation.steps.ClassSelectionScreen
+import com.example.dndredactor.ui.creation.steps.HumanTraitsSelectionScreen
+import com.example.dndredactor.ui.creation.steps.RaceSelectionScreen
 import com.example.dndredactor.ui.theme.BackPurple
 import com.example.dndredactor.ui.theme.ButtonColor
 import com.example.dndredactor.ui.theme.LightColor
@@ -61,14 +64,9 @@ fun CharacterCreationScreen(
             modifier = Modifier.padding(padding)) {
 
             when (uiState.currentStep) {
-                CreationStep.RACE -> RaceSelectionScreen(
-                    vm = vm,
-                    onNext = { vm.goToNextStep() }
-                )
-                CreationStep.CLASS -> ClassSelectionScreen(
-                    vm = vm,
-                    onNext ={} // { vm.goToNextStep() }
-                )
+                CreationStep.RACE -> RaceSelectionScreen()
+                CreationStep.CLASS -> ClassSelectionScreen()
+                CreationStep.HUMAN_TRAITS -> HumanTraitsSelectionScreen()
 //                CreationStep.BACKGROUND -> BackgroundSelectionScreen(
 //                    vm = vm,
 //                    onNext = { vm.goToNextStep() }
@@ -76,6 +74,7 @@ fun CharacterCreationScreen(
 //                CreationStep.FINAL -> onFinished()
                 CreationStep.BACKGROUND -> TODO()
                 CreationStep.FINAL -> TODO()
+                CreationStep.CHARACTERISTICS -> TODO()
             }
         }
     }

@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dndredactor.R
 import com.example.dndredactor.data.CustomException
+import com.example.dndredactor.data.model.CharacterClass
+import com.example.dndredactor.data.model.CharacterPresentation
+import com.example.dndredactor.data.model.Classes
 import com.example.dndredactor.data.repository.AuthRepository
 import com.example.dndredactor.data.repository.CharacterRepository
 import com.example.dndredactor.data.storage.TokenStorage
@@ -20,8 +23,25 @@ class MainViewModel(
     val uiState = _uiState.asStateFlow()
 
     init {
+        vremenno()
     }
-
+    fun vremenno(){
+        val characters = listOf(
+            CharacterPresentation(
+                id = "1hgjg",
+                name = "Aragorn",
+                level = 101,
+                characterClass = Classes.FIGHTER
+            ),
+            CharacterPresentation(
+                id = "1jghjghj",
+                name = "Hobbit",
+                level = 1,
+                characterClass = Classes.DRUID
+            )
+        )
+        _uiState.value = MainScreenUiState.Success(characters)
+    }
     private fun loadCharacters() {
         viewModelScope.launch {
             _uiState.value = MainScreenUiState.Loading

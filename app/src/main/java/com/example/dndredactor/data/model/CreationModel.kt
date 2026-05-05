@@ -29,7 +29,14 @@ data class Race(
 data class CharacterClass(
     val id: String,
     val name: String,
-    val description: String
+    val description: String = "",
+    val archetypes: List<Archetype> = emptyList()
+)
+
+data class Archetype(
+    val id: String,
+    val name: String,
+    val description: String = ""
 )
 
 data class Background(
@@ -43,8 +50,12 @@ data class NewCharacter(
     val gender: Gender = Gender.UNSPECIFIED,
     val raceId: String? = null,
     val subraceId: String? = null,
-    val raceDescription: String? = null,
-    val subraceDescription: String? = null,
-    val characterClass: CharacterClass? = null,
-    val background: Background? = null
+    val classId: String? = null,
+    val archetypeId: String? = null,
+    val appearance: String = "",
+    val character: String = "",
+    val ideal: String = "",
+    val attachment: String = "",
+    val weakness: String = "",
+    val backgroundId: String? = null
 )

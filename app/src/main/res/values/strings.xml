@@ -27,6 +27,17 @@
     <string name="race_desc_placeholder">Выберите расу, чтобы увидеть описание</string>
     <string name="subrace_selection">Подраса персонажа:</string>
     <string name="subrace_desc_placeholder">Выберите подрасу, чтобы увидеть описание</string>
+    <string name="class_selection">Класс персонажа:</string>
+    <string name="class_desc_placeholder">Выберите класс, чтобы увидеть описание</string>
+    <string name="archetype_selection">Архетип класса:</string>
+    <string name="appearance_selection">Внешность персонажа:</string>
+    <string name="appearance_placeholder">Опишите внешность персонажа</string>
+    <string name="character_traits">Черты характера:</string>
+    <string name="character">Характер</string>
+    <string name="ideal">Идеал</string>
+    <string name="attachment">Привязанность</string>
+    <string name="weakness">Слабость</string>
+    <string name="archetype_desc_placeholder">Выберите архетип, чтобы увидеть описание</string>
     <string name="male">Мужской</string>
     <string name="female">Женский</string>
 
