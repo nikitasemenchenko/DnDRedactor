@@ -30,11 +30,7 @@ object AppViewModelProvider {
             )
         }
         initializer {
-            MainViewModel(
-                inventoryApplication().container.characterRepository,
-                inventoryApplication().container.authRepository,
-                inventoryApplication().container.tokenStorage
-            )
+            MainViewModel()
         }
 
         initializer {

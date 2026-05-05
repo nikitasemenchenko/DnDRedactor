@@ -67,14 +67,9 @@ fun CharacterCreationScreen(
                 CreationStep.RACE -> RaceSelectionScreen()
                 CreationStep.CLASS -> ClassSelectionScreen()
                 CreationStep.HUMAN_TRAITS -> HumanTraitsSelectionScreen()
-//                CreationStep.BACKGROUND -> BackgroundSelectionScreen(
-//                    vm = vm,
-//                    onNext = { vm.goToNextStep() }
-//                )
-//                CreationStep.FINAL -> onFinished()
-                CreationStep.BACKGROUND -> TODO()
-                CreationStep.FINAL -> TODO()
-                CreationStep.CHARACTERISTICS -> TODO()
+                CreationStep.CHARACTERISTICS -> {}
+                CreationStep.BACKGROUND -> {}
+                CreationStep.FINAL -> {}
             }
         }
     }

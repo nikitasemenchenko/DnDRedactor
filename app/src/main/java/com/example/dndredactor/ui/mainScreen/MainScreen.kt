@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -70,7 +69,6 @@ fun MainScreen(
     vm: MainViewModel = viewModel(factory = AppViewModelProvider.Factory),
     onCharacterClick: (String) -> Unit,
     onCreateClick: () -> Unit,
-    onLogout: () -> Unit
 ) {
     val uiState by vm.uiState.collectAsState()
 
@@ -90,17 +88,6 @@ fun MainScreen(
                             fontWeight = FontWeight.Medium,
                             color = LightColor,
                             textAlign = TextAlign.Center
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(
-                        onClick = { vm.onLogout() }
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                            contentDescription = stringResource(R.string.exit),
-                            tint = LightColor
                         )
                     }
                 },
@@ -151,7 +138,7 @@ fun MainScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = stringResource((uiState as MainScreenUiState.Error).message),
+                            text = (uiState as MainScreenUiState.Error).message,
                             color = LightColor,
                             style = MaterialTheme.typography.titleLarge,
                             textAlign = TextAlign.Center,
@@ -161,15 +148,19 @@ fun MainScreen(
                 }
 
                 is MainScreenUiState.Success -> {
-                    CharacterList(
-                        characters = (uiState as MainScreenUiState.Success).characters,
-                        onDelete = { id -> vm.deleteCharacter(id) },
-                        onCharacterClick = onCharacterClick
-                    )
-                }
+                    val characters = (uiState as MainScreenUiState.Success).characters
 
-                is MainScreenUiState.LoggedOut -> {
-                    onLogout()
+                    if (characters.isEmpty()) {
+                        EmptyCharactersState(
+                            onCreateClick = onCreateClick
+                        )
+                    } else {
+                        CharacterList(
+                            characters = characters,
+                            onDelete = { id -> vm.deleteCharacter(id) },
+                            onCharacterClick = onCharacterClick
+                        )
+                    }
                 }
             }
         }
@@ -280,6 +271,48 @@ fun CharacterCard(
                         tint = Color.Black
                     )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun EmptyCharactersState(
+    onCreateClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.no_characters),
+                color = LightColor,
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center
+            )
+
+            Text(
+                text = stringResource(R.string.lets_create_character),
+                color = LightColor,
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center
+            )
+
+            Button(
+                onClick = onCreateClick,
+                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor),
+                shape = MaterialTheme.shapes.large
+            ) {
+                Text(
+                    text = stringResource(R.string.create),
+                    color = LightColor
+                )
             }
         }
     }

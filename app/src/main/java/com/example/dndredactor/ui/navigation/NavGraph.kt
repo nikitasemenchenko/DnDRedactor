@@ -26,7 +26,7 @@ fun AppNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Start.route,
+        startDestination = Screen.Main.route,
         modifier = modifier
     ) {
         composable(Screen.Start.route) {
@@ -73,19 +73,18 @@ fun AppNavHost(
                 onCharacterClick = {},
                 onCreateClick = {
                     navController.navigate(Screen.CharacterCreation.route)
-                },
-                onLogout = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(Screen.Main.route) { inclusive = true }
-                        launchSingleTop = true
-                    }
                 }
             )
         }
         composable(Screen.CharacterCreation.route) {
 
             CharacterCreationScreen(
-                onFinished = {},
+                onFinished = {
+                    navController.navigate(Screen.Main.route) {
+                        popUpTo(Screen.CharacterCreation.route) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
                 goToMainScreen = {
                     navController.navigate(Screen.Main.route) {
                         popUpTo(Screen.CharacterCreation.route) { inclusive = true }

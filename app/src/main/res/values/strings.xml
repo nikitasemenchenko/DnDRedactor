@@ -40,6 +40,8 @@
     <string name="archetype_desc_placeholder">Выберите архетип, чтобы увидеть описание</string>
     <string name="male">Мужской</string>
     <string name="female">Женский</string>
+    <string name="no_characters">У вас пока нет персонажей</string>
+    <string name="lets_create_character">Скорее создайте своего первого персонажа!</string>
 
 
     <string name="fieldFillingError">Все поля должны быть заполнены.</string>
