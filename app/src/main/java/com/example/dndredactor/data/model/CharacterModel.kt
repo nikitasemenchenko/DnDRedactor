@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Character(
-    val id: String,
+    val id: Int,
     val name: String,
     val level: Int,
     @SerialName("class") val className: String
