@@ -13,8 +13,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class CreationViewModel(
-    private val repository: CreationRepository
 ) : ViewModel() {
+    private val repository = CreationRepository()
     val _uiState = MutableStateFlow(CreationUiState(loading = true))
     val uiState = _uiState.asStateFlow()
 

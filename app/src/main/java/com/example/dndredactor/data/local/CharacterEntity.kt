@@ -2,8 +2,9 @@ package com.example.dndredactor.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.dndredactor.data.AppConstants
 
-@Entity(tableName = "characters")
+@Entity(tableName = AppConstants.CHARACTERS_TABLE_NAME)
 data class CharacterEntity(
     @PrimaryKey val id: Int,
     val name: String,

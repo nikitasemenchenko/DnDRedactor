@@ -1,17 +1,6 @@
 <resources>
     <string name="app_name">DnDRedactor</string>
     <string name="russian_app_name">Редактор персонажей D&amp;D</string>
-    <string name="try_register">Зарегистрироваться</string>
-    <string name="no_account">Впервые в этом месте?</string>
-    <string name="have_account">Уже бывали здесь?</string>
-    <string name="enter">Войти</string>
-    <string name="exit">Выйти</string>
-    <string name="enter_dungeon">Войти в подземелье</string>
-    <string name="welcome">Добро пожаловать!</string>
-    <string name="username">Прозвище героя</string>
-    <string name="email">Адрес магических посланий</string>
-    <string name="password">Кодовое слово</string>
-    <string name="repeatpassword">Повторите кодовое слово</string>
     <string name="dndredactor">Редактор персонажей D%26D</string>
     <string name="retry">Попробовать снова</string>
     <string name="next">Далее</string>
@@ -45,12 +34,6 @@
 
 
     <string name="fieldFillingError">Все поля должны быть заполнены.</string>
-    <string name="unableToLogin">Не удалось войти. Попробуйте позже.</string>
-    <string name="unableToRegister">Ошибка регистрации. Попробуйте позже.</string>
-    <string name="emailError">Некорректная форма почты.</string>
-    <string name="failedToRegister">Не удалось зарегистрирвоваться. Попробуйте позже.</string>
-    <string name="passwordError">Длина пароля должна быть минимум 8 символов. Пароль должен содержать хотя бы одну цифру, заглавную букву и специальный символ.</string>
-    <string name="passwordMatchError">Пароли должны совпадать.</string>
     <string name="characterLoadError">Не удалось загрузить персонажей.</string>
     <string name="characterDeleteError">Не удалось удалить персонажа.</string>
     <string name="internetError">Проверьте подключение к интернету.</string>

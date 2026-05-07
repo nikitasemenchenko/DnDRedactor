@@ -29,7 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dndredactor.R
-import com.example.dndredactor.presentation.AppViewModelProvider
 import com.example.dndredactor.presentation.creation.steps.ClassSelectionScreen
 import com.example.dndredactor.presentation.creation.steps.HumanTraitsSelectionScreen
 import com.example.dndredactor.presentation.creation.steps.RaceSelectionScreen
@@ -39,7 +38,7 @@ import com.example.dndredactor.presentation.theme.LightColor
 
 @Composable
 fun CharacterCreationScreen(
-    vm: CreationViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    vm: CreationViewModel = viewModel(),
     onFinished: () -> Unit,
     goToMainScreen: () -> Unit
 ) {

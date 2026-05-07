@@ -1,15 +1,12 @@
 package com.example.dndredactor.data.repository
 
-import android.R.attr.name
 import com.example.dndredactor.data.model.Archetype
 import com.example.dndredactor.data.model.CharacterClass
 import com.example.dndredactor.data.model.Race
 import com.example.dndredactor.data.model.Subrace
-import com.example.dndredactor.data.remote.CharacterApi
+import javax.inject.Inject
 
-class CreationRepository(
-    private val api: CharacterApi
-) {
+class CreationRepository @Inject constructor() {
     fun getRaces(): List<Race> {
         return listOf(
             Race(

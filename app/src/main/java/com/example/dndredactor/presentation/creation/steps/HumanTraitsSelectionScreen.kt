@@ -14,12 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dndredactor.R
-import com.example.dndredactor.presentation.AppViewModelProvider
 import com.example.dndredactor.presentation.creation.CreationViewModel
 
 @Composable
 fun HumanTraitsSelectionScreen(
-    vm: CreationViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    vm: CreationViewModel = viewModel(),
 ) {
 
     val uiState by vm.uiState.collectAsState()

@@ -18,13 +18,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dndredactor.R
 import com.example.dndredactor.data.model.Gender
-import com.example.dndredactor.presentation.AppViewModelProvider
 import com.example.dndredactor.presentation.creation.CreationViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RaceSelectionScreen(
-    vm: CreationViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    vm: CreationViewModel = viewModel(),
 ) {
     val uiState by vm.uiState.collectAsState()
     val scrollState = rememberScrollState()
