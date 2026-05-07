@@ -1,6 +1,8 @@
 package com.example.dndredactor.di
 
+import com.example.dndredactor.data.repository.CreationRepositoryImpl
 import com.example.dndredactor.data.repository.LocalCharacterRepositoryImpl
+import com.example.dndredactor.domain.repository.CreationRepository
 import com.example.dndredactor.domain.repository.LocalCharacterRepository
 import dagger.Binds
 import dagger.Module
@@ -17,5 +19,11 @@ abstract class RepositoryModule {
     abstract fun bindLocalCharacterRepository(
         impl: LocalCharacterRepositoryImpl
     ): LocalCharacterRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCreationRepository(
+        impl: CreationRepositoryImpl
+    ): CreationRepository
 
 }

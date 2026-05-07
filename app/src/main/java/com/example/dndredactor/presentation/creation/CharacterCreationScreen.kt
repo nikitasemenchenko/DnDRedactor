@@ -20,6 +20,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -27,7 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dndredactor.R
 import com.example.dndredactor.presentation.creation.steps.ClassSelectionScreen
 import com.example.dndredactor.presentation.creation.steps.HumanTraitsSelectionScreen
@@ -38,11 +39,22 @@ import com.example.dndredactor.presentation.theme.LightColor
 
 @Composable
 fun CharacterCreationScreen(
-    vm: CreationViewModel = viewModel(),
+    vm: CreationViewModel = hiltViewModel(),
     onFinished: () -> Unit,
     goToMainScreen: () -> Unit
 ) {
     val uiState by vm.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        vm.events.collect { event ->
+            when (event) {
+                CreationEvent.CharacterSaved -> onFinished()
+                is CreationEvent.ShowError -> {
+                    // Snackbar добавить
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -50,7 +62,7 @@ fun CharacterCreationScreen(
         },
         bottomBar = {
             CharacterCreationBottomBar(
-                onFinished = onFinished,
+                onFinished = vm::saveCharacter,
                 currentStep = uiState.currentStep,
                 canGoNext = vm.canGoToNextStep(),
                 goBack = vm::goToPreviousStep,
@@ -63,9 +75,9 @@ fun CharacterCreationScreen(
             modifier = Modifier.padding(padding)) {
 
             when (uiState.currentStep) {
-                CreationStep.RACE -> RaceSelectionScreen()
-                CreationStep.CLASS -> ClassSelectionScreen()
-                CreationStep.HUMAN_TRAITS -> HumanTraitsSelectionScreen()
+                CreationStep.RACE -> RaceSelectionScreen(vm = vm)
+                CreationStep.CLASS -> ClassSelectionScreen(vm = vm)
+                CreationStep.HUMAN_TRAITS -> HumanTraitsSelectionScreen(vm = vm)
                 CreationStep.CHARACTERISTICS -> {}
                 CreationStep.BACKGROUND -> {}
                 CreationStep.FINAL -> {}

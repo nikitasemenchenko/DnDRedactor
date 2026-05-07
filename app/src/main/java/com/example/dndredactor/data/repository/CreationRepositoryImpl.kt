@@ -4,10 +4,11 @@ import com.example.dndredactor.data.model.Archetype
 import com.example.dndredactor.data.model.CharacterClass
 import com.example.dndredactor.data.model.Race
 import com.example.dndredactor.data.model.Subrace
+import com.example.dndredactor.domain.repository.CreationRepository
 import javax.inject.Inject
 
-class CreationRepository @Inject constructor() {
-    fun getRaces(): List<Race> {
+class CreationRepositoryImpl @Inject constructor(): CreationRepository {
+    override fun getRaces(): List<Race> {
         return listOf(
             Race(
                 id = "gnome",
@@ -79,7 +80,7 @@ class CreationRepository @Inject constructor() {
         )
     }
 
-    fun getClasses(): List<CharacterClass> {
+    override fun getClasses(): List<CharacterClass> {
         return listOf(
 
             CharacterClass(
