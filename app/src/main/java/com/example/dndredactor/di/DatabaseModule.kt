@@ -22,9 +22,9 @@ object DatabaseModule {
         @ApplicationContext context: Context
     ): DndDatabase {
         return Room.databaseBuilder(
-            context = context,
-            klass = DndDatabase::class.java,
-            name = AppConstants.DB_NAME
+            context,
+            DndDatabase::class.java,
+            AppConstants.DB_NAME
         ).build()
     }
 

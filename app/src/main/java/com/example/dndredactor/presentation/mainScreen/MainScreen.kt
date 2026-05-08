@@ -53,8 +53,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dndredactor.R
-import com.example.dndredactor.data.model.CharacterPresentation
-import com.example.dndredactor.data.model.getClassIcon
+import com.example.dndredactor.data.model.Character
+import com.example.dndredactor.presentation.mappers.toClassIcon
 import com.example.dndredactor.presentation.theme.BackPurple
 import com.example.dndredactor.presentation.theme.ButtonColor
 import com.example.dndredactor.presentation.theme.LightColor
@@ -166,7 +166,7 @@ fun MainScreen(
 
 @Composable
 fun CharacterList(
-    characters: List<CharacterPresentation>,
+    characters: List<Character>,
     onDelete: (Int) -> Unit,
     onCharacterClick: (Int) -> Unit
 ) {
@@ -207,13 +207,13 @@ fun CharacterList(
 
 @Composable
 fun CharacterCard(
-    character: CharacterPresentation,
+    character: Character,
     onDelete: () -> Unit,
     onClick: () -> Unit
 ) {
     var visible by remember { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
-    val classIcon = getClassIcon(character.characterClass)
+    val classIcon = character.classType.toClassIcon()
 
     AnimatedVisibility(
         visible = visible,

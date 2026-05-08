@@ -1,13 +1,13 @@
 package com.example.dndredactor.domain.repository
 
-import com.example.dndredactor.data.model.CharacterPresentation
-import com.example.dndredactor.data.model.NewCharacter
+import com.example.dndredactor.data.model.Character
+import com.example.dndredactor.data.model.CharacterDraft
 import kotlinx.coroutines.flow.Flow
 
 interface LocalCharacterRepository {
-    fun getCharacters(): Flow<List<CharacterPresentation>>
+    fun getCharacters(): Flow<List<Character>>
 
-    suspend fun createCharacter(character: NewCharacter)
+    suspend fun createCharacter(character: CharacterDraft)
 
     suspend fun deleteCharacter(id: Int)
 }

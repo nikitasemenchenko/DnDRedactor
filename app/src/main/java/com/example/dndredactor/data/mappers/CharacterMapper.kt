@@ -1,25 +1,27 @@
 package com.example.dndredactor.data.mappers
 
 import com.example.dndredactor.data.local.CharacterEntity
-import com.example.dndredactor.data.model.CharacterPresentation
-import com.example.dndredactor.data.model.Classes
+import com.example.dndredactor.data.model.Character
+import com.example.dndredactor.data.model.ClassType
 import javax.inject.Inject
 
 class CharacterMapper @Inject constructor() {
-    fun CharacterEntityToPresentation(entity: CharacterEntity): CharacterPresentation {
-        return CharacterPresentation(
+    fun entityToCharacter(entity: CharacterEntity): Character {
+        return Character(
             id = entity.id,
             name = entity.name,
             level = entity.level,
-            characterClass = entity.className.toCharacterClassFromStorage()
+            classType = entity.classType.toClassType(),
+            raceId = entity.raceId
         )
     }
 
-    private fun String.toCharacterClassFromStorage(): Classes {
+    private fun String?.toClassType(): ClassType {
+        if(this == null) return ClassType.UNKNOWN
         return runCatching {
-            Classes.valueOf(this)
+            ClassType.valueOf(this)
         }.getOrElse {
-            Classes.UNKNOWN
+            ClassType.UNKNOWN
         }
     }
 

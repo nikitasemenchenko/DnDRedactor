@@ -47,12 +47,12 @@ fun RaceSelectionScreen(
         ) {
             GenderButton(
                 text = stringResource(R.string.male),
-                isSelected = uiState.character.gender is Gender.MALE,
+                isSelected = uiState.character.gender == Gender.MALE,
                 onClick = { vm.onGenderSelected(Gender.MALE) }
             )
             GenderButton(
                 text = stringResource(R.string.female),
-                isSelected = uiState.character.gender is Gender.FEMALE,
+                isSelected = uiState.character.gender == Gender.FEMALE,
                 onClick = { vm.onGenderSelected(Gender.FEMALE) }
             )
         }

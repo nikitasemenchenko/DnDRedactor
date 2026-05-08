@@ -1,11 +1,11 @@
 package com.example.dndredactor.data.repository
 
+import com.example.dndredactor.data.model.Character
 import com.example.dndredactor.data.local.CharacterDao
 import com.example.dndredactor.data.local.CharacterEntity
 import com.example.dndredactor.data.mappers.CharacterMapper
-import com.example.dndredactor.data.model.CharacterPresentation
-import com.example.dndredactor.data.model.Classes
-import com.example.dndredactor.data.model.NewCharacter
+import com.example.dndredactor.data.model.CharacterDraft
+import com.example.dndredactor.data.model.ClassType
 import com.example.dndredactor.domain.repository.LocalCharacterRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -15,22 +15,23 @@ class LocalCharacterRepositoryImpl @Inject constructor(
     private val characterDao: CharacterDao,
     private val mapper: CharacterMapper
 ): LocalCharacterRepository {
-    override fun getCharacters(): Flow<List<CharacterPresentation>> {
+
+    override fun getCharacters(): Flow<List<Character>> {
         return characterDao.getCharacters()
             .map { characters ->
                 characters.map {
-                    mapper.CharacterEntityToPresentation(it)
+                    mapper.entityToCharacter(it)
                 }
             }
     }
 
-    override suspend fun createCharacter(character: NewCharacter) {
+    override suspend fun createCharacter(character: CharacterDraft) {
         characterDao.insertCharacter(
             CharacterEntity(
                 name = character.fullName.trim(),
                 level = 1,
-                className = character.classId.toStoredClassName(),
-                raceName = character.raceId.toString(),
+                classType = character.classId.toClassName(),
+                raceId = character.raceId.toString(),
                 createdAt = System.currentTimeMillis()
             )
         )
@@ -40,21 +41,21 @@ class LocalCharacterRepositoryImpl @Inject constructor(
         characterDao.deleteCharacter(id)
     }
 
-    private fun String?.toStoredClassName(): String {
+    private fun String?.toClassName(): String {
         return when (this) {
-            "barbarian" -> Classes.BARBARIAN.name
-            "bard" -> Classes.BARD.name
-            "cleric" -> Classes.CLERIC.name
-            "druid" -> Classes.DRUID.name
-            "fighter" -> Classes.FIGHTER.name
-            "monk" -> Classes.MONK.name
-            "paladin" -> Classes.PALADIN.name
-            "ranger" -> Classes.RANGER.name
-            "rogue" -> Classes.ROGUE.name
-            "sorcerer" -> Classes.SORCERER.name
-            "warlock" -> Classes.WARLOCK.name
-            "wizard" -> Classes.WIZARD.name
-            else -> Classes.UNKNOWN.name
+            "barbarian" -> ClassType.BARBARIAN.name
+            "bard" -> ClassType.BARD.name
+            "cleric" -> ClassType.CLERIC.name
+            "druid" -> ClassType.DRUID.name
+            "fighter" -> ClassType.FIGHTER.name
+            "monk" -> ClassType.MONK.name
+            "paladin" -> ClassType.PALADIN.name
+            "ranger" -> ClassType.RANGER.name
+            "rogue" -> ClassType.ROGUE.name
+            "sorcerer" -> ClassType.SORCERER.name
+            "warlock" -> ClassType.WARLOCK.name
+            "wizard" -> ClassType.WIZARD.name
+            else -> ClassType.UNKNOWN.name
         }
     }
 }

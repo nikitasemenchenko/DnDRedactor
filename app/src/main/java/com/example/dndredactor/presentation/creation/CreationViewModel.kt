@@ -22,7 +22,7 @@ class CreationViewModel @Inject constructor(
     private val creationRepository: CreationRepository,
     private val localCharacterRepository: LocalCharacterRepository
 ) : ViewModel() {
-    val _uiState = MutableStateFlow(CreationUiState(loading = true))
+    private val _uiState = MutableStateFlow(CreationUiState(loading = true))
     val uiState = _uiState.asStateFlow()
 
     private val _events = MutableSharedFlow<CreationEvent>()
