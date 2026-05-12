@@ -11,7 +11,7 @@ data class CharacterDraft(
     val archetypeId: String? = null,
 
     val appearance: String = "",
-    val character: String = "",
+    val personality: String = "",
     val ideal: String = "",
     val attachment: String = "",
     val weakness: String = "",

@@ -30,8 +30,21 @@ class LocalCharacterRepositoryImpl @Inject constructor(
             CharacterEntity(
                 name = character.fullName.trim(),
                 level = 1,
-                classType = character.classId.toClassName(),
+                gender = character.gender.name,
+
                 raceId = character.raceId,
+                subraceId = character.subraceId,
+
+                classType = character.classId.toClassName(),
+                classId = character.classId,
+                archetypeId = character.archetypeId,
+
+                appearance = character.appearance.trim(),
+                personality = character.personality.trim(),
+                ideal = character.ideal.trim(),
+                weakness = character.weakness.trim(),
+                attachment = character.attachment.trim(),
+
                 createdAt = System.currentTimeMillis()
             )
         )

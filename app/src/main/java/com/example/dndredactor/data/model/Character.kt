@@ -4,6 +4,17 @@ data class Character (
     val id: Int,
     val name: String,
     val level: Int,
+    val gender: Gender,
+
+    val raceId: String?,
+    val subraceId: String?,
+
     val classType: ClassType,
-    val raceId: String?
+    val archetypeId: String?,
+
+    val appearance: String,
+    val personality: String,
+    val ideal: String,
+    val attachment: String,
+    val weakness: String
 )

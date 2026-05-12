@@ -3,6 +3,7 @@ package com.example.dndredactor.data.mappers
 import com.example.dndredactor.data.local.CharacterEntity
 import com.example.dndredactor.data.model.Character
 import com.example.dndredactor.data.model.ClassType
+import com.example.dndredactor.data.model.Gender
 import javax.inject.Inject
 
 class CharacterMapper @Inject constructor() {
@@ -11,8 +12,16 @@ class CharacterMapper @Inject constructor() {
             id = entity.id,
             name = entity.name,
             level = entity.level,
+            gender = entity.gender.toGender(),
+            raceId = entity.raceId,
+            subraceId = entity.subraceId,
             classType = entity.classType.toClassType(),
-            raceId = entity.raceId
+            archetypeId = entity.archetypeId,
+            personality = entity.personality,
+            appearance = entity.appearance,
+            ideal = entity.ideal,
+            weakness = entity.weakness,
+            attachment = entity.attachment
         )
     }
 
@@ -21,6 +30,14 @@ class CharacterMapper @Inject constructor() {
             ClassType.valueOf(this)
         }.getOrElse {
             ClassType.UNKNOWN
+        }
+    }
+
+    private fun String.toGender(): Gender {
+        return runCatching {
+            Gender.valueOf(this)
+        }.getOrElse {
+            Gender.UNSPECIFIED
         }
     }
 

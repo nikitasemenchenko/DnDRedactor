@@ -41,8 +41,8 @@ fun HumanTraitsSelectionScreen(
 
         Title(R.string.character_traits)
         CustomTextField(
-            value = uiState.character.character,
-            onChange = vm::onCharacterChanged,
+            value = uiState.character.personality,
+            onChange = vm::onPersonalityChanged,
             labelRes = R.string.character,
             minLines = 2
         )

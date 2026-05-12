@@ -52,9 +52,9 @@ class CreationViewModel @Inject constructor(
         )
     }
 
-    fun onCharacterChanged(character: String) {
+    fun onPersonalityChanged(personality: String) {
         _uiState.value = _uiState.value.copy(
-            character = _uiState.value.character.copy(character = character)
+            character = _uiState.value.character.copy(personality = personality)
         )
     }
 
@@ -168,7 +168,7 @@ class CreationViewModel @Inject constructor(
 
             CreationStep.HUMAN_TRAITS -> {
                 character.appearance.isNotBlank() &&
-                        character.character.isNotBlank() &&
+                        character.personality.isNotBlank() &&
                         character.ideal.isNotBlank() &&
                         character.attachment.isNotBlank() &&
                         character.weakness.isNotBlank()

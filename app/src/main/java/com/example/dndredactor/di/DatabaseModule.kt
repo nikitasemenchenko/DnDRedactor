@@ -25,7 +25,9 @@ object DatabaseModule {
             context,
             DndDatabase::class.java,
             AppConstants.DB_NAME
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides
