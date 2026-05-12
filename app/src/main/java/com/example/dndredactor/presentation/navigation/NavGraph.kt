@@ -5,13 +5,21 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.dndredactor.presentation.characterDetails.CharacterDetailsScreen
 import com.example.dndredactor.presentation.creation.CharacterCreationScreen
 import com.example.dndredactor.presentation.mainScreen.MainScreen
+import kotlinx.serialization.Serializable
 
 
-sealed class Screen(val route: String){
-    object Main: Screen("main")
-    object CharacterCreation : Screen("character_creation")
+sealed interface AppRoute {
+    @Serializable
+    data object Main: AppRoute
+
+    @Serializable
+    data object CharacterCreation: AppRoute
+
+    @Serializable
+    data class CharacterDetails(val id: Int): AppRoute
 }
 @Composable
 fun AppNavHost(
@@ -20,34 +28,34 @@ fun AppNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Main.route,
+        startDestination = AppRoute.Main,
         modifier = modifier
     ) {
-        composable(Screen.Main.route) {
+        composable<AppRoute.Main>{
             MainScreen(
-                onCharacterClick = {},
+                onCharacterClick = { id ->
+                    navController.navigate(AppRoute.CharacterDetails(id))
+                },
                 onCreateClick = {
-                    navController.navigate(Screen.CharacterCreation.route)
+                    navController.navigate(AppRoute.CharacterCreation)
                 }
             )
         }
-        composable(Screen.CharacterCreation.route) {
 
+        composable<AppRoute.CharacterCreation> {
             CharacterCreationScreen(
-                onFinished = {
-                    navController.navigate(Screen.Main.route) {
-                        popUpTo(Screen.CharacterCreation.route) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                },
-                goToMainScreen = {
-                    navController.navigate(Screen.Main.route) {
-                        popUpTo(Screen.CharacterCreation.route) { inclusive = true }
-                        launchSingleTop = true
-                    }
+                onReturn = {
+                    navController.popBackStack()
                 }
             )
+        }
 
+        composable<AppRoute.CharacterDetails> {
+            CharacterDetailsScreen(
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

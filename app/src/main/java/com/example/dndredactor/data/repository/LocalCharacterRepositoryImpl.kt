@@ -25,6 +25,12 @@ class LocalCharacterRepositoryImpl @Inject constructor(
             }
     }
 
+    override fun getCharacter(id: Int): Flow<Character?> {
+        return characterDao.getCharacterById(id).map { entity ->
+            entity?.let { mapper.entityToCharacter(it) }
+        }
+    }
+
     override suspend fun createCharacter(character: CharacterDraft) {
         characterDao.insertCharacter(
             CharacterEntity(

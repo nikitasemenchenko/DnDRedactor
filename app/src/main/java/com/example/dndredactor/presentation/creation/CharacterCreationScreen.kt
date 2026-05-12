@@ -41,15 +41,14 @@ import com.example.dndredactor.presentation.theme.LightColor
 @Composable
 fun CharacterCreationScreen(
     vm: CreationViewModel = hiltViewModel(),
-    onFinished: () -> Unit,
-    goToMainScreen: () -> Unit
+    onReturn: () -> Unit,
 ) {
     val uiState by vm.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
         vm.events.collect { event ->
             when (event) {
-                CreationEvent.CharacterSaved -> onFinished()
+                CreationEvent.CharacterSaved -> onReturn()
                 is CreationEvent.ShowError -> {
                     // Snackbar добавить
                 }
@@ -59,7 +58,7 @@ fun CharacterCreationScreen(
 
     Scaffold(
         topBar = {
-            CharacterCreationTopBar(goToMainScreen)
+            CharacterCreationTopBar(onReturn)
         },
         bottomBar = {
             CharacterCreationBottomBar(

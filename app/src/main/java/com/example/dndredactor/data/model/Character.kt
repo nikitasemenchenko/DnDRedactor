@@ -10,6 +10,7 @@ data class Character (
     val subraceId: String?,
 
     val classType: ClassType,
+    val classId: String?,
     val archetypeId: String?,
 
     val appearance: String,

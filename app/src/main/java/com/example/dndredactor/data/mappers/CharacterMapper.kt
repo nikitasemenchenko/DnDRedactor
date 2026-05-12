@@ -16,6 +16,7 @@ class CharacterMapper @Inject constructor() {
             raceId = entity.raceId,
             subraceId = entity.subraceId,
             classType = entity.classType.toClassType(),
+            classId = entity.classId,
             archetypeId = entity.archetypeId,
             personality = entity.personality,
             appearance = entity.appearance,
