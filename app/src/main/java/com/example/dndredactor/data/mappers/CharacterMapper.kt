@@ -16,8 +16,7 @@ class CharacterMapper @Inject constructor() {
         )
     }
 
-    private fun String?.toClassType(): ClassType {
-        if(this == null) return ClassType.UNKNOWN
+    private fun String.toClassType(): ClassType {
         return runCatching {
             ClassType.valueOf(this)
         }.getOrElse {

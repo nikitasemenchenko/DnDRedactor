@@ -10,7 +10,7 @@ data class CharacterEntity(
     val id: Int = 0,
     val name: String,
     val level: Int,
-    val classType: String?,
+    val classType: String,
     val raceId: String?,
     val createdAt: Long
 )

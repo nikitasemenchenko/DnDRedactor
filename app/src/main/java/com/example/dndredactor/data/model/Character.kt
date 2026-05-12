@@ -4,6 +4,6 @@ data class Character (
     val id: Int,
     val name: String,
     val level: Int,
-    val classType: ClassType?,
+    val classType: ClassType,
     val raceId: String?
 )

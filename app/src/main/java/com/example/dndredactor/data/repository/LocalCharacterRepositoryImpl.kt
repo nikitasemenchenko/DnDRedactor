@@ -31,7 +31,7 @@ class LocalCharacterRepositoryImpl @Inject constructor(
                 name = character.fullName.trim(),
                 level = 1,
                 classType = character.classId.toClassName(),
-                raceId = character.raceId.toString(),
+                raceId = character.raceId,
                 createdAt = System.currentTimeMillis()
             )
         )

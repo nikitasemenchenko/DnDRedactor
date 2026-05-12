@@ -3,7 +3,7 @@ package com.example.dndredactor.presentation.mappers
 import com.example.dndredactor.R
 import com.example.dndredactor.data.model.ClassType
 
-fun ClassType?.toClassIcon(): Int {
+fun ClassType.toClassIcon(): Int {
     return when (this) {
         ClassType.BARBARIAN -> R.drawable.varvar
         ClassType.BARD -> R.drawable.bard
@@ -18,6 +18,5 @@ fun ClassType?.toClassIcon(): Int {
         ClassType.WIZARD -> R.drawable.volshebnik
         ClassType.RANGER -> R.drawable.sledopit
         ClassType.UNKNOWN -> R.drawable.default_player
-        else -> R.drawable.default_player
     }
 }

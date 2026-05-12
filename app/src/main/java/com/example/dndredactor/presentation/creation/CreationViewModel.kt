@@ -134,9 +134,7 @@ class CreationViewModel @Inject constructor(
             currentStep = when (_uiState.value.currentStep) {
                 CreationStep.RACE -> CreationStep.CLASS
                 CreationStep.CLASS -> CreationStep.HUMAN_TRAITS
-                CreationStep.HUMAN_TRAITS -> CreationStep.CHARACTERISTICS
-                CreationStep.CHARACTERISTICS -> CreationStep.BACKGROUND
-                CreationStep.BACKGROUND -> CreationStep.FINAL
+                CreationStep.HUMAN_TRAITS -> CreationStep.FINAL
                 CreationStep.FINAL -> CreationStep.FINAL
             }
         )
@@ -148,9 +146,7 @@ class CreationViewModel @Inject constructor(
                 CreationStep.RACE -> CreationStep.RACE
                 CreationStep.CLASS -> CreationStep.RACE
                 CreationStep.HUMAN_TRAITS -> CreationStep.CLASS
-                CreationStep.CHARACTERISTICS -> CreationStep.HUMAN_TRAITS
-                CreationStep.BACKGROUND -> CreationStep.CHARACTERISTICS
-                CreationStep.FINAL -> CreationStep.BACKGROUND
+                CreationStep.FINAL -> CreationStep.HUMAN_TRAITS
             }
         )
     }
@@ -178,8 +174,6 @@ class CreationViewModel @Inject constructor(
                         character.weakness.isNotBlank()
             }
 
-            CreationStep.CHARACTERISTICS -> true
-            CreationStep.BACKGROUND -> true
             CreationStep.FINAL -> true
         }
     }
