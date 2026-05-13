@@ -1,6 +1,7 @@
 package com.example.dndredactor.data.mappers
 
 import com.example.dndredactor.data.local.CharacterEntity
+import com.example.dndredactor.data.model.AbilityScores
 import com.example.dndredactor.data.model.Character
 import com.example.dndredactor.data.model.ClassType
 import com.example.dndredactor.data.model.Gender
@@ -22,7 +23,15 @@ class CharacterMapper @Inject constructor() {
             appearance = entity.appearance,
             ideal = entity.ideal,
             weakness = entity.weakness,
-            attachment = entity.attachment
+            attachment = entity.attachment,
+            abilityScores = AbilityScores(
+                strength = entity.strength,
+                dexterity = entity.dexterity,
+                constitution = entity.constitution,
+                intelligence = entity.intelligence,
+                wisdom = entity.wisdom,
+                charisma = entity.charisma
+            )
         )
     }
 

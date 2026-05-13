@@ -145,6 +145,23 @@ private fun CharacterDetailsContent(
             }
         }
 
+        DetailsCard(title = "Характеристики") {
+            Column {
+                DetailRow(label = "Сила", value = character.abilityScores.strength.toString())
+                DetailRow(label = "Ловкость", value = character.abilityScores.dexterity.toString())
+                DetailRow(
+                    label = "Телосложение",
+                    value = character.abilityScores.constitution.toString()
+                )
+                DetailRow(
+                    label = "Интеллект",
+                    value = character.abilityScores.intelligence.toString()
+                )
+                DetailRow(label = "Мудрость", value = character.abilityScores.wisdom.toString())
+                DetailRow(label = "Харизма", value = character.abilityScores.charisma.toString())
+            }
+        }
+
         DetailsCard(title = "Внешность") {
             Text(
                 text = character.appearance.ifBlank { "Не указано" },

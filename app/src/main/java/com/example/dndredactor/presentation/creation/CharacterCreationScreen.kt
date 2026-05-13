@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dndredactor.R
+import com.example.dndredactor.presentation.creation.steps.AbilityScoresScreen
 import com.example.dndredactor.presentation.creation.steps.ClassSelectionScreen
 import com.example.dndredactor.presentation.creation.steps.CreationSummaryScreen
 import com.example.dndredactor.presentation.creation.steps.HumanTraitsSelectionScreen
@@ -78,6 +79,7 @@ fun CharacterCreationScreen(
                 CreationStep.RACE -> RaceSelectionScreen(vm = vm)
                 CreationStep.CLASS -> ClassSelectionScreen(vm = vm)
                 CreationStep.HUMAN_TRAITS -> HumanTraitsSelectionScreen(vm = vm)
+                CreationStep.ABILITY_SCORES -> AbilityScoresScreen(vm = vm)
                 CreationStep.FINAL -> CreationSummaryScreen()
             }
         }

@@ -17,5 +17,7 @@ data class Character (
     val personality: String,
     val ideal: String,
     val attachment: String,
-    val weakness: String
+    val weakness: String,
+
+    val abilityScores: AbilityScores
 )

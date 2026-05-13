@@ -51,6 +51,13 @@ class LocalCharacterRepositoryImpl @Inject constructor(
                 weakness = character.weakness.trim(),
                 attachment = character.attachment.trim(),
 
+                strength = character.abilityScores.strength,
+                dexterity = character.abilityScores.dexterity,
+                constitution = character.abilityScores.constitution,
+                intelligence = character.abilityScores.intelligence,
+                wisdom = character.abilityScores.wisdom,
+                charisma = character.abilityScores.charisma,
+
                 createdAt = System.currentTimeMillis()
             )
         )

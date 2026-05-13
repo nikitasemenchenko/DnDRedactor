@@ -17,5 +17,6 @@ enum class CreationStep {
     RACE,
     CLASS,
     HUMAN_TRAITS,
+    ABILITY_SCORES,
     FINAL
 }

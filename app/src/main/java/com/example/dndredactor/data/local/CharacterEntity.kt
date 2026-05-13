@@ -3,7 +3,6 @@ package com.example.dndredactor.data.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.dndredactor.data.AppConstants
-import com.example.dndredactor.data.model.Archetype
 
 @Entity(tableName = AppConstants.CHARACTERS_TABLE_NAME)
 data class CharacterEntity(
@@ -25,6 +24,13 @@ data class CharacterEntity(
     val ideal: String,
     val attachment: String,
     val weakness: String,
+
+    val strength: Int,
+    val dexterity: Int,
+    val constitution: Int,
+    val intelligence: Int,
+    val wisdom: Int,
+    val charisma: Int,
 
     val createdAt: Long
 )

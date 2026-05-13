@@ -2,6 +2,7 @@ package com.example.dndredactor.presentation.creation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dndredactor.data.model.Ability
 import com.example.dndredactor.data.model.Archetype
 import com.example.dndredactor.data.model.CharacterClass
 import com.example.dndredactor.data.model.Gender
@@ -116,6 +117,34 @@ class CreationViewModel @Inject constructor(
         )
     }
 
+    fun increaseAbility(ability: Ability) {
+        val currentScores = _uiState.value.character.abilityScores
+        val currentValue = currentScores.get(ability)
+
+        _uiState.value = _uiState.value.copy(
+            character = _uiState.value.character.copy(
+                abilityScores = currentScores.set(
+                    ability = ability,
+                    value = currentValue + 1
+                )
+            )
+        )
+    }
+
+    fun decreaseAbility(ability: Ability) {
+        val currentScores = _uiState.value.character.abilityScores
+        val currentValue = currentScores.get(ability)
+
+        _uiState.value = _uiState.value.copy(
+            character = _uiState.value.character.copy(
+                abilityScores = currentScores.set(
+                    ability = ability,
+                    value = currentValue - 1
+                )
+            )
+        )
+    }
+
     fun getRaceById(id: String?): Race? =
         _uiState.value.races.find { it.id == id }
 
@@ -134,7 +163,8 @@ class CreationViewModel @Inject constructor(
             currentStep = when (_uiState.value.currentStep) {
                 CreationStep.RACE -> CreationStep.CLASS
                 CreationStep.CLASS -> CreationStep.HUMAN_TRAITS
-                CreationStep.HUMAN_TRAITS -> CreationStep.FINAL
+                CreationStep.HUMAN_TRAITS -> CreationStep.ABILITY_SCORES
+                CreationStep.ABILITY_SCORES -> CreationStep.FINAL
                 CreationStep.FINAL -> CreationStep.FINAL
             }
         )
@@ -146,7 +176,8 @@ class CreationViewModel @Inject constructor(
                 CreationStep.RACE -> CreationStep.RACE
                 CreationStep.CLASS -> CreationStep.RACE
                 CreationStep.HUMAN_TRAITS -> CreationStep.CLASS
-                CreationStep.FINAL -> CreationStep.HUMAN_TRAITS
+                CreationStep.ABILITY_SCORES -> CreationStep.HUMAN_TRAITS
+                CreationStep.FINAL -> CreationStep.ABILITY_SCORES
             }
         )
     }
@@ -173,6 +204,8 @@ class CreationViewModel @Inject constructor(
                         character.attachment.isNotBlank() &&
                         character.weakness.isNotBlank()
             }
+
+            CreationStep.ABILITY_SCORES -> true
 
             CreationStep.FINAL -> true
         }
