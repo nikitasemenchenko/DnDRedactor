@@ -31,6 +31,7 @@ object DatabaseModule {
     }
 
     @Provides
+    @Singleton
     fun provideCharacterDao(
         database: DndDatabase
     ): CharacterDao {

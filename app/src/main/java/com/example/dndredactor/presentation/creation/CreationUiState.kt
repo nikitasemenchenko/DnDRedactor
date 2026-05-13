@@ -9,8 +9,10 @@ data class CreationUiState(
     val character: CharacterDraft = CharacterDraft(),
     val races: List<Race> = emptyList(),
     val classes: List<CharacterClass> = emptyList(),
+    val raceDetailsLoading: Boolean = false,
+    val classDetailsLoading: Boolean = false,
     val loading: Boolean = false,
-    val error: Int? = null
+    val error: String? = null
 )
 
 enum class CreationStep {

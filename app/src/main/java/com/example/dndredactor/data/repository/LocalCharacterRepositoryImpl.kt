@@ -39,11 +39,17 @@ class LocalCharacterRepositoryImpl @Inject constructor(
                 gender = character.gender.name,
 
                 raceId = character.raceId,
+                raceName = character.raceName,
+
                 subraceId = character.subraceId,
+                subraceName = character.subraceName,
 
                 classType = character.classId.toClassName(),
                 classId = character.classId,
+                className = character.className,
+
                 archetypeId = character.archetypeId,
+                archetypeName = character.archetypeName,
 
                 appearance = character.appearance.trim(),
                 personality = character.personality.trim(),

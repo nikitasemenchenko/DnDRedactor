@@ -7,11 +7,17 @@ data class Character (
     val gender: Gender,
 
     val raceId: String?,
+    val raceName: String?,
+
     val subraceId: String?,
+    val subraceName: String?,
 
     val classType: ClassType,
     val classId: String?,
+    val className: String?,
+
     val archetypeId: String?,
+    val archetypeName: String?,
 
     val appearance: String,
     val personality: String,

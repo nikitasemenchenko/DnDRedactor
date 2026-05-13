@@ -13,6 +13,7 @@ import com.example.dndredactor.data.model.Subrace
 import com.example.dndredactor.domain.repository.CreationRepository
 import com.example.dndredactor.domain.repository.LocalCharacterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -36,12 +37,36 @@ class CreationViewModel @Inject constructor(
         loadInitialData()
     }
 
-    private fun loadInitialData(){
-        _uiState.value = _uiState.value.copy(
-            loading = false,
-            races = creationRepository.getRaces(),
-            classes = creationRepository.getClasses()
-        )
+    private fun loadInitialData() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(
+                loading = true
+            )
+
+            runCatching {
+                val racesAsync = async {
+                    creationRepository.getRaces()
+                }
+                val classesAsync = async {
+                    creationRepository.getClasses()
+                }
+                val races = racesAsync.await()
+                val classes = classesAsync.await()
+
+                _uiState.value = _uiState.value.copy(
+                    loading = false,
+                    races = races,
+                    classes = classes,
+                    error = null
+                )
+            }.onFailure {
+                _uiState.value = _uiState.value.copy(
+                    loading = false,
+                    error = "Ошибка"
+                )
+                _events.emit(CreationEvent.ShowError("Не удалось загрузить справочные данные"))
+            }
+        }
     }
 
     fun onNameChanged(newName: String) {
@@ -86,36 +111,142 @@ class CreationViewModel @Inject constructor(
         )
     }
 
-    fun onRaceSelected(raceId: String?) {
+    fun onRaceSelected(race: Race) {
         _uiState.value = _uiState.value.copy(
             character = _uiState.value.character.copy(
-                raceId = raceId,
-                subraceId = null
+                raceId = race.id,
+                raceName = race.name,
+                subraceId = null,
+                subraceName = null
+            )
+        )
+
+        loadRaceDetails(race.id)
+    }
+
+    fun loadRaceDetails(raceId: String) {
+        val currentRace = getRaceById(raceId)
+
+        if (currentRace != null && currentRace.description.isNotBlank()) {
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(
+                raceDetailsLoading = true
+            )
+
+            runCatching {
+                creationRepository.getRaceDetails(raceId)
+            }.onSuccess { detailedRace ->
+                val currentCharacter = _uiState.value.character
+
+                _uiState.value = _uiState.value.copy(
+                    raceDetailsLoading = false,
+                    races = replaceRace(_uiState.value.races, detailedRace),
+                    character = if (currentCharacter.raceId == detailedRace.id) {
+                        currentCharacter.copy(
+                            raceName = detailedRace.name
+                        )
+                    } else {
+                        currentCharacter
+                    }
+                )
+            }.onFailure {
+                _uiState.value = _uiState.value.copy(
+                    raceDetailsLoading = false
+                )
+
+                _events.emit(
+                    CreationEvent.ShowError("Не удалось загрузить описание расы")
+                )
+            }
+        }
+    }
+
+    fun loadClassDetails(classId: String) {
+        val currentClass = getClassById(classId)
+
+        if (currentClass != null && currentClass.archetypes.isNotEmpty()) {
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(
+                classDetailsLoading = true
+            )
+
+            runCatching {
+                creationRepository.getClassDetails(classId)
+            }.onSuccess { detailedClass ->
+                val currentCharacter = _uiState.value.character
+
+                _uiState.value = _uiState.value.copy(
+                    classDetailsLoading = false,
+                    classes = replaceClass(_uiState.value.classes, detailedClass),
+                    character = if (currentCharacter.classId == detailedClass.id) {
+                        currentCharacter.copy(
+                            className = detailedClass.name
+                        )
+                    } else {
+                        currentCharacter
+                    }
+                )
+            }.onFailure {
+                _uiState.value = _uiState.value.copy(
+                    classDetailsLoading = false
+                )
+
+                _events.emit(
+                    CreationEvent.ShowError("Не удалось загрузить архетипы класса")
+                )
+            }
+        }
+    }
+
+    fun replaceRace(races: List<Race>, race: Race): List<Race> {
+        return races.map { curRace ->
+            if (curRace.id == race.id) race else curRace
+        }
+    }
+
+    fun replaceClass(
+        classes: List<CharacterClass>,
+        characterClass: CharacterClass
+    ): List<CharacterClass> {
+        return classes.map { curClass ->
+            if (curClass.id == characterClass.id) characterClass else curClass
+        }
+    }
+
+    fun onSubraceSelected(subrace: Subrace) {
+        _uiState.value = _uiState.value.copy(
+            character = _uiState.value.character.copy(
+                subraceId = subrace.id,
+                subraceName = subrace.name
             )
         )
     }
 
-    fun onSubraceSelected(subraceId: String?) {
+
+    fun onClassSelected(characterClass: CharacterClass) {
         _uiState.value = _uiState.value.copy(
             character = _uiState.value.character.copy(
-                subraceId = subraceId
+                classId = characterClass.id,
+                className = characterClass.name,
+                archetypeId = null,
+                archetypeName = null
             )
         )
+
+        loadClassDetails(characterClass.id)
     }
 
-    fun onClassSelected(classId: String?) {
+    fun onArchetypeSelected(archetype: Archetype) {
         _uiState.value = _uiState.value.copy(
             character = _uiState.value.character.copy(
-                classId = classId,
-                archetypeId = null
-            )
-        )
-    }
-
-    fun onArchetypeSelected(archetypeId: String?) {
-        _uiState.value = _uiState.value.copy(
-            character = _uiState.value.character.copy(
-                archetypeId = archetypeId
+                archetypeId = archetype.id,
+                archetypeName = archetype.name
             )
         )
     }
@@ -136,12 +267,12 @@ class CreationViewModel @Inject constructor(
 
         if (currentValue >= MAX_POINT_BUY_SCORE) return
 
-        val nextValue = currentValue+1
+        val nextValue = currentValue + 1
         val currentCost = POINT_BUY_COST[currentValue] ?: return
         val nextCost = POINT_BUY_COST[nextValue] ?: return
         val diff = nextCost - currentCost
 
-        if(getRemainingPoints() < diff) return
+        if (getRemainingPoints() < diff) return
 
         _uiState.value = _uiState.value.copy(
             character = _uiState.value.character.copy(
@@ -174,15 +305,8 @@ class CreationViewModel @Inject constructor(
     fun getRaceById(id: String?): Race? =
         _uiState.value.races.find { it.id == id }
 
-    fun getSubraceById(race: Race, id: String?): Subrace?
-            = race.subraces.find { it.id == id }
-
     fun getClassById(id: String?): CharacterClass? =
         _uiState.value.classes.find { it.id == id }
-
-    fun getArchetypeById(characterClass: CharacterClass, id: String?): Archetype? =
-        characterClass.archetypes.find { it.id == id }
-
 
     fun goToNextStep() {
         _uiState.value = _uiState.value.copy(
@@ -197,6 +321,7 @@ class CreationViewModel @Inject constructor(
                         else -> CreationStep.ABILITY_GENERATION_METHOD
                     }
                 }
+
                 CreationStep.RANDOM_ABILITIES -> CreationStep.FINAL
                 CreationStep.POINT_BUY_ABILITIES -> CreationStep.FINAL
                 CreationStep.FINAL -> CreationStep.FINAL
@@ -231,12 +356,14 @@ class CreationViewModel @Inject constructor(
             CreationStep.RACE -> {
                 character.fullName.isNotBlank() &&
                         character.gender != Gender.UNSPECIFIED &&
-                        character.raceId != null
+                        character.raceId != null &&
+                        !_uiState.value.raceDetailsLoading
+
             }
 
             CreationStep.CLASS -> {
-                character.classId != null &&
-                        character.archetypeId != null
+                character.classId != null && character.archetypeId != null &&
+                        !_uiState.value.classDetailsLoading
             }
 
             CreationStep.HUMAN_TRAITS -> {
@@ -272,7 +399,7 @@ class CreationViewModel @Inject constructor(
         )
     }
 
-    fun rollAbilityScore(): Int{
+    fun rollAbilityScore(): Int {
         return List(4) {
             Random.nextInt(from = 1, until = 7)
         }
@@ -281,7 +408,7 @@ class CreationViewModel @Inject constructor(
             .sum()
     }
 
-    fun regenerateScores(){
+    fun regenerateScores() {
         _uiState.value = _uiState.value.copy(
             character = _uiState.value.character.copy(
                 abilityScores = generateScores()
@@ -290,7 +417,7 @@ class CreationViewModel @Inject constructor(
     }
 
     fun onAbilityGenerationMethodSelected(method: AbilityGenerationMethod) {
-        val newScores = when(method) {
+        val newScores = when (method) {
             AbilityGenerationMethod.POINT_BUY -> AbilityScores()
             AbilityGenerationMethod.RANDOM -> generateScores()
         }
@@ -337,6 +464,7 @@ class CreationViewModel @Inject constructor(
                 character.classId != null &&
                 character.archetypeId != null
     }
+
     private companion object {
         const val POINT_BUY_BUDGET = 27
         const val MIN_POINT_BUY_SCORE = 8

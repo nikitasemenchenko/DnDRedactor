@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -71,9 +72,12 @@ fun RaceSelectionScreen(
             placeholder = R.string.race_desc_placeholder
         )
 
+        if (uiState.raceDetailsLoading) {
+            CircularProgressIndicator()
+        }
+
         val selectedRace = vm.getRaceById(uiState.character.raceId)
         if (selectedRace != null && selectedRace.subraces.isNotEmpty()) {
-            val selectedSubrace = vm.getSubraceById(selectedRace, uiState.character.subraceId)
             Title(R.string.subrace_selection)
             Dropdown(
                 items = selectedRace.subraces,
@@ -82,10 +86,6 @@ fun RaceSelectionScreen(
                 idSelector = { it.id },
                 nameSelector = { it.name },
                 labelRes = R.string.character_subrace
-            )
-            DescriptionCard(
-                desc = selectedSubrace?.description,
-                placeholder = R.string.subrace_desc_placeholder
             )
         }
     }

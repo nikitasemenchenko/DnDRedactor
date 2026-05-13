@@ -1,8 +1,10 @@
 package com.example.dndredactor.presentation.creation
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -11,6 +13,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -74,17 +77,28 @@ fun CharacterCreationScreen(
         }
     ) { padding ->
 
-        Column(
-            modifier = Modifier.padding(padding)) {
-
-            when (uiState.currentStep) {
-                CreationStep.RACE -> RaceSelectionScreen(vm = vm)
-                CreationStep.CLASS -> ClassSelectionScreen(vm = vm)
-                CreationStep.HUMAN_TRAITS -> HumanTraitsSelectionScreen(vm = vm)
-                CreationStep.ABILITY_GENERATION_METHOD -> AbilityGenerationMethodScreen(vm = vm)
-                CreationStep.RANDOM_ABILITIES -> RandomAbilityScoresScreen(vm = vm)
-                CreationStep.POINT_BUY_ABILITIES -> PointBuyAbilityScoresScreen(vm = vm)
-                CreationStep.FINAL -> CreationSummaryScreen()
+        if (uiState.loading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        } else {
+            Column(
+                modifier = Modifier.padding(padding)
+            ) {
+                when (uiState.currentStep) {
+                    CreationStep.RACE -> RaceSelectionScreen(vm = vm)
+                    CreationStep.CLASS -> ClassSelectionScreen(vm = vm)
+                    CreationStep.HUMAN_TRAITS -> HumanTraitsSelectionScreen(vm = vm)
+                    CreationStep.ABILITY_GENERATION_METHOD -> AbilityGenerationMethodScreen(vm = vm)
+                    CreationStep.RANDOM_ABILITIES -> RandomAbilityScoresScreen(vm = vm)
+                    CreationStep.POINT_BUY_ABILITIES -> PointBuyAbilityScoresScreen(vm = vm)
+                    CreationStep.FINAL -> CreationSummaryScreen()
+                }
             }
         }
     }

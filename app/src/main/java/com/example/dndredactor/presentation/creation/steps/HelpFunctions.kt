@@ -76,7 +76,7 @@ fun <T> Dropdown(
     idSelector: (T) -> String,
     nameSelector: (T) -> String,
     labelRes: Int,
-    onSelect: (String?) -> Unit
+    onSelect: (T) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -121,7 +121,7 @@ fun <T> Dropdown(
                 DropdownMenuItem(
                     text = { Text(nameSelector(item)) },
                     onClick = {
-                        onSelect(idSelector(item))
+                        onSelect(item)
                         expanded = false
                     }
                 )

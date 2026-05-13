@@ -5,10 +5,16 @@ data class CharacterDraft(
     val gender: Gender = Gender.UNSPECIFIED,
 
     val raceId: String? = null,
+    val raceName: String? = null,
+
     val subraceId: String? = null,
+    val subraceName: String? = null,
 
     val classId: String? = null,
+    val className: String? = null,
+
     val archetypeId: String? = null,
+    val archetypeName: String? = null,
 
     val appearance: String = "",
     val personality: String = "",

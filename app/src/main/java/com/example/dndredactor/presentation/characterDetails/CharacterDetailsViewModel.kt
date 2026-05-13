@@ -43,7 +43,7 @@ class CharacterDetailsViewModel @Inject constructor(
             initialValue = CharacterDetailsUiState.Loading
         )
 
-    fun toSuccessState(character: Character): CharacterDetailsUiState.Success  {
+    suspend fun toSuccessState(character: Character): CharacterDetailsUiState.Success  {
         val races = creationRepository.getRaces()
         val classes = creationRepository.getClasses()
 

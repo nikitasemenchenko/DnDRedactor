@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -39,10 +40,10 @@ fun ClassSelectionScreen(
             labelRes = R.string.class_selection,
             onSelect = vm::onClassSelected
         )
-        DescriptionCard(
-            desc = vm.getClassById(uiState.character.classId)?.description,
-            placeholder = R.string.class_desc_placeholder
-        )
+
+        if (uiState.raceDetailsLoading) {
+            CircularProgressIndicator()
+        }
 
         val selectedClass = vm.getClassById(uiState.character.classId)
         if (selectedClass != null) {
@@ -54,13 +55,6 @@ fun ClassSelectionScreen(
                 nameSelector = { it.name },
                 labelRes = R.string.archetype_selection,
                 onSelect = vm::onArchetypeSelected
-            )
-            DescriptionCard(
-                desc = vm.getArchetypeById(
-                    selectedClass,
-                    uiState.character.archetypeId
-                )?.description,
-                placeholder = R.string.class_desc_placeholder
             )
         }
     }
