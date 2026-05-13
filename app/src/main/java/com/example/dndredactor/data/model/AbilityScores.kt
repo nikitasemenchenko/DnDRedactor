@@ -11,13 +11,27 @@ enum class Ability(
     CHARISMA("Харизма")
 }
 
+enum class AbilityGenerationMethod(
+    val title: String,
+    val description: String
+) {
+    RANDOM(
+        title = "Случайная генерация",
+        description = "Бросаются 4 кубика d6, худший результат отбрасывается."
+    ),
+    POINT_BUY(
+        title = "Закуп характеристик",
+        description = "Вы распределяете 27 очков между характеристиками."
+    )
+}
+
 data class AbilityScores(
-    val strength: Int = 0,
-    val dexterity: Int = 0,
-    val constitution: Int = 0,
-    val intelligence: Int = 0,
-    val wisdom: Int = 0,
-    val charisma: Int = 0
+    val strength: Int = 8,
+    val dexterity: Int = 8,
+    val constitution: Int = 8,
+    val intelligence: Int = 8,
+    val wisdom: Int = 8,
+    val charisma: Int = 8
 ) {
     fun get(ability: Ability): Int {
         return when (ability) {

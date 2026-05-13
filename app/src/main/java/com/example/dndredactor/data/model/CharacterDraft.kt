@@ -16,6 +16,7 @@ data class CharacterDraft(
     val attachment: String = "",
     val weakness: String = "",
 
+    val abilityGenerationMethod: AbilityGenerationMethod? = null,
     val abilityScores: AbilityScores = AbilityScores(),
 
     val backgroundId: String? = null

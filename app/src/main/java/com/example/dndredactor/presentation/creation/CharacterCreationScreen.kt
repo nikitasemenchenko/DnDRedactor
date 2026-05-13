@@ -30,11 +30,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dndredactor.R
-import com.example.dndredactor.presentation.creation.steps.AbilityScoresScreen
+import com.example.dndredactor.presentation.creation.steps.AbilityGenerationMethodScreen
 import com.example.dndredactor.presentation.creation.steps.ClassSelectionScreen
 import com.example.dndredactor.presentation.creation.steps.CreationSummaryScreen
 import com.example.dndredactor.presentation.creation.steps.HumanTraitsSelectionScreen
+import com.example.dndredactor.presentation.creation.steps.PointBuyAbilityScoresScreen
 import com.example.dndredactor.presentation.creation.steps.RaceSelectionScreen
+import com.example.dndredactor.presentation.creation.steps.RandomAbilityScoresScreen
 import com.example.dndredactor.presentation.theme.BackPurple
 import com.example.dndredactor.presentation.theme.ButtonColor
 import com.example.dndredactor.presentation.theme.LightColor
@@ -79,7 +81,9 @@ fun CharacterCreationScreen(
                 CreationStep.RACE -> RaceSelectionScreen(vm = vm)
                 CreationStep.CLASS -> ClassSelectionScreen(vm = vm)
                 CreationStep.HUMAN_TRAITS -> HumanTraitsSelectionScreen(vm = vm)
-                CreationStep.ABILITY_SCORES -> AbilityScoresScreen(vm = vm)
+                CreationStep.ABILITY_GENERATION_METHOD -> AbilityGenerationMethodScreen(vm = vm)
+                CreationStep.RANDOM_ABILITIES -> RandomAbilityScoresScreen(vm = vm)
+                CreationStep.POINT_BUY_ABILITIES -> PointBuyAbilityScoresScreen(vm = vm)
                 CreationStep.FINAL -> CreationSummaryScreen()
             }
         }

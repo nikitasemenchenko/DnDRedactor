@@ -3,6 +3,8 @@ package com.example.dndredactor.presentation.creation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dndredactor.data.model.Ability
+import com.example.dndredactor.data.model.AbilityGenerationMethod
+import com.example.dndredactor.data.model.AbilityScores
 import com.example.dndredactor.data.model.Archetype
 import com.example.dndredactor.data.model.CharacterClass
 import com.example.dndredactor.data.model.Gender
@@ -17,6 +19,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class CreationViewModel @Inject constructor(
@@ -117,15 +120,34 @@ class CreationViewModel @Inject constructor(
         )
     }
 
+    fun getRemainingPoints(): Int {
+        val scores = _uiState.value.character.abilityScores
+
+        val spent = Ability.entries.sumOf { ability ->
+            POINT_BUY_COST[scores.get(ability)] ?: 0
+        }
+
+        return POINT_BUY_BUDGET - spent
+    }
+
     fun increaseAbility(ability: Ability) {
         val currentScores = _uiState.value.character.abilityScores
         val currentValue = currentScores.get(ability)
+
+        if (currentValue >= MAX_POINT_BUY_SCORE) return
+
+        val nextValue = currentValue+1
+        val currentCost = POINT_BUY_COST[currentValue] ?: return
+        val nextCost = POINT_BUY_COST[nextValue] ?: return
+        val diff = nextCost - currentCost
+
+        if(getRemainingPoints() < diff) return
 
         _uiState.value = _uiState.value.copy(
             character = _uiState.value.character.copy(
                 abilityScores = currentScores.set(
                     ability = ability,
-                    value = currentValue + 1
+                    value = nextValue
                 )
             )
         )
@@ -135,11 +157,15 @@ class CreationViewModel @Inject constructor(
         val currentScores = _uiState.value.character.abilityScores
         val currentValue = currentScores.get(ability)
 
+        if (currentValue <= MIN_POINT_BUY_SCORE) return
+
+        val nextValue = currentValue - 1
+
         _uiState.value = _uiState.value.copy(
             character = _uiState.value.character.copy(
                 abilityScores = currentScores.set(
                     ability = ability,
-                    value = currentValue - 1
+                    value = nextValue
                 )
             )
         )
@@ -163,8 +189,16 @@ class CreationViewModel @Inject constructor(
             currentStep = when (_uiState.value.currentStep) {
                 CreationStep.RACE -> CreationStep.CLASS
                 CreationStep.CLASS -> CreationStep.HUMAN_TRAITS
-                CreationStep.HUMAN_TRAITS -> CreationStep.ABILITY_SCORES
-                CreationStep.ABILITY_SCORES -> CreationStep.FINAL
+                CreationStep.HUMAN_TRAITS -> CreationStep.ABILITY_GENERATION_METHOD
+                CreationStep.ABILITY_GENERATION_METHOD -> {
+                    when (_uiState.value.character.abilityGenerationMethod) {
+                        AbilityGenerationMethod.RANDOM -> CreationStep.RANDOM_ABILITIES
+                        AbilityGenerationMethod.POINT_BUY -> CreationStep.POINT_BUY_ABILITIES
+                        else -> CreationStep.ABILITY_GENERATION_METHOD
+                    }
+                }
+                CreationStep.RANDOM_ABILITIES -> CreationStep.FINAL
+                CreationStep.POINT_BUY_ABILITIES -> CreationStep.FINAL
                 CreationStep.FINAL -> CreationStep.FINAL
             }
         )
@@ -176,8 +210,16 @@ class CreationViewModel @Inject constructor(
                 CreationStep.RACE -> CreationStep.RACE
                 CreationStep.CLASS -> CreationStep.RACE
                 CreationStep.HUMAN_TRAITS -> CreationStep.CLASS
-                CreationStep.ABILITY_SCORES -> CreationStep.HUMAN_TRAITS
-                CreationStep.FINAL -> CreationStep.ABILITY_SCORES
+                CreationStep.ABILITY_GENERATION_METHOD -> CreationStep.HUMAN_TRAITS
+                CreationStep.RANDOM_ABILITIES -> CreationStep.ABILITY_GENERATION_METHOD
+                CreationStep.POINT_BUY_ABILITIES -> CreationStep.ABILITY_GENERATION_METHOD
+                CreationStep.FINAL -> {
+                    when (_uiState.value.character.abilityGenerationMethod) {
+                        AbilityGenerationMethod.RANDOM -> CreationStep.RANDOM_ABILITIES
+                        AbilityGenerationMethod.POINT_BUY -> CreationStep.POINT_BUY_ABILITIES
+                        else -> CreationStep.ABILITY_GENERATION_METHOD
+                    }
+                }
             }
         )
     }
@@ -205,10 +247,60 @@ class CreationViewModel @Inject constructor(
                         character.weakness.isNotBlank()
             }
 
-            CreationStep.ABILITY_SCORES -> true
+            CreationStep.ABILITY_GENERATION_METHOD -> {
+                _uiState.value.character.abilityGenerationMethod != null
+            }
+
+            CreationStep.RANDOM_ABILITIES -> true
+
+            CreationStep.POINT_BUY_ABILITIES -> {
+                getRemainingPoints() >= 0
+            }
 
             CreationStep.FINAL -> true
         }
+    }
+
+    fun generateScores(): AbilityScores {
+        return AbilityScores(
+            strength = rollAbilityScore(),
+            dexterity = rollAbilityScore(),
+            constitution = rollAbilityScore(),
+            intelligence = rollAbilityScore(),
+            wisdom = rollAbilityScore(),
+            charisma = rollAbilityScore()
+        )
+    }
+
+    fun rollAbilityScore(): Int{
+        return List(4) {
+            Random.nextInt(from = 1, until = 7)
+        }
+            .sortedDescending()
+            .take(3)
+            .sum()
+    }
+
+    fun regenerateScores(){
+        _uiState.value = _uiState.value.copy(
+            character = _uiState.value.character.copy(
+                abilityScores = generateScores()
+            )
+        )
+    }
+
+    fun onAbilityGenerationMethodSelected(method: AbilityGenerationMethod) {
+        val newScores = when(method) {
+            AbilityGenerationMethod.POINT_BUY -> AbilityScores()
+            AbilityGenerationMethod.RANDOM -> generateScores()
+        }
+
+        _uiState.value = _uiState.value.copy(
+            character = _uiState.value.character.copy(
+                abilityGenerationMethod = method,
+                abilityScores = newScores
+            )
+        )
     }
 
     fun saveCharacter() {
@@ -245,7 +337,22 @@ class CreationViewModel @Inject constructor(
                 character.classId != null &&
                 character.archetypeId != null
     }
+    private companion object {
+        const val POINT_BUY_BUDGET = 27
+        const val MIN_POINT_BUY_SCORE = 8
+        const val MAX_POINT_BUY_SCORE = 15
 
+        val POINT_BUY_COST = mapOf(
+            8 to 0,
+            9 to 1,
+            10 to 2,
+            11 to 3,
+            12 to 4,
+            13 to 5,
+            14 to 7,
+            15 to 9
+        )
+    }
 }
 
 sealed interface CreationEvent {

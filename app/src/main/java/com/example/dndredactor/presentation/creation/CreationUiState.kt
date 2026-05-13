@@ -17,6 +17,8 @@ enum class CreationStep {
     RACE,
     CLASS,
     HUMAN_TRAITS,
-    ABILITY_SCORES,
+    ABILITY_GENERATION_METHOD,
+    RANDOM_ABILITIES,
+    POINT_BUY_ABILITIES,
     FINAL
 }
