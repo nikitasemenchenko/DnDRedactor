@@ -56,6 +56,13 @@ fun CreationSummaryScreen(
                 SummaryLine("Архетип", character.archetypeName ?: "Не выбран")
             }
 
+            SummaryBlock(title = "Предыстория") {
+                SummaryLine(
+                    key = "Описание",
+                    value = character.backstory
+                )
+            }
+
             SummaryBlock(title =  "Характеристики") {
                 Ability.entries.forEach { ability ->
                     SummaryLine(

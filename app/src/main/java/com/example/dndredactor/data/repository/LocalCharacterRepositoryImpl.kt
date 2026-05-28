@@ -51,6 +51,8 @@ class LocalCharacterRepositoryImpl @Inject constructor(
                 archetypeId = character.archetypeId,
                 archetypeName = character.archetypeName,
 
+                backstory = character.backstory.trim(),
+
                 appearance = character.appearance.trim(),
                 personality = character.personality.trim(),
                 ideal = character.ideal.trim(),

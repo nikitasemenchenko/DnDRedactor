@@ -18,6 +18,7 @@ data class CreationUiState(
 enum class CreationStep {
     RACE,
     CLASS,
+    BACKSTORY,
     HUMAN_TRAITS,
     ABILITY_GENERATION_METHOD,
     RANDOM_ABILITIES,

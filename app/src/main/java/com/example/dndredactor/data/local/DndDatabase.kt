@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
     entities = [
         CharacterEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 abstract class DndDatabase: RoomDatabase() {

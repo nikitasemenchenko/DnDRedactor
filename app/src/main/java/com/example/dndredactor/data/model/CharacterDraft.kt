@@ -16,6 +16,8 @@ data class CharacterDraft(
     val archetypeId: String? = null,
     val archetypeName: String? = null,
 
+    val backstory: String = "",
+
     val appearance: String = "",
     val personality: String = "",
     val ideal: String = "",
@@ -24,6 +26,4 @@ data class CharacterDraft(
 
     val abilityGenerationMethod: AbilityGenerationMethod? = null,
     val abilityScores: AbilityScores = AbilityScores(),
-
-    val backgroundId: String? = null
 )

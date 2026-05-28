@@ -20,6 +20,8 @@
     <string name="class_desc_placeholder">Выберите класс, чтобы увидеть описание</string>
     <string name="archetype_selection">Архетип класса:</string>
     <string name="appearance_selection">Внешность персонажа:</string>
+    <string name="backstory_selection">Предыстория персонажа</string>
+    <string name="backstory_placeholder">Опишите предысторию персонажа</string>
     <string name="appearance_placeholder">Опишите внешность персонажа</string>
     <string name="character_traits">Черты характера:</string>
     <string name="character">Характер</string>

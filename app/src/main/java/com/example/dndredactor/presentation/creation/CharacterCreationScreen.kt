@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dndredactor.R
 import com.example.dndredactor.presentation.creation.steps.AbilityGenerationMethodScreen
+import com.example.dndredactor.presentation.creation.steps.BackstoryScreen
 import com.example.dndredactor.presentation.creation.steps.ClassSelectionScreen
 import com.example.dndredactor.presentation.creation.steps.CreationSummaryScreen
 import com.example.dndredactor.presentation.creation.steps.HumanTraitsSelectionScreen
@@ -95,6 +96,7 @@ fun CharacterCreationScreen(
                 when (uiState.currentStep) {
                     CreationStep.RACE -> RaceSelectionScreen(vm = vm)
                     CreationStep.CLASS -> ClassSelectionScreen(vm = vm)
+                    CreationStep.BACKSTORY -> BackstoryScreen(vm = vm)
                     CreationStep.HUMAN_TRAITS -> HumanTraitsSelectionScreen(vm = vm)
                     CreationStep.ABILITY_GENERATION_METHOD -> AbilityGenerationMethodScreen(vm = vm)
                     CreationStep.RANDOM_ABILITIES -> RandomAbilityScoresScreen(vm = vm)

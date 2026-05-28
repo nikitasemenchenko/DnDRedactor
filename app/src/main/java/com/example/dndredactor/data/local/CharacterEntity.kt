@@ -25,6 +25,8 @@ data class CharacterEntity(
     val archetypeId: String?,
     val archetypeName: String?,
 
+    val backstory: String,
+
     val appearance: String,
     val personality: String,
     val ideal: String,

@@ -23,6 +23,7 @@ class CharacterMapper @Inject constructor() {
             className = entity.className,
             archetypeId = entity.archetypeId,
             archetypeName = entity.archetypeName,
+            backstory = entity.backstory,
             personality = entity.personality,
             appearance = entity.appearance,
             ideal = entity.ideal,

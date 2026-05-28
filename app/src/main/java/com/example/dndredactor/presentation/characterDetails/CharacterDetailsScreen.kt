@@ -145,6 +145,14 @@ private fun CharacterDetailsContent(
             }
         }
 
+        DetailsCard(title = "Предыстория") {
+            Text(
+                text = character.backstory.ifBlank { "Не указано" },
+                color = Color.Black,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+
         DetailsCard(title = "Характеристики") {
             Column {
                 DetailRow(label = "Сила", value = character.abilityScores.strength.toString())

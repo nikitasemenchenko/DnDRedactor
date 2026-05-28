@@ -261,6 +261,14 @@ class CreationViewModel @Inject constructor(
         return POINT_BUY_BUDGET - spent
     }
 
+    fun onBackstoryChange(backstory: String){
+        _uiState.value = _uiState.value.copy(
+            character = _uiState.value.character.copy(
+                backstory = backstory
+            )
+        )
+    }
+
     fun increaseAbility(ability: Ability) {
         val currentScores = _uiState.value.character.abilityScores
         val currentValue = currentScores.get(ability)
@@ -312,7 +320,8 @@ class CreationViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             currentStep = when (_uiState.value.currentStep) {
                 CreationStep.RACE -> CreationStep.CLASS
-                CreationStep.CLASS -> CreationStep.HUMAN_TRAITS
+                CreationStep.CLASS -> CreationStep.BACKSTORY
+                CreationStep.BACKSTORY -> CreationStep.HUMAN_TRAITS
                 CreationStep.HUMAN_TRAITS -> CreationStep.ABILITY_GENERATION_METHOD
                 CreationStep.ABILITY_GENERATION_METHOD -> {
                     when (_uiState.value.character.abilityGenerationMethod) {
@@ -334,7 +343,8 @@ class CreationViewModel @Inject constructor(
             currentStep = when (_uiState.value.currentStep) {
                 CreationStep.RACE -> CreationStep.RACE
                 CreationStep.CLASS -> CreationStep.RACE
-                CreationStep.HUMAN_TRAITS -> CreationStep.CLASS
+                CreationStep.BACKSTORY -> CreationStep.CLASS
+                CreationStep.HUMAN_TRAITS -> CreationStep.BACKSTORY
                 CreationStep.ABILITY_GENERATION_METHOD -> CreationStep.HUMAN_TRAITS
                 CreationStep.RANDOM_ABILITIES -> CreationStep.ABILITY_GENERATION_METHOD
                 CreationStep.POINT_BUY_ABILITIES -> CreationStep.ABILITY_GENERATION_METHOD
@@ -365,6 +375,8 @@ class CreationViewModel @Inject constructor(
                 character.classId != null && character.archetypeId != null &&
                         !_uiState.value.classDetailsLoading
             }
+
+            CreationStep.BACKSTORY -> true
 
             CreationStep.HUMAN_TRAITS -> {
                 character.appearance.isNotBlank() &&
