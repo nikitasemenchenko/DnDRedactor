@@ -6,11 +6,7 @@ sealed interface CharacterDetailsUiState {
     data object Loading: CharacterDetailsUiState
 
     data class Success(
-        val character: Character,
-        val raceName: String?,
-        val subraceName: String?,
-        val className: String?,
-        val archetypeName: String?
+        val character: Character
     ): CharacterDetailsUiState
 
     data class Error(

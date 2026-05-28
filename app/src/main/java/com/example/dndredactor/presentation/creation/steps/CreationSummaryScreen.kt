@@ -4,18 +4,26 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.dndredactor.data.model.Ability
+import com.example.dndredactor.presentation.creation.CreationViewModel
 import com.example.dndredactor.presentation.theme.LightColor
 
 // заглушка
 @Composable
-fun CreationSummaryScreen() {
+fun CreationSummaryScreen(
+    vm: CreationViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -23,17 +31,70 @@ fun CreationSummaryScreen() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val uiState by vm.uiState.collectAsState()
+        val character = uiState.character
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = "Проверьте персонажа",
+                color = LightColor,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+
+            SummaryBlock(title = "Основное") {
+                SummaryLine("Имя", character.fullName)
+                SummaryLine("Раса", character.raceName ?: "Не выбрана")
+                SummaryLine("Подраса", character.subraceName ?: "Не выбрана")
+                SummaryLine("Класс", character.className ?: "Не выбран")
+                SummaryLine("Архетип", character.archetypeName ?: "Не выбран")
+            }
+
+            SummaryBlock(title =  "Характеристики") {
+                Ability.entries.forEach { ability ->
+                    SummaryLine(
+                        key = ability.title,
+                        value = character.abilityScores.get(ability).toString()
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SummaryLine(
+    key: String,
+    value: String
+){
+    Text(
+        text = "$key: ${value.ifBlank { "Не указано" }}",
+        color = LightColor,
+        style = MaterialTheme.typography.bodyLarge
+    )
+}
+
+@Composable
+fun SummaryBlock(
+    title: String,
+    content: @Composable () -> Unit
+){
+    Column(
+        verticalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
         Text(
-            text = "Персонаж готов к созданию",
+            text = title,
             color = LightColor,
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Medium
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
         )
 
-        Text(
-            text = "Нажмите «Создать», чтобы сохранить персонажа.",
-            color = LightColor,
-            style = MaterialTheme.typography.bodyLarge
-        )
+        content()
     }
 }

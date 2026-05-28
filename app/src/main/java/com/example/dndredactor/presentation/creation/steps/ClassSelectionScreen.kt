@@ -41,12 +41,12 @@ fun ClassSelectionScreen(
             onSelect = vm::onClassSelected
         )
 
-        if (uiState.raceDetailsLoading) {
+        if (uiState.classDetailsLoading) {
             CircularProgressIndicator()
         }
 
         val selectedClass = vm.getClassById(uiState.character.classId)
-        if (selectedClass != null) {
+        if (selectedClass != null && selectedClass.archetypes.isNotEmpty()) {
             Title(R.string.archetype_selection)
             Dropdown(
                 items = selectedClass.archetypes,

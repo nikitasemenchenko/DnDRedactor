@@ -67,13 +67,15 @@ fun CharacterCreationScreen(
             CharacterCreationTopBar(onReturn)
         },
         bottomBar = {
-            CharacterCreationBottomBar(
-                onFinished = vm::saveCharacter,
-                currentStep = uiState.currentStep,
-                canGoNext = vm.canGoToNextStep(),
-                goBack = vm::goToPreviousStep,
-                goNext = vm::goToNextStep
-            )
+            if(!uiState.loading){
+                CharacterCreationBottomBar(
+                    onFinished = vm::saveCharacter,
+                    currentStep = uiState.currentStep,
+                    canGoNext = vm.canGoToNextStep(),
+                    goBack = vm::goToPreviousStep,
+                    goNext = vm::goToNextStep
+                )
+            }
         }
     ) { padding ->
 
@@ -97,7 +99,7 @@ fun CharacterCreationScreen(
                     CreationStep.ABILITY_GENERATION_METHOD -> AbilityGenerationMethodScreen(vm = vm)
                     CreationStep.RANDOM_ABILITIES -> RandomAbilityScoresScreen(vm = vm)
                     CreationStep.POINT_BUY_ABILITIES -> PointBuyAbilityScoresScreen(vm = vm)
-                    CreationStep.FINAL -> CreationSummaryScreen()
+                    CreationStep.FINAL -> CreationSummaryScreen(vm = vm)
                 }
             }
         }

@@ -138,10 +138,10 @@ private fun CharacterDetailsContent(
 
         DetailsCard(title = "Основное") {
             Column {
-                DetailRow(label = "Раса", value = state.raceName ?: "Неизвестно")
-                DetailRow(label = "Подраса", value = state.subraceName ?: "Не выбрана")
-                DetailRow(label = "Класс", value = state.className ?: "Неизвестно")
-                DetailRow(label = "Архетип", value = state.archetypeName ?: "Не выбран")
+                DetailRow(label = "Раса", value = character.raceName ?: "Неизвестно")
+                DetailRow(label = "Подраса", value = character.subraceName ?: "Не выбрана")
+                DetailRow(label = "Класс", value = character.className ?: "Неизвестно")
+                DetailRow(label = "Архетип", value = character.archetypeName ?: "Не выбран")
             }
         }
 
