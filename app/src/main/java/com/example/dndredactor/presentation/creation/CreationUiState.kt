@@ -23,5 +23,6 @@ enum class CreationStep {
     ABILITY_GENERATION_METHOD,
     RANDOM_ABILITIES,
     POINT_BUY_ABILITIES,
+    EQUIPMENT,
     FINAL
 }

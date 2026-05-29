@@ -170,6 +170,14 @@ private fun CharacterDetailsContent(
             }
         }
 
+        DetailsCard(title = "Снаряжение") {
+            Text(
+                text = character.equipment.ifBlank { "Не указано" },
+                color = Color.Black,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+
         DetailsCard(title = "Внешность") {
             Text(
                 text = character.appearance.ifBlank { "Не указано" },

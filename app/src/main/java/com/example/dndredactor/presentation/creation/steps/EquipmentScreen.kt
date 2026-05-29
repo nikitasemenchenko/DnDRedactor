@@ -19,7 +19,7 @@ import com.example.dndredactor.presentation.creation.CreationViewModel
 import com.example.dndredactor.presentation.theme.LightColor
 
 @Composable
-fun BackstoryScreen(
+fun EquipmentScreen(
     vm: CreationViewModel
 ){
     val uiState by vm.uiState.collectAsState()
@@ -32,19 +32,18 @@ fun BackstoryScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Title(R.string.backstory_selection)
-
+        Title(R.string.equipment_selection)
         Text(
-            text = "Опишите происхождение, прошлое, цели и важные события персонажа.",
+            text = "Укажите оружие, броню, инструменты, золото, предметы и всё, что персонаж носит с собой.",
             color = LightColor,
             style = MaterialTheme.typography.bodyLarge
         )
-
         CustomTextField(
-            value = uiState.character.backstory,
-            onChange = vm::onBackstoryChanged,
-            labelRes = R.string.backstory_placeholder,
+            value = uiState.character.equipment,
+            onChange = vm::onEquipmentChanged,
+            labelRes = R.string.equipment_placeholder,
             minLines = 8
         )
+
     }
 }

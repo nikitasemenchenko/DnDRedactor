@@ -261,10 +261,18 @@ class CreationViewModel @Inject constructor(
         return POINT_BUY_BUDGET - spent
     }
 
-    fun onBackstoryChange(backstory: String){
+    fun onBackstoryChanged(backstory: String){
         _uiState.value = _uiState.value.copy(
             character = _uiState.value.character.copy(
                 backstory = backstory
+            )
+        )
+    }
+
+    fun onEquipmentChanged(equipment: String){
+        _uiState.value = _uiState.value.copy(
+            character = _uiState.value.character.copy(
+                equipment = equipment
             )
         )
     }
@@ -331,8 +339,9 @@ class CreationViewModel @Inject constructor(
                     }
                 }
 
-                CreationStep.RANDOM_ABILITIES -> CreationStep.FINAL
-                CreationStep.POINT_BUY_ABILITIES -> CreationStep.FINAL
+                CreationStep.RANDOM_ABILITIES -> CreationStep.EQUIPMENT
+                CreationStep.POINT_BUY_ABILITIES -> CreationStep.EQUIPMENT
+                CreationStep.EQUIPMENT -> CreationStep.FINAL
                 CreationStep.FINAL -> CreationStep.FINAL
             }
         )
@@ -348,13 +357,15 @@ class CreationViewModel @Inject constructor(
                 CreationStep.ABILITY_GENERATION_METHOD -> CreationStep.HUMAN_TRAITS
                 CreationStep.RANDOM_ABILITIES -> CreationStep.ABILITY_GENERATION_METHOD
                 CreationStep.POINT_BUY_ABILITIES -> CreationStep.ABILITY_GENERATION_METHOD
-                CreationStep.FINAL -> {
+                CreationStep.EQUIPMENT -> {
                     when (_uiState.value.character.abilityGenerationMethod) {
                         AbilityGenerationMethod.RANDOM -> CreationStep.RANDOM_ABILITIES
                         AbilityGenerationMethod.POINT_BUY -> CreationStep.POINT_BUY_ABILITIES
                         else -> CreationStep.ABILITY_GENERATION_METHOD
                     }
                 }
+
+                CreationStep.FINAL -> CreationStep.EQUIPMENT
             }
         )
     }
@@ -380,10 +391,7 @@ class CreationViewModel @Inject constructor(
 
             CreationStep.HUMAN_TRAITS -> {
                 character.appearance.isNotBlank() &&
-                        character.personality.isNotBlank() &&
-                        character.ideal.isNotBlank() &&
-                        character.attachment.isNotBlank() &&
-                        character.weakness.isNotBlank()
+                        character.personality.isNotBlank()
             }
 
             CreationStep.ABILITY_GENERATION_METHOD -> {
@@ -395,6 +403,8 @@ class CreationViewModel @Inject constructor(
             CreationStep.POINT_BUY_ABILITIES -> {
                 getRemainingPoints() >= 0
             }
+
+            CreationStep.EQUIPMENT -> true
 
             CreationStep.FINAL -> true
         }

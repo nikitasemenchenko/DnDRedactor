@@ -71,6 +71,13 @@ fun CreationSummaryScreen(
                     )
                 }
             }
+
+            SummaryBlock(title = "Снаряжение") {
+                SummaryLine(
+                    key = "Предметы",
+                    value = character.equipment
+                )
+            }
         }
     }
 }

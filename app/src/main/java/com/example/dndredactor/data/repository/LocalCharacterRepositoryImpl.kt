@@ -53,6 +53,8 @@ class LocalCharacterRepositoryImpl @Inject constructor(
 
                 backstory = character.backstory.trim(),
 
+                equipment = character.equipment.trim(),
+
                 appearance = character.appearance.trim(),
                 personality = character.personality.trim(),
                 ideal = character.ideal.trim(),

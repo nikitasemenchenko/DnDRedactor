@@ -18,6 +18,8 @@ data class CharacterDraft(
 
     val backstory: String = "",
 
+    val equipment: String = "",
+
     val appearance: String = "",
     val personality: String = "",
     val ideal: String = "",
