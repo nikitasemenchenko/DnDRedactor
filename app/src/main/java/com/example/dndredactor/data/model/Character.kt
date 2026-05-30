@@ -29,5 +29,7 @@ data class Character (
     val attachment: String,
     val weakness: String,
 
-    val abilityScores: AbilityScores
+    val abilityScores: AbilityScores,
+
+    val createdAt: Long
 )

@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -39,13 +40,22 @@ import com.example.dndredactor.presentation.theme.LightColor
 @Composable
 fun CharacterDetailsScreen(
     vm: CharacterDetailsViewModel = hiltViewModel(),
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onEdit: (Int) -> Unit
 ) {
     val uiState by vm.uiState.collectAsState()
 
     Scaffold(
         topBar = {
-            CharacterDetailsTopBar(onBackClick = onBack)
+            CharacterDetailsTopBar(
+                onBackClick = onBack,
+                onEditClick = {
+                    val state = uiState
+                    if(state is CharacterDetailsUiState.Success) {
+                        onEdit(state.character.id)
+                    }
+                }
+                )
         },
         containerColor = BackPurple
     ) { paddingValues ->
@@ -83,7 +93,8 @@ fun CharacterDetailsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CharacterDetailsTopBar(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onEditClick: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -99,6 +110,16 @@ private fun CharacterDetailsTopBar(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Назад",
                     tint = LightColor
+                )
+            }
+        },
+        actions = {
+            IconButton(
+                onClick = onEditClick
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Изменить персонажа"
                 )
             }
         },

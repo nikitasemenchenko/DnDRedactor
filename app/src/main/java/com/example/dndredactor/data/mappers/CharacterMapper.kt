@@ -37,7 +37,48 @@ class CharacterMapper @Inject constructor() {
                 intelligence = entity.intelligence,
                 wisdom = entity.wisdom,
                 charisma = entity.charisma
-            )
+            ),
+            createdAt = entity.createdAt
+        )
+    }
+
+    fun characterToEntity(character: Character): CharacterEntity{
+        return CharacterEntity(
+            id = character.id,
+            name = character.name.trim(),
+            gender = character.gender.name,
+            level = character.level,
+
+            raceId = character.raceId,
+            raceName = character.raceName,
+
+            subraceId = character.subraceId,
+            subraceName = character.subraceName,
+
+            classType = character.classType.name,
+            classId = character.classId,
+            className = character.className,
+
+            archetypeId = character.archetypeId,
+            archetypeName = character.archetypeName,
+
+            backstory = character.backstory.trim(),
+            equipment = character.equipment.trim(),
+
+            appearance = character.appearance.trim(),
+            personality = character.personality.trim(),
+            ideal = character.ideal.trim(),
+            attachment = character.attachment.trim(),
+            weakness = character.weakness.trim(),
+
+            strength = character.abilityScores.strength,
+            dexterity = character.abilityScores.dexterity,
+            constitution = character.abilityScores.constitution,
+            intelligence = character.abilityScores.intelligence,
+            wisdom = character.abilityScores.wisdom,
+            charisma = character.abilityScores.charisma,
+
+            createdAt = character.createdAt
         )
     }
 

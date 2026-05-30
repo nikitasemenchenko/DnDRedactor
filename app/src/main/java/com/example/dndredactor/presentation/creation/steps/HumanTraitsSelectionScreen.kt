@@ -43,7 +43,7 @@ fun HumanTraitsSelectionScreen(
         CustomTextField(
             value = uiState.character.personality,
             onChange = vm::onPersonalityChanged,
-            labelRes = R.string.character,
+            labelRes = R.string.personality,
             minLines = 2
         )
         CustomTextField(

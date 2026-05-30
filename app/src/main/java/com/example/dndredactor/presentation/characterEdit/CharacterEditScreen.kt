@@ -1,0 +1,338 @@
+package com.example.dndredactor.presentation.characterEdit
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.dndredactor.R
+import com.example.dndredactor.data.model.Ability
+import com.example.dndredactor.presentation.theme.BackPurple
+import com.example.dndredactor.presentation.theme.ButtonColor
+import com.example.dndredactor.presentation.theme.LightColor
+import com.example.dndredactor.data.model.Character
+import com.example.dndredactor.presentation.creation.steps.CustomTextField
+import com.example.dndredactor.presentation.creation.steps.Title
+
+@Composable
+fun CharacterEditScreen(
+    vm: CharacterEditViewModel = hiltViewModel(),
+    onBack: () -> Unit,
+    onSaved: () -> Unit
+) {
+    val uiState by vm.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        vm.events.collect { event ->
+            when(event) {
+                CharacterEditEvent.CharacterUpdated -> onSaved()
+                is CharacterEditEvent.ShowError -> {
+                    //Snackbar добавить
+                }
+            }
+        }
+    }
+
+    Scaffold(
+        topBar = {
+            CharacterEditTopBar(onBack = onBack)
+        },
+        bottomBar = {
+            if(uiState is CharacterEditUiState.Success){
+                CharacterEditBottomBar(
+                    onBack = onBack,
+                    onSave = vm::saveCharacter
+                )
+            }
+        },
+        containerColor = BackPurple
+    ) { contentPadding ->
+        when(val state = uiState) {
+            CharacterEditUiState.Loading ->{
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(contentPadding),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator()
+                }
+
+            }
+            is CharacterEditUiState.Success ->{
+                CharacterEditContent(
+                    modifier = Modifier.padding(contentPadding),
+                    character = state.character,
+                    vm = vm
+                )
+            }
+            is CharacterEditUiState.Error ->{
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(contentPadding)
+                        .padding(24.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = state.message,
+                        color = LightColor,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CharacterEditTopBar(
+    onBack: () -> Unit
+) {
+    CenterAlignedTopAppBar(
+        title = {
+            Text(
+                text = "Редактирование пресонажа",
+                color = LightColor,
+                fontWeight = FontWeight.Medium
+            )
+        },
+        navigationIcon = {
+            IconButton(
+                onClick = onBack
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.back),
+                    tint = LightColor
+                )
+            }
+        },
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = BackPurple
+        )
+    )
+}
+
+@Composable
+fun CharacterEditBottomBar(
+    onBack: () -> Unit,
+    onSave: () -> Unit
+) {
+    Surface(
+        color = BackPurple,
+        tonalElevation = 4.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(start = 16.dp, end = 16.dp, bottom = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Button(
+                onClick = onBack,
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor),
+                shape = MaterialTheme.shapes.large
+            ) {
+                Text("Отмена", color = LightColor)
+            }
+
+            Button(
+                onClick = onSave,
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor),
+                shape = MaterialTheme.shapes.large
+            ) {
+                Text("Сохранить", color = LightColor)
+            }
+        }
+    }
+}
+
+@Composable
+fun CharacterEditContent(
+    modifier: Modifier = Modifier,
+    character: Character,
+    vm: CharacterEditViewModel
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Title(R.string.main)
+        CustomTextField(
+            value = character.name,
+            onChange = vm::onNameChanged,
+            labelRes = R.string.character_name,
+            minLines = 1
+        )
+        ReadOnlyInfo(
+            title = "Раса",
+            value = character.raceName ?: "Неизвестно"
+        )
+
+        ReadOnlyInfo(
+            title = "Класс",
+            value = character.className ?: "Неизвестно"
+        )
+        Title(R.string.backstory_selection)
+
+        CustomTextField(
+            value = character.backstory,
+            onChange = vm::onBackstoryChanged,
+            labelRes = R.string.backstory_placeholder,
+            minLines = 6
+        )
+
+        Title(R.string.equipment_selection)
+
+        CustomTextField(
+            value = character.equipment,
+            onChange = vm::onEquipmentChanged,
+            labelRes = R.string.equipment_placeholder,
+            minLines = 6
+        )
+
+        Title(R.string.appearance_traits)
+
+        CustomTextField(
+            value = character.appearance,
+            onChange = vm::onAppearanceChanged,
+            labelRes = R.string.appearance_placeholder,
+            minLines = 3
+        )
+
+        CustomTextField(
+            value = character.personality,
+            onChange = vm::onPersonalityChanged,
+            labelRes = R.string.personality,
+            minLines = 2
+        )
+
+        CustomTextField(
+            value = character.ideal,
+            onChange = vm::onIdealChanged,
+            labelRes = R.string.ideal,
+            minLines = 2
+        )
+
+        CustomTextField(
+            value = character.attachment,
+            onChange = vm::onAttachmentChanged,
+            labelRes = R.string.attachment,
+            minLines = 2
+        )
+
+        CustomTextField(
+            value = character.weakness,
+            onChange = vm::onWeaknessChanged,
+            labelRes = R.string.weakness,
+            minLines = 2
+        )
+
+        Title(R.string.characteristics)
+
+        Ability.entries.forEach { ability ->
+            AbilityEditRow(
+                title = ability.title,
+                value = character.abilityScores.get(ability),
+                onMinus = { vm.decreaseAbility(ability) },
+                onPlus = { vm.increaseAbility(ability) }
+            )
+        }
+    }
+}
+
+
+@Composable
+private fun ReadOnlyInfo(
+    title: String,
+    value: String
+) {
+    Text(
+        text = "$title: $value",
+        color = LightColor,
+        style = MaterialTheme.typography.bodyLarge
+    )
+}
+
+@Composable
+private fun AbilityEditRow(
+    title: String,
+    value: Int,
+    onMinus: () -> Unit,
+    onPlus: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            color = LightColor,
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Button(
+                onClick = onMinus,
+                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
+            ) {
+                Text("-", color = LightColor)
+            }
+
+            Text(
+                text = value.toString(),
+                color = LightColor,
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            Button(
+                onClick = onPlus,
+                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
+            ) {
+                Text("+", color = LightColor)
+            }
+        }
+    }
+}

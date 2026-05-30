@@ -77,6 +77,12 @@ class LocalCharacterRepositoryImpl @Inject constructor(
         characterDao.deleteCharacter(id)
     }
 
+    override suspend fun updateCharacter(character: Character) {
+        characterDao.updateCharacter(
+            mapper.characterToEntity(character)
+        )
+    }
+
     private fun String?.toClassName(): String {
         return when (this) {
             "barbarian" -> ClassType.BARBARIAN.name

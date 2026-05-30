@@ -26,7 +26,7 @@
     <string name="equipment_placeholder">Введите снаряжение персонажа</string>
     <string name="appearance_placeholder">Опишите внешность персонажа</string>
     <string name="character_traits">Черты характера:</string>
-    <string name="character">Характер</string>
+    <string name="personality">Характер</string>
     <string name="ideal">Идеал</string>
     <string name="attachment">Привязанность</string>
     <string name="weakness">Слабость</string>
@@ -44,5 +44,8 @@
     <string name="loadError">Ошибка загрузки. Попробуйте снова.</string>
     <string name="raceError">Не удалось загрузить расы</string>
 
+    <string name="main">Основное</string>
+    <string name="characteristics">Характеристики:</string>
+    <string name="appearance_traits">Внешность и черты характера:</string>
 
 </resources>

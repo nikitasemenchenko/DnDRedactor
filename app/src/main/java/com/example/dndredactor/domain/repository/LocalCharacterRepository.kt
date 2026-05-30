@@ -12,4 +12,6 @@ interface LocalCharacterRepository {
     suspend fun createCharacter(character: CharacterDraft)
 
     suspend fun deleteCharacter(id: Int)
+
+    suspend fun updateCharacter(character: Character)
 }

@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.dndredactor.presentation.characterDetails.CharacterDetailsScreen
+import com.example.dndredactor.presentation.characterEdit.CharacterEditScreen
 import com.example.dndredactor.presentation.creation.CharacterCreationScreen
 import com.example.dndredactor.presentation.mainScreen.MainScreen
 import kotlinx.serialization.Serializable
@@ -20,6 +21,9 @@ sealed interface AppRoute {
 
     @Serializable
     data class CharacterDetails(val id: Int): AppRoute
+
+    @Serializable
+    data class CharacterEdit(val id: Int): AppRoute
 }
 @Composable
 fun AppNavHost(
@@ -53,6 +57,20 @@ fun AppNavHost(
         composable<AppRoute.CharacterDetails> {
             CharacterDetailsScreen(
                 onBack = {
+                    navController.popBackStack()
+                },
+                onEdit = { id ->
+                    navController.navigate(AppRoute.CharacterEdit(id))
+                }
+            )
+        }
+
+        composable<AppRoute.CharacterEdit> {
+            CharacterEditScreen(
+                onBack = {
+                    navController.popBackStack()
+                },
+                onSaved = {
                     navController.popBackStack()
                 }
             )
