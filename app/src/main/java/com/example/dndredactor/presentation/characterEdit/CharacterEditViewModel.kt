@@ -5,10 +5,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.dndredactor.data.model.Ability
+import com.example.dndredactor.data.model.Archetype
 import com.example.dndredactor.data.model.Character
+import com.example.dndredactor.data.model.CharacterClass
+import com.example.dndredactor.data.model.ClassType
+import com.example.dndredactor.data.model.Gender
+import com.example.dndredactor.data.model.Race
+import com.example.dndredactor.data.model.Subrace
+import com.example.dndredactor.domain.repository.CreationRepository
 import com.example.dndredactor.domain.repository.LocalCharacterRepository
 import com.example.dndredactor.presentation.navigation.AppRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -20,7 +28,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CharacterEditViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val localCharacterRepository: LocalCharacterRepository
+    private val localCharacterRepository: LocalCharacterRepository,
+    private val creationRepository: CreationRepository
 ): ViewModel() {
     private val route = savedStateHandle.toRoute<AppRoute.CharacterEdit>()
     val characterId = route.id
@@ -35,7 +44,7 @@ class CharacterEditViewModel @Inject constructor(
         loadCharacter()
     }
 
-    private fun loadCharacter(){
+    private fun loadCharacter() {
         viewModelScope.launch {
             runCatching {
                 localCharacterRepository.getCharacter(characterId).first()
@@ -57,6 +66,22 @@ class CharacterEditViewModel @Inject constructor(
         copy(
             name = value
         )
+    }
+
+    fun onGenderChanged(gender: Gender) = updateCharacter {
+        copy(
+            gender = gender
+        )
+    }
+
+    fun increaseLevel() = updateCharacter {
+        if(level >= MAX_CHARACTER_LEVEL) return@updateCharacter this
+        copy(level = level+1)
+    }
+
+    fun decreaseLevel() = updateCharacter {
+        if(level <= MIN_CHARACTER_LEVEL) return@updateCharacter this
+        copy(level = level-1)
     }
 
     fun onBackstoryChanged(value: String) = updateCharacter {
@@ -115,13 +140,259 @@ class CharacterEditViewModel @Inject constructor(
         }
     }
 
-    fun saveCharacter(){
+    fun loadRaceDetails(raceId: String) {
+        val state = _uiState.value as? CharacterEditUiState.Success ?: return
+        val currentRace = state.races.find { it.id == raceId }
+
+        if (currentRace != null && currentRace.description.isNotBlank()) return
+
+        viewModelScope.launch {
+            val currentState = _uiState.value as? CharacterEditUiState.Success ?: return@launch
+
+            _uiState.value = currentState.copy(
+                raceDetailsLoading = true
+            )
+
+            runCatching {
+                creationRepository.getRaceDetails(raceId)
+            }.onSuccess { race ->
+                val latestState = _uiState.value as? CharacterEditUiState.Success ?: return@launch
+                _uiState.value = latestState.copy(
+                    raceDetailsLoading = false,
+                    races = latestState.races.map { currentRace ->
+                        if (currentRace.id == raceId) race else currentRace
+                    },
+                    character = if (latestState.character.raceId == race.id) {
+                        latestState.character.copy(
+                            raceName = race.name
+                        )
+                    } else {
+                        latestState.character
+                    }
+                )
+            }.onFailure {
+                val latestState = _uiState.value as? CharacterEditUiState.Success
+                    ?: return@launch
+
+                _uiState.value = latestState.copy(
+                    raceDetailsLoading = false
+                )
+
+                _events.emit(
+                    CharacterEditEvent.ShowError("Не удалось загрузить детали расы")
+                )
+            }
+        }
+    }
+
+    fun onRaceSelected(race: Race) {
+        val state = _uiState.value as? CharacterEditUiState.Success ?: return
+
+        if (state.character.raceId != race.id) {
+            _uiState.value = state.copy(
+                character = state.character.copy(
+                    raceId = race.id,
+                    raceName = race.name,
+                    subraceName = null,
+                    subraceId = null
+                )
+            )
+            loadRaceDetails(race.id)
+        }
+    }
+
+    fun onSubraceSelected(subrace: Subrace) {
+        val state = _uiState.value as? CharacterEditUiState.Success ?: return
+
+        _uiState.value = state.copy(
+            character = state.character.copy(
+                subraceId = subrace.id,
+                subraceName = subrace.name
+            )
+        )
+    }
+
+    fun loadClassDetails(classId: String) {
+        val state = _uiState.value as? CharacterEditUiState.Success ?: return
+        val currentClass = state.classes.find { it.id == classId }
+
+        if (currentClass != null && currentClass.archetypes.isNotEmpty()) return
+
+        viewModelScope.launch {
+            val currentState = _uiState.value as? CharacterEditUiState.Success ?: return@launch
+
+            _uiState.value = currentState.copy(
+                classDetailsLoading = true
+            )
+
+            runCatching {
+                creationRepository.getClassDetails(classId)
+            }.onSuccess { detailedClass ->
+                val latestState = _uiState.value as? CharacterEditUiState.Success ?: return@launch
+
+                _uiState.value = latestState.copy(
+                    classDetailsLoading = false,
+                    classes = latestState.classes.map { currentClass ->
+                        if (currentClass.id == classId) detailedClass else currentClass
+                    },
+                    character = if (latestState.character.classId == detailedClass.id) {
+                        latestState.character.copy(
+                            className = detailedClass.name,
+                            classType = detailedClass.id.toClassType(),
+                        )
+                    } else {
+                        latestState.character
+                    }
+                )
+            }.onFailure {
+                val latestState = _uiState.value as? CharacterEditUiState.Success
+                    ?: return@launch
+
+                _uiState.value = latestState.copy(
+                    classDetailsLoading = false
+                )
+
+                _events.emit(
+                    CharacterEditEvent.ShowError("Не удалось загрузить архетипы класса")
+                )
+            }
+        }
+    }
+
+    fun onClassSelected(characterClass: CharacterClass) {
+        val state = _uiState.value as? CharacterEditUiState.Success ?: return
+
+        if (state.character.classId != characterClass.id) {
+            _uiState.value = state.copy(
+                character = state.character.copy(
+                    classId = characterClass.id,
+                    className = characterClass.name,
+                    classType = characterClass.id.toClassType(),
+                    archetypeName = null,
+                    archetypeId = null
+                )
+            )
+            loadClassDetails(characterClass.id)
+        }
+    }
+
+    fun onArchetypeSelected(archetype: Archetype){
+        val state = _uiState.value as? CharacterEditUiState.Success ?: return
+
+        _uiState.value = state.copy(
+            character = state.character.copy(
+                archetypeId = archetype.id,
+                archetypeName = archetype.name
+            )
+        )
+    }
+
+    fun onCoreEditClick() {
+        val state = _uiState.value as? CharacterEditUiState.Success ?: return
+        val enable = !state.coreEditEnabled
+
+        _uiState.value = state.copy(
+            coreEditEnabled = enable
+        )
+
+        if (enable == false) return
+
+        if (state.races.isEmpty() || state.classes.isEmpty()) {
+            loadCore()
+        } else {
+            loadSelectedCore()
+        }
+
+    }
+
+    fun loadCore() {
+        val state = _uiState.value as? CharacterEditUiState.Success ?: return
+        viewModelScope.launch {
+            _uiState.value = state.copy(
+                coreLoading = true
+            )
+
+            runCatching {
+                val racesAsync = async {
+                    creationRepository.getRaces()
+                }
+                val classesAsync = async {
+                    creationRepository.getClasses()
+                }
+                val races = racesAsync.await()
+                val classes = classesAsync.await()
+
+                val currentState = _uiState.value as? CharacterEditUiState.Success ?: return@launch
+                _uiState.value = currentState.copy(
+                    races = races,
+                    classes = classes,
+                    coreLoading = false
+                )
+
+                loadSelectedCore()
+            }.onFailure {
+                val currentState = _uiState.value as? CharacterEditUiState.Success
+                    ?: return@launch
+
+                _uiState.value = currentState.copy(
+                    coreLoading = false
+                )
+
+                _events.emit(
+                    CharacterEditEvent.ShowError("Не удалось загрузить расы и классы")
+                )
+            }
+        }
+    }
+
+    fun loadSelectedCore(){
+        val state = _uiState.value as? CharacterEditUiState.Success ?: return
+        state.character.raceId?.let {raceId ->
+            loadRaceDetails(raceId)
+        }
+        state.character.classId?.let {classId ->
+            loadClassDetails(classId)
+        }
+    }
+
+    fun saveCharacter() {
         val state = _uiState.value as? CharacterEditUiState.Success ?: return
         val character = state.character
 
-        if(character.name.isBlank() || character.personality.isBlank() || character.appearance.isBlank()){
+        if (state.coreLoading || state.raceDetailsLoading || state.classDetailsLoading) {
             viewModelScope.launch {
-                _events.emit(CharacterEditEvent.ShowError("Обязательные поля не заполнены"))
+                _events.emit(CharacterEditEvent.ShowError("Дождитесь окончания загрузки"))
+            }
+            return
+        }
+
+        val selectedRace = state.races.find {it.id == character.raceId}
+        val selectedClass = state.classes.find {it.id == character.classId}
+
+        if (selectedRace != null &&
+            selectedRace.subraces.isNotEmpty() &&
+            character.subraceId == null
+        ) {
+            viewModelScope.launch {
+                _events.emit(CharacterEditEvent.ShowError("Выберите расу и подрасу"))
+            }
+            return
+        }
+
+        if (selectedClass != null &&
+            selectedClass.archetypes.isNotEmpty() &&
+            character.archetypeId == null
+        ) {
+            viewModelScope.launch {
+                _events.emit(CharacterEditEvent.ShowError("Выберите класс и архетип класса"))
+            }
+            return
+        }
+
+        if (character.name.isBlank() || character.gender == Gender.UNSPECIFIED ||
+            character.level !in MIN_CHARACTER_LEVEL..MAX_CHARACTER_LEVEL) {
+            viewModelScope.launch {
+                _events.emit(CharacterEditEvent.ShowError("Проверьте корректность заполнения"))
             }
             return
         }
@@ -148,6 +419,29 @@ class CharacterEditViewModel @Inject constructor(
         _uiState.value = state.copy(
             character = state.character.action()
         )
+    }
+
+    private fun String.toClassType(): ClassType {
+        return when (this) {
+            "barbarian" -> ClassType.BARBARIAN
+            "bard" -> ClassType.BARD
+            "cleric" -> ClassType.CLERIC
+            "druid" -> ClassType.DRUID
+            "fighter" -> ClassType.FIGHTER
+            "monk" -> ClassType.MONK
+            "paladin" -> ClassType.PALADIN
+            "ranger" -> ClassType.RANGER
+            "rogue" -> ClassType.ROGUE
+            "sorcerer" -> ClassType.SORCERER
+            "warlock" -> ClassType.WARLOCK
+            "wizard" -> ClassType.WIZARD
+            else -> ClassType.UNKNOWN
+        }
+    }
+
+    private companion object {
+        const val MIN_CHARACTER_LEVEL = 1
+        const val MAX_CHARACTER_LEVEL = 20
     }
 }
 

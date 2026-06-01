@@ -38,8 +38,10 @@ import com.example.dndredactor.data.model.Ability
 import com.example.dndredactor.presentation.theme.BackPurple
 import com.example.dndredactor.presentation.theme.ButtonColor
 import com.example.dndredactor.presentation.theme.LightColor
-import com.example.dndredactor.data.model.Character
+import com.example.dndredactor.data.model.Gender
 import com.example.dndredactor.presentation.creation.steps.CustomTextField
+import com.example.dndredactor.presentation.creation.steps.Dropdown
+import com.example.dndredactor.presentation.creation.steps.GenderButton
 import com.example.dndredactor.presentation.creation.steps.Title
 
 @Composable
@@ -91,7 +93,7 @@ fun CharacterEditScreen(
             is CharacterEditUiState.Success ->{
                 CharacterEditContent(
                     modifier = Modifier.padding(contentPadding),
-                    character = state.character,
+                    state = state,
                     vm = vm
                 )
             }
@@ -123,7 +125,7 @@ fun CharacterEditTopBar(
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = "Редактирование пресонажа",
+                text = "Редактирование персонажа",
                 color = LightColor,
                 fontWeight = FontWeight.Medium
             )
@@ -185,9 +187,10 @@ fun CharacterEditBottomBar(
 @Composable
 fun CharacterEditContent(
     modifier: Modifier = Modifier,
-    character: Character,
+    state: CharacterEditUiState.Success,
     vm: CharacterEditViewModel
 ) {
+    val character = state.character
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -202,15 +205,75 @@ fun CharacterEditContent(
             labelRes = R.string.character_name,
             minLines = 1
         )
+
+        Title(R.string.character_gender)
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            GenderButton(
+                text = stringResource(R.string.male),
+                isSelected = character.gender == Gender.MALE,
+                onClick = { vm.onGenderChanged(Gender.MALE) }
+            )
+
+            GenderButton(
+                text = stringResource(R.string.female),
+                isSelected = character.gender == Gender.FEMALE,
+                onClick = { vm.onGenderChanged(Gender.FEMALE) }
+            )
+        }
+
+        Title(R.string.character_level)
+
+        LevelEdit(
+            level = character.level,
+            onMinus = vm::decreaseLevel,
+            onPlus = vm::increaseLevel
+        )
+
         ReadOnlyInfo(
             title = "Раса",
             value = character.raceName ?: "Неизвестно"
         )
 
         ReadOnlyInfo(
+            title = "Подраса",
+            value = character.subraceName ?: "Не выбрана"
+        )
+
+        ReadOnlyInfo(
             title = "Класс",
             value = character.className ?: "Неизвестно"
         )
+
+        ReadOnlyInfo(
+            title = "Архетип",
+            value = character.archetypeName ?: "Не выбран"
+        )
+        Button(
+            onClick = vm::onCoreEditClick,
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = ButtonColor),
+            shape = MaterialTheme.shapes.large
+        ) {
+            Text(
+                text = if (state.coreEditEnabled) {
+                    "Скрыть изменение расы и класса"
+                } else {
+                    "Изменить расу и класс"
+                },
+                color = LightColor
+            )
+        }
+
+        if (state.coreEditEnabled) {
+            CharacterCoreEditBlock(
+                state = state,
+                vm = vm
+            )
+        }
+
         Title(R.string.backstory_selection)
 
         CustomTextField(
@@ -323,6 +386,126 @@ private fun AbilityEditRow(
 
             Text(
                 text = value.toString(),
+                color = LightColor,
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            Button(
+                onClick = onPlus,
+                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
+            ) {
+                Text("+", color = LightColor)
+            }
+        }
+    }
+}
+
+@Composable
+private fun CharacterCoreEditBlock(
+    state: CharacterEditUiState.Success,
+    vm: CharacterEditViewModel
+) {
+    val character = state.character
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            text = "Основные параметры персонажа",
+            color = LightColor,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
+
+        if (state.coreLoading) {
+            CircularProgressIndicator()
+            return@Column
+        }
+
+        Dropdown(
+            items = state.races,
+            selectedId = character.raceId,
+            idSelector = { it.id },
+            nameSelector = { it.name },
+            labelRes = R.string.character_race,
+            onSelect = vm::onRaceSelected
+        )
+
+        if (state.raceDetailsLoading) {
+            CircularProgressIndicator()
+        }
+
+        val selectedRace = state.races.find { it.id == character.raceId }
+
+        if (selectedRace != null && selectedRace.subraces.isNotEmpty()) {
+            Dropdown(
+                items = selectedRace.subraces,
+                selectedId = character.subraceId,
+                idSelector = { it.id },
+                nameSelector = { it.name },
+                labelRes = R.string.character_subrace,
+                onSelect = vm::onSubraceSelected
+            )
+        }
+
+        Dropdown(
+            items = state.classes,
+            selectedId = character.classId,
+            idSelector = { it.id },
+            nameSelector = { it.name },
+            labelRes = R.string.class_selection,
+            onSelect = vm::onClassSelected
+        )
+
+        if (state.classDetailsLoading) {
+            CircularProgressIndicator()
+        }
+
+        val selectedClass = state.classes.find { it.id == character.classId }
+
+        if (selectedClass != null && selectedClass.archetypes.isNotEmpty()) {
+            Dropdown(
+                items = selectedClass.archetypes,
+                selectedId = character.archetypeId,
+                idSelector = { it.id },
+                nameSelector = { it.name },
+                labelRes = R.string.archetype_selection,
+                onSelect = vm::onArchetypeSelected
+            )
+        }
+    }
+}
+
+@Composable
+fun LevelEdit(
+    level: Int,
+    onMinus: () -> Unit,
+    onPlus: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Уровень",
+            color = LightColor,
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Button(
+                onClick = onMinus,
+                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
+            ) {
+                Text("-", color = LightColor)
+            }
+
+            Text(
+                text = level.toString(),
                 color = LightColor,
                 style = MaterialTheme.typography.titleLarge
             )

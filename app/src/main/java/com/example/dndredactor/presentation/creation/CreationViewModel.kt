@@ -372,27 +372,26 @@ class CreationViewModel @Inject constructor(
 
     fun canGoToNextStep(): Boolean {
         val character = _uiState.value.character
+        val selectedRace = getRaceById(character.raceId)
+        val selectedClass = getClassById(character.classId)
 
         return when (_uiState.value.currentStep) {
             CreationStep.RACE -> {
                 character.fullName.isNotBlank() &&
                         character.gender != Gender.UNSPECIFIED &&
-                        character.raceId != null &&
-                        !_uiState.value.raceDetailsLoading
-
+                        selectedRace != null &&
+                        !_uiState.value.raceDetailsLoading &&
+                        (selectedRace.subraces.isEmpty() || character.subraceId != null)
             }
 
             CreationStep.CLASS -> {
-                character.classId != null && character.archetypeId != null &&
-                        !_uiState.value.classDetailsLoading
+                selectedClass != null && !_uiState.value.classDetailsLoading &&
+                        (selectedClass.archetypes.isEmpty() || character.archetypeId != null)
             }
 
             CreationStep.BACKSTORY -> true
 
-            CreationStep.HUMAN_TRAITS -> {
-                character.appearance.isNotBlank() &&
-                        character.personality.isNotBlank()
-            }
+            CreationStep.HUMAN_TRAITS -> true
 
             CreationStep.ABILITY_GENERATION_METHOD -> {
                 _uiState.value.character.abilityGenerationMethod != null
@@ -477,17 +476,22 @@ class CreationViewModel @Inject constructor(
         }
     }
 
-    private fun canSaveCharacter(): Boolean {
+    fun canSaveCharacter(): Boolean {
         val character = _uiState.value.character
+        val selectedRace = getRaceById(character.raceId)
+        val selectedClass = getClassById(character.classId)
 
         return character.fullName.isNotBlank() &&
                 character.gender != Gender.UNSPECIFIED &&
-                character.raceId != null &&
-                character.classId != null &&
-                character.archetypeId != null
+                selectedRace != null &&
+                selectedClass != null &&
+                !_uiState.value.raceDetailsLoading &&
+                !_uiState.value.classDetailsLoading &&
+                (selectedRace.subraces.isEmpty() || character.subraceId != null) &&
+                (selectedClass.archetypes.isEmpty() || character.archetypeId != null)
     }
 
-    private companion object {
+    companion object {
         const val POINT_BUY_BUDGET = 27
         const val MIN_POINT_BUY_SCORE = 8
         const val MAX_POINT_BUY_SCORE = 15

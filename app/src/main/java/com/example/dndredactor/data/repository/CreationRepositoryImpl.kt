@@ -50,6 +50,9 @@ class CreationRepositoryImpl @Inject constructor(
             dndApi.getRace(index)
         )
         raceDetailsCache[index] = race
+        cachedRaces = cachedRaces?.map { currentRace ->
+            if (currentRace.id == race.id) race else currentRace
+        }
         return race
     }
 
@@ -60,6 +63,9 @@ class CreationRepositoryImpl @Inject constructor(
             dndApi.getClass(index)
         )
         classDetailsCache[index] = characterClass
+        cachedClasses = cachedClasses?.map { currentClass ->
+            if (currentClass.id == characterClass.id) characterClass else currentClass
+        }
         return characterClass
     }
 }

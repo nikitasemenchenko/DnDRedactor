@@ -21,7 +21,7 @@ class MainViewModel @Inject constructor(
             MainScreenUiState.Success(characters) as MainScreenUiState
         }
         .catch {
-            emit(MainScreenUiState.Error(""))
+            emit(MainScreenUiState.Error("Не удалось загрузить персонажей"))
         }
         .stateIn(
             scope = viewModelScope,

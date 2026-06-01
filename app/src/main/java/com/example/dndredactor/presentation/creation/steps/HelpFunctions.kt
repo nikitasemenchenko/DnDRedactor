@@ -144,7 +144,7 @@ fun DescriptionCard(
         modifier = Modifier.animateContentSize()
     ) {
         Text(
-            text = desc ?: stringResource(placeholder),
+            text = desc?.takeIf { it.isNotBlank() } ?: stringResource(placeholder),
             modifier = Modifier
                 .fillMaxWidth()
                 .animateContentSize()

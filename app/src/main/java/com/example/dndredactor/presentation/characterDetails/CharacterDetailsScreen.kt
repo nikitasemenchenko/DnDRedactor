@@ -151,14 +151,10 @@ private fun CharacterDetailsContent(
             fontWeight = FontWeight.Bold
         )
 
-        Text(
-            text = "Уровень ${character.level}",
-            color = LightColor,
-            style = MaterialTheme.typography.bodyLarge
-        )
-
         DetailsCard(title = "Основное") {
             Column {
+                DetailRow(label = "Пол", value = character.gender.toString())
+                DetailRow(label = "Уровень", value = character.level.toString())
                 DetailRow(label = "Раса", value = character.raceName ?: "Неизвестно")
                 DetailRow(label = "Подраса", value = character.subraceName ?: "Не выбрана")
                 DetailRow(label = "Класс", value = character.className ?: "Неизвестно")

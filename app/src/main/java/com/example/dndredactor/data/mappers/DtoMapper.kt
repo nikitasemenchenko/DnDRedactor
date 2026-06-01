@@ -56,7 +56,7 @@ class DtoMapper @Inject constructor(){
 
     }
 
-    private fun getRaceDescription(dto: RaceDto): String {
+    fun getRaceDescription(dto: RaceDto): String {
         return listOfNotNull(
             dto.alignment,
             dto.age,
