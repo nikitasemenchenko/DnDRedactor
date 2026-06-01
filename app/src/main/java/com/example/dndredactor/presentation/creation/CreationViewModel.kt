@@ -238,6 +238,25 @@ class CreationViewModel @Inject constructor(
         }
     }
 
+    fun getSubraceById(id: String?): Subrace? {
+        return _uiState.value.races
+            .flatMap { it.subraces }
+            .find { it.id == id }
+    }
+
+    fun replaceSubrace(
+        races: List<Race>,
+        subrace: Subrace
+    ): List<Race> {
+        return races.map { race ->
+            race.copy(
+                subraces = race.subraces.map { currentSubrace ->
+                    if (currentSubrace.id == subrace.id) subrace else currentSubrace
+                }
+            )
+        }
+    }
+
     fun onSubraceSelected(subrace: Subrace) {
         _uiState.value = _uiState.value.copy(
             character = _uiState.value.character.copy(
@@ -245,8 +264,43 @@ class CreationViewModel @Inject constructor(
                 subraceName = subrace.name
             )
         )
+
+        loadSubraceDetails(subrace.id)
     }
 
+    fun loadSubraceDetails(subraceId: String) {
+        val currentSubrace = getSubraceById(subraceId)
+
+        if (currentSubrace != null && currentSubrace.description.isNotBlank()) {
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(
+                subraceDetailsLoading = true
+            )
+
+            runCatching {
+                creationRepository.getSubraceDetails(subraceId)
+            }.onSuccess { detailedSubrace ->
+                _uiState.value = _uiState.value.copy(
+                    subraceDetailsLoading = false,
+                    races = replaceSubrace(
+                        races = _uiState.value.races,
+                        subrace = detailedSubrace
+                    )
+                )
+            }.onFailure {
+                _uiState.value = _uiState.value.copy(
+                    subraceDetailsLoading = false
+                )
+
+                _events.emit(
+                    CreationEvent.ShowError("Не удалось загрузить описание подрасы")
+                )
+            }
+        }
+    }
 
     fun onClassSelected(characterClass: CharacterClass) {
         _uiState.value = _uiState.value.copy(
@@ -557,6 +611,7 @@ class CreationViewModel @Inject constructor(
                         character.gender != Gender.UNSPECIFIED &&
                         selectedRace != null &&
                         !_uiState.value.raceDetailsLoading &&
+                        !_uiState.value.subraceDetailsLoading &&
                         (selectedRace.subraces.isEmpty() || character.subraceId != null)
             }
 
@@ -629,6 +684,7 @@ class CreationViewModel @Inject constructor(
                 selectedRace != null &&
                 selectedClass != null &&
                 !_uiState.value.raceDetailsLoading &&
+                !_uiState.value.subraceDetailsLoading &&
                 !_uiState.value.classDetailsLoading &&
                 !_uiState.value.archetypeDetailsLoading &&
                 character.armorClass > 0 &&

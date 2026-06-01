@@ -8,6 +8,7 @@ import com.example.dndredactor.data.remote.dto.ApiResponseDto
 import com.example.dndredactor.data.remote.dto.ArchetypeDto
 import com.example.dndredactor.data.remote.dto.ClassDto
 import com.example.dndredactor.data.remote.dto.RaceDto
+import com.example.dndredactor.data.remote.dto.SubraceDto
 import javax.inject.Inject
 
 class DtoMapper @Inject constructor(){
@@ -37,7 +38,8 @@ class DtoMapper @Inject constructor(){
             subraces = dto.subraces.map { subrace ->
                 Subrace(
                     id = subrace.index,
-                    name = subrace.name
+                    name = subrace.name,
+                    description = ""
                 )
             }
         )
@@ -78,5 +80,13 @@ class DtoMapper @Inject constructor(){
         return if(dto.desc.isNotEmpty()){
             dto.desc.joinToString(" ")
         } else ""
+    }
+
+    fun subraceDtoToDomain(dto: SubraceDto): Subrace {
+        return Subrace(
+            id = dto.index,
+            name = dto.name,
+            description = dto.desc ?: ""
+        )
     }
 }

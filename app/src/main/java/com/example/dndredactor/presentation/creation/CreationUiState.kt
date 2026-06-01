@@ -10,6 +10,7 @@ data class CreationUiState(
     val races: List<Race> = emptyList(),
     val classes: List<CharacterClass> = emptyList(),
     val raceDetailsLoading: Boolean = false,
+    val subraceDetailsLoading: Boolean = false,
     val classDetailsLoading: Boolean = false,
     val archetypeDetailsLoading: Boolean = false,
     val loading: Boolean = false,

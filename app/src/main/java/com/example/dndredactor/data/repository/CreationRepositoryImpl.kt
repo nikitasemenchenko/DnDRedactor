@@ -4,6 +4,7 @@ import com.example.dndredactor.data.mappers.DtoMapper
 import com.example.dndredactor.data.model.Archetype
 import com.example.dndredactor.data.model.CharacterClass
 import com.example.dndredactor.data.model.Race
+import com.example.dndredactor.data.model.Subrace
 import com.example.dndredactor.data.remote.DndApi
 import com.example.dndredactor.domain.repository.CreationRepository
 import javax.inject.Inject
@@ -17,6 +18,7 @@ class CreationRepositoryImpl @Inject constructor(
     private var cachedClasses: List<CharacterClass>? = null
 
     private val raceDetailsCache = mutableMapOf<String, Race>()
+    private val subraceDetailsCache = mutableMapOf<String, Subrace>()
     private val classDetailsCache = mutableMapOf<String, CharacterClass>()
 
     private val archetypeDetailsCache = mutableMapOf<String, Archetype>()
@@ -90,5 +92,25 @@ class CreationRepositoryImpl @Inject constructor(
         }
 
         return archetype
+    }
+
+    override suspend fun getSubraceDetails(index: String): Subrace {
+        subraceDetailsCache[index]?.let { return it }
+
+        val subrace = mapper.subraceDtoToDomain(
+            dndApi.getSubrace(index)
+        )
+
+        subraceDetailsCache[index] = subrace
+
+        cachedRaces = cachedRaces?.map { race ->
+            race.copy(
+                subraces = race.subraces.map { currentSubrace ->
+                    if (currentSubrace.id == subrace.id) subrace else currentSubrace
+                }
+            )
+        }
+
+        return subrace
     }
 }

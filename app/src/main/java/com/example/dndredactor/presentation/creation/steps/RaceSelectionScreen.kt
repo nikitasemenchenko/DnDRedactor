@@ -79,6 +79,7 @@ fun RaceSelectionScreen(
         val selectedRace = vm.getRaceById(uiState.character.raceId)
         if (selectedRace != null && selectedRace.subraces.isNotEmpty()) {
             Title(R.string.subrace_selection)
+
             Dropdown(
                 items = selectedRace.subraces,
                 selectedId = uiState.character.subraceId,
@@ -86,6 +87,17 @@ fun RaceSelectionScreen(
                 idSelector = { it.id },
                 nameSelector = { it.name },
                 labelRes = R.string.character_subrace
+            )
+
+            if (uiState.subraceDetailsLoading) {
+                CircularProgressIndicator()
+            }
+
+            val selectedSubrace = vm.getSubraceById(uiState.character.subraceId)
+
+            DescriptionCard(
+                desc = selectedSubrace?.description,
+                placeholder = R.string.subrace_desc_placeholder
             )
         }
     }

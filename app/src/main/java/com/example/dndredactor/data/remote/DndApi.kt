@@ -4,6 +4,7 @@ import com.example.dndredactor.data.remote.dto.ApiListResponseDto
 import com.example.dndredactor.data.remote.dto.ArchetypeDto
 import com.example.dndredactor.data.remote.dto.ClassDto
 import com.example.dndredactor.data.remote.dto.RaceDto
+import com.example.dndredactor.data.remote.dto.SubraceDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -29,4 +30,9 @@ interface DndApi {
     suspend fun getArchetype(
         @Path("index") index: String
     ): ArchetypeDto
+
+    @GET("subraces/{index}")
+    suspend fun getSubrace(
+        @Path("index") index: String
+    ): SubraceDto
 }
