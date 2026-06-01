@@ -287,6 +287,49 @@ class CharacterEditViewModel @Inject constructor(
         )
     }
 
+    fun increaseArmorClass() = updateCharacter {
+        if (armorClass >= MAX_ARMOR_CLASS) return@updateCharacter this
+        copy(armorClass = armorClass + 1)
+    }
+
+    fun decreaseArmorClass() = updateCharacter {
+        if (armorClass <= MIN_ARMOR_CLASS) return@updateCharacter this
+        copy(armorClass = armorClass - 1)
+    }
+
+    fun increaseMaxHitPoints() = updateCharacter {
+        if (maxHitPoints >= MAX_HIT_POINTS) return@updateCharacter this
+
+        copy(
+            maxHitPoints = maxHitPoints + 1
+        )
+    }
+
+    fun decreaseMaxHitPoints() = updateCharacter {
+        if (maxHitPoints <= MIN_HIT_POINTS) return@updateCharacter this
+
+        val nextMaxHitPoints = maxHitPoints - 1
+
+        copy(
+            maxHitPoints = nextMaxHitPoints,
+            currentHitPoints = currentHitPoints.coerceAtMost(nextMaxHitPoints)
+        )
+    }
+
+    fun increaseCurrentHitPoints() = updateCharacter {
+        if (currentHitPoints >= maxHitPoints) return@updateCharacter this
+        copy(currentHitPoints = currentHitPoints + 1)
+    }
+
+    fun decreaseCurrentHitPoints() = updateCharacter {
+        if (currentHitPoints <= 0) return@updateCharacter this
+        copy(currentHitPoints = currentHitPoints - 1)
+    }
+
+    fun onAdditionalInfoChanged(value: String) = updateCharacter {
+        copy(additionalInfo = value)
+    }
+
     fun onCoreEditClick() {
         val state = _uiState.value as? CharacterEditUiState.Success ?: return
         val enable = !state.coreEditEnabled
@@ -397,6 +440,16 @@ class CharacterEditViewModel @Inject constructor(
             return
         }
 
+        if (character.armorClass <= 0 ||
+            character.maxHitPoints <= 0 ||
+            character.currentHitPoints !in 0..character.maxHitPoints
+        ) {
+            viewModelScope.launch {
+                _events.emit(CharacterEditEvent.ShowError("Проверьте боевые показатели"))
+            }
+            return
+        }
+
         viewModelScope.launch {
             runCatching {
                 localCharacterRepository.updateCharacter(character)
@@ -442,6 +495,12 @@ class CharacterEditViewModel @Inject constructor(
     private companion object {
         const val MIN_CHARACTER_LEVEL = 1
         const val MAX_CHARACTER_LEVEL = 20
+
+        const val MIN_ARMOR_CLASS = 1
+        const val MAX_ARMOR_CLASS = 40
+
+        const val MIN_HIT_POINTS = 1
+        const val MAX_HIT_POINTS = 1000
     }
 }
 

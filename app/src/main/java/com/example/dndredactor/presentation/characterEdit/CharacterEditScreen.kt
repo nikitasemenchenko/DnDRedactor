@@ -39,6 +39,9 @@ import com.example.dndredactor.presentation.theme.BackPurple
 import com.example.dndredactor.presentation.theme.ButtonColor
 import com.example.dndredactor.presentation.theme.LightColor
 import com.example.dndredactor.data.model.Gender
+import com.example.dndredactor.data.model.calculateAbilityModifier
+import com.example.dndredactor.data.model.calculateProficiencyBonus
+import com.example.dndredactor.data.model.textAsModifier
 import com.example.dndredactor.presentation.creation.steps.CustomTextField
 import com.example.dndredactor.presentation.creation.steps.Dropdown
 import com.example.dndredactor.presentation.creation.steps.GenderButton
@@ -233,6 +236,11 @@ fun CharacterEditContent(
         )
 
         ReadOnlyInfo(
+            title = "Бонус мастерства",
+            value = textAsModifier(calculateProficiencyBonus(character.level))
+        )
+
+        ReadOnlyInfo(
             title = "Раса",
             value = character.raceName ?: "Неизвестно"
         )
@@ -273,6 +281,27 @@ fun CharacterEditContent(
                 vm = vm
             )
         }
+
+        EditableNumberRow(
+            title = "Класс доспеха",
+            value = character.armorClass.toString(),
+            onMinus = vm::decreaseArmorClass,
+            onPlus = vm::increaseArmorClass
+        )
+
+        EditableNumberRow(
+            title = "Максимум HP",
+            value = character.maxHitPoints.toString(),
+            onMinus = vm::decreaseMaxHitPoints,
+            onPlus = vm::increaseMaxHitPoints
+        )
+
+        EditableNumberRow(
+            title = "Текущие HP",
+            value = character.currentHitPoints.toString(),
+            onMinus = vm::decreaseCurrentHitPoints,
+            onPlus = vm::increaseCurrentHitPoints
+        )
 
         Title(R.string.backstory_selection)
 
@@ -339,6 +368,15 @@ fun CharacterEditContent(
                 onPlus = { vm.increaseAbility(ability) }
             )
         }
+
+        Title(R.string.additional_info_selection)
+
+        CustomTextField(
+            value = character.additionalInfo,
+            onChange = vm::onAdditionalInfoChanged,
+            labelRes = R.string.additional_info_placeholder,
+            minLines = 6
+        )
     }
 }
 
@@ -385,7 +423,7 @@ private fun AbilityEditRow(
             }
 
             Text(
-                text = value.toString(),
+                text = "$value (${textAsModifier(calculateAbilityModifier(value))})",
                 color = LightColor,
                 style = MaterialTheme.typography.titleLarge
             )
@@ -506,6 +544,51 @@ fun LevelEdit(
 
             Text(
                 text = level.toString(),
+                color = LightColor,
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            Button(
+                onClick = onPlus,
+                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
+            ) {
+                Text("+", color = LightColor)
+            }
+        }
+    }
+}
+
+@Composable
+private fun EditableNumberRow(
+    title: String,
+    value: String,
+    onMinus: () -> Unit,
+    onPlus: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            color = LightColor,
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Button(
+                onClick = onMinus,
+                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
+            ) {
+                Text("-", color = LightColor)
+            }
+
+            Text(
+                text = value,
                 color = LightColor,
                 style = MaterialTheme.typography.titleLarge
             )

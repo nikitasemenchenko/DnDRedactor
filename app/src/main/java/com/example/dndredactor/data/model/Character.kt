@@ -23,6 +23,12 @@ data class Character (
 
     val equipment: String,
 
+    val armorClass: Int,
+    val maxHitPoints: Int,
+    val currentHitPoints: Int,
+
+    val additionalInfo: String,
+
     val appearance: String,
     val personality: String,
     val ideal: String,

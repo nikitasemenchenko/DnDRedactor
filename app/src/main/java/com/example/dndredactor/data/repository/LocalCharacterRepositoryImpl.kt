@@ -35,7 +35,7 @@ class LocalCharacterRepositoryImpl @Inject constructor(
         characterDao.insertCharacter(
             CharacterEntity(
                 name = character.fullName.trim(),
-                level = 1,
+                level = character.level,
                 gender = character.gender.name,
 
                 raceId = character.raceId,
@@ -54,6 +54,12 @@ class LocalCharacterRepositoryImpl @Inject constructor(
                 backstory = character.backstory.trim(),
 
                 equipment = character.equipment.trim(),
+
+                armorClass = character.armorClass,
+                maxHitPoints = character.maxHitPoints,
+                currentHitPoints = character.currentHitPoints,
+
+                additionalInfo = character.additionalInfo.trim(),
 
                 appearance = character.appearance.trim(),
                 personality = character.personality.trim(),

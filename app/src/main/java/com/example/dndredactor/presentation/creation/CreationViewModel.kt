@@ -324,91 +324,6 @@ class CreationViewModel @Inject constructor(
     fun getClassById(id: String?): CharacterClass? =
         _uiState.value.classes.find { it.id == id }
 
-    fun goToNextStep() {
-        _uiState.value = _uiState.value.copy(
-            currentStep = when (_uiState.value.currentStep) {
-                CreationStep.RACE -> CreationStep.CLASS
-                CreationStep.CLASS -> CreationStep.BACKSTORY
-                CreationStep.BACKSTORY -> CreationStep.HUMAN_TRAITS
-                CreationStep.HUMAN_TRAITS -> CreationStep.ABILITY_GENERATION_METHOD
-                CreationStep.ABILITY_GENERATION_METHOD -> {
-                    when (_uiState.value.character.abilityGenerationMethod) {
-                        AbilityGenerationMethod.RANDOM -> CreationStep.RANDOM_ABILITIES
-                        AbilityGenerationMethod.POINT_BUY -> CreationStep.POINT_BUY_ABILITIES
-                        else -> CreationStep.ABILITY_GENERATION_METHOD
-                    }
-                }
-
-                CreationStep.RANDOM_ABILITIES -> CreationStep.EQUIPMENT
-                CreationStep.POINT_BUY_ABILITIES -> CreationStep.EQUIPMENT
-                CreationStep.EQUIPMENT -> CreationStep.FINAL
-                CreationStep.FINAL -> CreationStep.FINAL
-            }
-        )
-    }
-
-    fun goToPreviousStep() {
-        _uiState.value = _uiState.value.copy(
-            currentStep = when (_uiState.value.currentStep) {
-                CreationStep.RACE -> CreationStep.RACE
-                CreationStep.CLASS -> CreationStep.RACE
-                CreationStep.BACKSTORY -> CreationStep.CLASS
-                CreationStep.HUMAN_TRAITS -> CreationStep.BACKSTORY
-                CreationStep.ABILITY_GENERATION_METHOD -> CreationStep.HUMAN_TRAITS
-                CreationStep.RANDOM_ABILITIES -> CreationStep.ABILITY_GENERATION_METHOD
-                CreationStep.POINT_BUY_ABILITIES -> CreationStep.ABILITY_GENERATION_METHOD
-                CreationStep.EQUIPMENT -> {
-                    when (_uiState.value.character.abilityGenerationMethod) {
-                        AbilityGenerationMethod.RANDOM -> CreationStep.RANDOM_ABILITIES
-                        AbilityGenerationMethod.POINT_BUY -> CreationStep.POINT_BUY_ABILITIES
-                        else -> CreationStep.ABILITY_GENERATION_METHOD
-                    }
-                }
-
-                CreationStep.FINAL -> CreationStep.EQUIPMENT
-            }
-        )
-    }
-
-    fun canGoToNextStep(): Boolean {
-        val character = _uiState.value.character
-        val selectedRace = getRaceById(character.raceId)
-        val selectedClass = getClassById(character.classId)
-
-        return when (_uiState.value.currentStep) {
-            CreationStep.RACE -> {
-                character.fullName.isNotBlank() &&
-                        character.gender != Gender.UNSPECIFIED &&
-                        selectedRace != null &&
-                        !_uiState.value.raceDetailsLoading &&
-                        (selectedRace.subraces.isEmpty() || character.subraceId != null)
-            }
-
-            CreationStep.CLASS -> {
-                selectedClass != null && !_uiState.value.classDetailsLoading &&
-                        (selectedClass.archetypes.isEmpty() || character.archetypeId != null)
-            }
-
-            CreationStep.BACKSTORY -> true
-
-            CreationStep.HUMAN_TRAITS -> true
-
-            CreationStep.ABILITY_GENERATION_METHOD -> {
-                _uiState.value.character.abilityGenerationMethod != null
-            }
-
-            CreationStep.RANDOM_ABILITIES -> true
-
-            CreationStep.POINT_BUY_ABILITIES -> {
-                getRemainingPoints() >= 0
-            }
-
-            CreationStep.EQUIPMENT -> true
-
-            CreationStep.FINAL -> true
-        }
-    }
-
     fun generateScores(): AbilityScores {
         return AbilityScores(
             strength = rollAbilityScore(),
@@ -451,6 +366,177 @@ class CreationViewModel @Inject constructor(
         )
     }
 
+    fun increaseArmorClass() {
+        val character = _uiState.value.character
+
+        if (character.armorClass >= MAX_ARMOR_CLASS) return
+
+        _uiState.value = _uiState.value.copy(
+            character = character.copy(
+                armorClass = character.armorClass + 1
+            )
+        )
+    }
+
+    fun decreaseArmorClass() {
+        val character = _uiState.value.character
+
+        if (character.armorClass <= MIN_ARMOR_CLASS) return
+
+        _uiState.value = _uiState.value.copy(
+            character = character.copy(
+                armorClass = character.armorClass - 1
+            )
+        )
+    }
+
+    fun increaseMaxHitPoints() {
+        val character = _uiState.value.character
+
+        if (character.maxHitPoints >= MAX_HIT_POINTS) return
+
+        val nextMaxHitPoints = character.maxHitPoints + 1
+
+        _uiState.value = _uiState.value.copy(
+            character = character.copy(
+                maxHitPoints = nextMaxHitPoints,
+                currentHitPoints = nextMaxHitPoints
+            )
+        )
+    }
+
+    fun decreaseMaxHitPoints() {
+        val character = _uiState.value.character
+
+        if (character.maxHitPoints <= MIN_HIT_POINTS) return
+
+        val nextMaxHitPoints = character.maxHitPoints - 1
+
+        _uiState.value = _uiState.value.copy(
+            character = character.copy(
+                maxHitPoints = nextMaxHitPoints,
+                currentHitPoints = nextMaxHitPoints
+            )
+        )
+    }
+
+    fun increaseLevel() {
+        val character = _uiState.value.character
+
+        if (character.level >= MAX_CHARACTER_LEVEL) return
+
+        _uiState.value = _uiState.value.copy(
+            character = character.copy(
+                level = character.level + 1
+            )
+        )
+    }
+
+    fun decreaseLevel() {
+        val character = _uiState.value.character
+
+        if (character.level <= MIN_CHARACTER_LEVEL) return
+
+        _uiState.value = _uiState.value.copy(
+            character = character.copy(
+                level = character.level - 1
+            )
+        )
+    }
+
+    fun goToNextStep() {
+        _uiState.value = _uiState.value.copy(
+            currentStep = when (_uiState.value.currentStep) {
+                CreationStep.RACE -> CreationStep.CLASS
+                CreationStep.CLASS -> CreationStep.BACKSTORY
+                CreationStep.BACKSTORY -> CreationStep.HUMAN_TRAITS
+                CreationStep.HUMAN_TRAITS -> CreationStep.ABILITY_GENERATION_METHOD
+                CreationStep.ABILITY_GENERATION_METHOD -> {
+                    when (_uiState.value.character.abilityGenerationMethod) {
+                        AbilityGenerationMethod.RANDOM -> CreationStep.RANDOM_ABILITIES
+                        AbilityGenerationMethod.POINT_BUY -> CreationStep.POINT_BUY_ABILITIES
+                        else -> CreationStep.ABILITY_GENERATION_METHOD
+                    }
+                }
+
+                CreationStep.RANDOM_ABILITIES -> CreationStep.COMBAT_STATS
+                CreationStep.POINT_BUY_ABILITIES -> CreationStep.COMBAT_STATS
+                CreationStep.COMBAT_STATS -> CreationStep.EQUIPMENT
+                CreationStep.EQUIPMENT -> CreationStep.FINAL
+                CreationStep.FINAL -> CreationStep.FINAL
+            }
+        )
+    }
+
+    fun goToPreviousStep() {
+        _uiState.value = _uiState.value.copy(
+            currentStep = when (_uiState.value.currentStep) {
+                CreationStep.RACE -> CreationStep.RACE
+                CreationStep.CLASS -> CreationStep.RACE
+                CreationStep.BACKSTORY -> CreationStep.CLASS
+                CreationStep.HUMAN_TRAITS -> CreationStep.BACKSTORY
+                CreationStep.ABILITY_GENERATION_METHOD -> CreationStep.HUMAN_TRAITS
+                CreationStep.RANDOM_ABILITIES -> CreationStep.ABILITY_GENERATION_METHOD
+                CreationStep.POINT_BUY_ABILITIES -> CreationStep.ABILITY_GENERATION_METHOD
+                CreationStep.COMBAT_STATS -> {
+                    when (_uiState.value.character.abilityGenerationMethod) {
+                        AbilityGenerationMethod.RANDOM -> CreationStep.RANDOM_ABILITIES
+                        AbilityGenerationMethod.POINT_BUY -> CreationStep.POINT_BUY_ABILITIES
+                        else -> CreationStep.ABILITY_GENERATION_METHOD
+                    }
+                }
+
+                CreationStep.EQUIPMENT -> CreationStep.COMBAT_STATS
+                CreationStep.FINAL -> CreationStep.EQUIPMENT
+            }
+        )
+    }
+
+    fun canGoToNextStep(): Boolean {
+        val character = _uiState.value.character
+        val selectedRace = getRaceById(character.raceId)
+        val selectedClass = getClassById(character.classId)
+
+        return when (_uiState.value.currentStep) {
+            CreationStep.RACE -> {
+                character.fullName.isNotBlank() &&
+                        character.gender != Gender.UNSPECIFIED &&
+                        selectedRace != null &&
+                        !_uiState.value.raceDetailsLoading &&
+                        (selectedRace.subraces.isEmpty() || character.subraceId != null)
+            }
+
+            CreationStep.CLASS -> {
+                selectedClass != null && !_uiState.value.classDetailsLoading &&
+                        (selectedClass.archetypes.isEmpty() || character.archetypeId != null)
+            }
+
+            CreationStep.BACKSTORY -> true
+
+            CreationStep.HUMAN_TRAITS -> true
+
+            CreationStep.ABILITY_GENERATION_METHOD -> {
+                _uiState.value.character.abilityGenerationMethod != null
+            }
+
+            CreationStep.RANDOM_ABILITIES -> true
+
+            CreationStep.POINT_BUY_ABILITIES -> {
+                getRemainingPoints() >= 0
+            }
+
+            CreationStep.COMBAT_STATS -> {
+                character.armorClass > 0 &&
+                        character.maxHitPoints > 0 &&
+                        character.currentHitPoints in 0..character.maxHitPoints
+            }
+
+            CreationStep.EQUIPMENT -> true
+
+            CreationStep.FINAL -> true
+        }
+    }
+
     fun saveCharacter() {
         val character = _uiState.value.character
 
@@ -483,10 +569,14 @@ class CreationViewModel @Inject constructor(
 
         return character.fullName.isNotBlank() &&
                 character.gender != Gender.UNSPECIFIED &&
+                character.level in MIN_CHARACTER_LEVEL..MAX_CHARACTER_LEVEL &&
                 selectedRace != null &&
                 selectedClass != null &&
                 !_uiState.value.raceDetailsLoading &&
                 !_uiState.value.classDetailsLoading &&
+                character.armorClass > 0 &&
+                character.maxHitPoints > 0 &&
+                character.currentHitPoints in 0..character.maxHitPoints &&
                 (selectedRace.subraces.isEmpty() || character.subraceId != null) &&
                 (selectedClass.archetypes.isEmpty() || character.archetypeId != null)
     }
@@ -495,6 +585,15 @@ class CreationViewModel @Inject constructor(
         const val POINT_BUY_BUDGET = 27
         const val MIN_POINT_BUY_SCORE = 8
         const val MAX_POINT_BUY_SCORE = 15
+
+        const val MIN_ARMOR_CLASS = 1
+        const val MAX_ARMOR_CLASS = 40
+
+        const val MIN_HIT_POINTS = 1
+        const val MAX_HIT_POINTS = 1000
+
+        const val MIN_CHARACTER_LEVEL = 1
+        const val MAX_CHARACTER_LEVEL = 20
 
         val POINT_BUY_COST = mapOf(
             8 to 0,

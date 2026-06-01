@@ -16,6 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.data.model.Ability
+import com.example.dndredactor.data.model.calculateProficiencyBonus
+import com.example.dndredactor.data.model.getModifier
+import com.example.dndredactor.data.model.textAsModifier
 import com.example.dndredactor.presentation.creation.CreationViewModel
 import com.example.dndredactor.presentation.theme.LightColor
 
@@ -50,10 +53,15 @@ fun CreationSummaryScreen(
 
             SummaryBlock(title = "Основное") {
                 SummaryLine("Имя", character.fullName)
+                SummaryLine("Уровень", character.level.toString())
                 SummaryLine("Раса", character.raceName ?: "Не выбрана")
                 SummaryLine("Подраса", character.subraceName ?: "Не выбрана")
                 SummaryLine("Класс", character.className ?: "Не выбран")
                 SummaryLine("Архетип", character.archetypeName ?: "Не выбран")
+                SummaryLine(
+                    key = "Бонус мастерства",
+                    value = textAsModifier(calculateProficiencyBonus(character.level))
+                )
             }
 
             SummaryBlock(title = "Предыстория") {
@@ -65,17 +73,38 @@ fun CreationSummaryScreen(
 
             SummaryBlock(title =  "Характеристики") {
                 Ability.entries.forEach { ability ->
+                    val score = character.abilityScores.get(ability)
+                    val modifier = character.abilityScores.getModifier(ability)
+
                     SummaryLine(
                         key = ability.title,
-                        value = character.abilityScores.get(ability).toString()
+                        value = "$score (${textAsModifier(modifier)})"
                     )
                 }
+            }
+
+            SummaryBlock(title = "Боевые показатели") {
+                SummaryLine(
+                    key = "Класс доспеха",
+                    value = character.armorClass.toString()
+                )
+                SummaryLine(
+                    key = "HP",
+                    value = "${character.currentHitPoints}/${character.maxHitPoints}"
+                )
             }
 
             SummaryBlock(title = "Снаряжение") {
                 SummaryLine(
                     key = "Предметы",
                     value = character.equipment
+                )
+            }
+
+            SummaryBlock(title = "Дополнительные сведения") {
+                SummaryLine(
+                    key = "Описание",
+                    value = character.additionalInfo
                 )
             }
         }

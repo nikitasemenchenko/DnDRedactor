@@ -37,6 +37,13 @@
     <string name="no_characters">У вас пока нет персонажей</string>
     <string name="lets_create_character">Скорее создайте своего первого персонажа!</string>
 
+    <string name="combat_stats_selection">Боевые показатели:</string>
+    <string name="armor_class">Класс доспеха</string>
+    <string name="max_hit_points">Максимум HP</string>
+    <string name="current_hit_points">Текущие HP</string>
+    <string name="additional_info_selection">Дополнительные сведения:</string>
+    <string name="additional_info_placeholder">Дополнительные сведения о персонаже</string>
+    <string name="proficiency_bonus">Бонус мастерства</string>
 
     <string name="fieldFillingError">Все поля должны быть заполнены.</string>
     <string name="characterLoadError">Не удалось загрузить персонажей.</string>

@@ -3,6 +3,7 @@ package com.example.dndredactor.data.model
 data class CharacterDraft(
     val fullName: String = "",
     val gender: Gender = Gender.UNSPECIFIED,
+    val level: Int = 1,
 
     val raceId: String? = null,
     val raceName: String? = null,
@@ -20,6 +21,10 @@ data class CharacterDraft(
 
     val equipment: String = "",
 
+    val armorClass: Int = 10,
+    val maxHitPoints: Int = 10,
+    val currentHitPoints: Int = 10,
+
     val appearance: String = "",
     val personality: String = "",
     val ideal: String = "",
@@ -28,4 +33,6 @@ data class CharacterDraft(
 
     val abilityGenerationMethod: AbilityGenerationMethod? = null,
     val abilityScores: AbilityScores = AbilityScores(),
+
+    val additionalInfo: String = "",
 )

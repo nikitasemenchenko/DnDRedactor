@@ -3,10 +3,8 @@ package com.example.dndredactor.presentation.characterDetails
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -33,6 +31,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.dndredactor.data.model.Ability
+import com.example.dndredactor.data.model.calculateProficiencyBonus
+import com.example.dndredactor.data.model.getModifier
+import com.example.dndredactor.data.model.textAsModifier
 import com.example.dndredactor.presentation.theme.BackPurple
 import com.example.dndredactor.presentation.theme.LightButtonColor
 import com.example.dndredactor.presentation.theme.LightColor
@@ -51,11 +53,11 @@ fun CharacterDetailsScreen(
                 onBackClick = onBack,
                 onEditClick = {
                     val state = uiState
-                    if(state is CharacterDetailsUiState.Success) {
+                    if (state is CharacterDetailsUiState.Success) {
                         onEdit(state.character.id)
                     }
                 }
-                )
+            )
         },
         containerColor = BackPurple
     ) { paddingValues ->
@@ -153,12 +155,16 @@ private fun CharacterDetailsContent(
 
         DetailsCard(title = "Основное") {
             Column {
-                DetailRow(label = "Пол", value = character.gender.toString())
+                DetailRow(label = "Пол", value = character.gender.title)
                 DetailRow(label = "Уровень", value = character.level.toString())
                 DetailRow(label = "Раса", value = character.raceName ?: "Неизвестно")
                 DetailRow(label = "Подраса", value = character.subraceName ?: "Не выбрана")
                 DetailRow(label = "Класс", value = character.className ?: "Неизвестно")
                 DetailRow(label = "Архетип", value = character.archetypeName ?: "Не выбран")
+                DetailRow(
+                    label = "Бонус мастерства",
+                    value = textAsModifier(calculateProficiencyBonus(character.level))
+                )
             }
         }
 
@@ -172,18 +178,25 @@ private fun CharacterDetailsContent(
 
         DetailsCard(title = "Характеристики") {
             Column {
-                DetailRow(label = "Сила", value = character.abilityScores.strength.toString())
-                DetailRow(label = "Ловкость", value = character.abilityScores.dexterity.toString())
+                Ability.entries.forEach { ability ->
+                    val score = character.abilityScores.get(ability)
+                    val modifier = character.abilityScores.getModifier(ability)
+
+                    DetailRow(
+                        label = ability.title,
+                        value = "$score (${textAsModifier(modifier)})"
+                    )
+                }
+            }
+        }
+
+        DetailsCard(title = "Боевые показатели") {
+            Column {
+                DetailRow(label = "Класс доспеха", value = character.armorClass.toString())
                 DetailRow(
-                    label = "Телосложение",
-                    value = character.abilityScores.constitution.toString()
+                    label = "HP",
+                    value = "${character.currentHitPoints}/${character.maxHitPoints}"
                 )
-                DetailRow(
-                    label = "Интеллект",
-                    value = character.abilityScores.intelligence.toString()
-                )
-                DetailRow(label = "Мудрость", value = character.abilityScores.wisdom.toString())
-                DetailRow(label = "Харизма", value = character.abilityScores.charisma.toString())
             }
         }
 
@@ -212,7 +225,13 @@ private fun CharacterDetailsContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        DetailsCard(title = "Дополнительные сведения") {
+            Text(
+                text = character.additionalInfo.ifBlank { "Не указано" },
+                color = Color.Black,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
     }
 }
 

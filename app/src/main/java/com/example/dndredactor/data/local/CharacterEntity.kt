@@ -29,6 +29,10 @@ data class CharacterEntity(
 
     val equipment: String,
 
+    val armorClass: Int,
+    val maxHitPoints: Int,
+    val currentHitPoints: Int,
+
     val appearance: String,
     val personality: String,
     val ideal: String,
@@ -41,6 +45,8 @@ data class CharacterEntity(
     val intelligence: Int,
     val wisdom: Int,
     val charisma: Int,
+
+    val additionalInfo: String,
 
     val createdAt: Long
 )

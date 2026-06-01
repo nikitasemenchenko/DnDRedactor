@@ -25,6 +25,10 @@ class CharacterMapper @Inject constructor() {
             archetypeName = entity.archetypeName,
             backstory = entity.backstory,
             equipment = entity.equipment,
+            armorClass = entity.armorClass,
+            maxHitPoints = entity.maxHitPoints,
+            currentHitPoints = entity.currentHitPoints,
+            additionalInfo = entity.additionalInfo,
             personality = entity.personality,
             appearance = entity.appearance,
             ideal = entity.ideal,
@@ -64,6 +68,12 @@ class CharacterMapper @Inject constructor() {
 
             backstory = character.backstory.trim(),
             equipment = character.equipment.trim(),
+
+            armorClass = character.armorClass,
+            maxHitPoints = character.maxHitPoints,
+            currentHitPoints = character.currentHitPoints,
+
+            additionalInfo = character.additionalInfo.trim(),
 
             appearance = character.appearance.trim(),
             personality = character.personality.trim(),
