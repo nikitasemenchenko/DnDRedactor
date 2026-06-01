@@ -68,6 +68,7 @@ fun MainScreen(
     vm: MainViewModel = hiltViewModel(),
     onCharacterClick: (Int) -> Unit,
     onCreateClick: () -> Unit,
+    onDiceRollerClick: () -> Unit
 ) {
     val uiState by vm.uiState.collectAsState()
 
@@ -114,6 +115,21 @@ fun MainScreen(
             ) {
                 Text(
                     text = stringResource(R.string.create),
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = LightColor
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = onDiceRollerClick,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor),
+                shape = MaterialTheme.shapes.large
+            ) {
+                Text(
+                    text = "Бросить кубики",
                     style = MaterialTheme.typography.headlineSmall,
                     color = LightColor
                 )

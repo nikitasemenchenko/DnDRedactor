@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.example.dndredactor.presentation.characterDetails.CharacterDetailsScreen
 import com.example.dndredactor.presentation.characterEdit.CharacterEditScreen
 import com.example.dndredactor.presentation.creation.CharacterCreationScreen
+import com.example.dndredactor.presentation.diceRoller.DiceRollScreen
 import com.example.dndredactor.presentation.mainScreen.MainScreen
 import kotlinx.serialization.Serializable
 
@@ -24,6 +25,9 @@ sealed interface AppRoute {
 
     @Serializable
     data class CharacterEdit(val id: Int): AppRoute
+
+    @Serializable
+    data object DiceRoller: AppRoute
 }
 @Composable
 fun AppNavHost(
@@ -42,6 +46,9 @@ fun AppNavHost(
                 },
                 onCreateClick = {
                     navController.navigate(AppRoute.CharacterCreation)
+                },
+                onDiceRollerClick = {
+                    navController.navigate(AppRoute.DiceRoller)
                 }
             )
         }
@@ -71,6 +78,14 @@ fun AppNavHost(
                     navController.popBackStack()
                 },
                 onSaved = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable<AppRoute.DiceRoller> {
+            DiceRollScreen(
+                onBack = {
                     navController.popBackStack()
                 }
             )
