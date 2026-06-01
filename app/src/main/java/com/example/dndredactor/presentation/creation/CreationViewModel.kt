@@ -385,6 +385,14 @@ class CreationViewModel @Inject constructor(
         )
     }
 
+    fun onAdditionalInfoChanged(additionalInfo: String){
+        _uiState.value = _uiState.value.copy(
+            character = _uiState.value.character.copy(
+                additionalInfo = additionalInfo
+            )
+        )
+    }
+
     fun increaseAbility(ability: Ability) {
         val currentScores = _uiState.value.character.abilityScores
         val currentValue = currentScores.get(ability)
@@ -570,7 +578,8 @@ class CreationViewModel @Inject constructor(
                 CreationStep.RANDOM_ABILITIES -> CreationStep.COMBAT_STATS
                 CreationStep.POINT_BUY_ABILITIES -> CreationStep.COMBAT_STATS
                 CreationStep.COMBAT_STATS -> CreationStep.EQUIPMENT
-                CreationStep.EQUIPMENT -> CreationStep.FINAL
+                CreationStep.EQUIPMENT -> CreationStep.ADDITIONAL_INFO
+                CreationStep.ADDITIONAL_INFO -> CreationStep.FINAL
                 CreationStep.FINAL -> CreationStep.FINAL
             }
         )
@@ -595,7 +604,8 @@ class CreationViewModel @Inject constructor(
                 }
 
                 CreationStep.EQUIPMENT -> CreationStep.COMBAT_STATS
-                CreationStep.FINAL -> CreationStep.EQUIPMENT
+                CreationStep.ADDITIONAL_INFO -> CreationStep.EQUIPMENT
+                CreationStep.FINAL -> CreationStep.ADDITIONAL_INFO
             }
         )
     }
@@ -643,6 +653,8 @@ class CreationViewModel @Inject constructor(
             }
 
             CreationStep.EQUIPMENT -> true
+
+            CreationStep.ADDITIONAL_INFO -> true
 
             CreationStep.FINAL -> true
         }

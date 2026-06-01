@@ -3,7 +3,6 @@ package com.example.dndredactor.presentation.mainScreen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -22,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -33,6 +33,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -41,7 +42,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,7 +59,6 @@ import com.example.dndredactor.presentation.theme.BackPurple
 import com.example.dndredactor.presentation.theme.ButtonColor
 import com.example.dndredactor.presentation.theme.LightColor
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,6 +70,10 @@ fun MainScreen(
     onDiceRollerClick: () -> Unit
 ) {
     val uiState by vm.uiState.collectAsState()
+
+    var characterDeleteDialog by remember {
+        mutableStateOf<Character?>(null)
+    }
 
     Scaffold(
         topBar = {
@@ -170,7 +173,9 @@ fun MainScreen(
                     } else {
                         CharacterList(
                             characters = characters,
-                            onDelete = { id -> vm.deleteCharacter(id) },
+                            onDelete = { character ->
+                                characterDeleteDialog = character
+                            },
                             onCharacterClick = onCharacterClick
                         )
                     }
@@ -178,12 +183,25 @@ fun MainScreen(
             }
         }
     }
+
+    characterDeleteDialog?.let { character ->
+        DeleteCharacterDialog(
+            characterName = character.name,
+            onConfirm = {
+                vm.deleteCharacter(character.id)
+                characterDeleteDialog = null
+            },
+            onDismiss = {
+                characterDeleteDialog = null
+            }
+        )
+    }
 }
 
 @Composable
 fun CharacterList(
     characters: List<Character>,
-    onDelete: (Int) -> Unit,
+    onDelete: (Character) -> Unit,
     onCharacterClick: (Int) -> Unit
 ) {
     val firstLoad = remember { mutableStateOf(true) }
@@ -214,7 +232,7 @@ fun CharacterList(
                 CharacterCard(
                     character = character,
                     onClick = { onCharacterClick(character.id) },
-                    onDelete = { onDelete(character.id) }
+                    onDelete = { onDelete(character) }
                 )
             }
         }
@@ -227,63 +245,49 @@ fun CharacterCard(
     onDelete: () -> Unit,
     onClick: () -> Unit
 ) {
-    var visible by remember { mutableStateOf(true) }
-    val scope = rememberCoroutineScope()
     val classIcon = character.classType.toClassIcon()
 
-    AnimatedVisibility(
-        visible = visible,
-        exit = fadeOut(animationSpec = tween(300))
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(
+            containerColor = LightColor
+        ),
     ) {
 
-        Card(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(onClick = onClick),
-            shape = MaterialTheme.shapes.large,
-            colors = CardDefaults.cardColors(
-                containerColor = LightColor
-            ),
+                .padding(horizontal = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Icon(
+                painter = painterResource(classIcon),
+                contentDescription = null,
+                tint = Color.Black,
+                modifier = Modifier.size(24.dp)
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = character.name,
+                style = MaterialTheme.typography.titleLarge,
+                color = Color.Black,
+                modifier = Modifier.weight(1f)
+            )
+
+            IconButton(
+                onClick = onDelete
             ) {
-
                 Icon(
-                    painter = painterResource(classIcon),
+                    imageVector = Icons.Default.Delete,
                     contentDescription = null,
-                    tint = Color.Black,
-                    modifier = Modifier.size(24.dp)
+                    tint = Color.Black
                 )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text(
-                    text = character.name,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.Black,
-                    modifier = Modifier.weight(1f)
-                )
-
-                IconButton(
-                    onClick = {
-                        visible = false
-                        scope.launch {
-                            delay(300)
-                            onDelete()
-                        }
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = null,
-                        tint = Color.Black
-                    )
-                }
             }
         }
     }
@@ -316,4 +320,39 @@ fun EmptyCharactersState() {
             )
         }
     }
+}
+
+@Composable
+private fun DeleteCharacterDialog(
+    characterName: String,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Удалить персонажа?"
+            )
+        },
+        text = {
+            Text(
+                text = "Персонаж \"$characterName\" будет удалён без возможности восстановления."
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onConfirm
+            ) {
+                Text("Удалить")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss
+            ) {
+                Text("Отмена")
+            }
+        }
+    )
 }

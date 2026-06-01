@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dndredactor.R
 import com.example.dndredactor.presentation.creation.steps.AbilityGenerationMethodScreen
+import com.example.dndredactor.presentation.creation.steps.AdditionalInfoScreen
 import com.example.dndredactor.presentation.creation.steps.BackstoryScreen
 import com.example.dndredactor.presentation.creation.steps.ClassSelectionScreen
 import com.example.dndredactor.presentation.creation.steps.CombatStatsScreen
@@ -105,6 +106,7 @@ fun CharacterCreationScreen(
                     CreationStep.POINT_BUY_ABILITIES -> PointBuyAbilityScoresScreen(vm = vm)
                     CreationStep.COMBAT_STATS -> CombatStatsScreen(vm = vm)
                     CreationStep.EQUIPMENT -> EquipmentScreen(vm = vm)
+                    CreationStep.ADDITIONAL_INFO -> AdditionalInfoScreen(vm = vm)
                     CreationStep.FINAL -> CreationSummaryScreen(vm = vm)
                 }
             }

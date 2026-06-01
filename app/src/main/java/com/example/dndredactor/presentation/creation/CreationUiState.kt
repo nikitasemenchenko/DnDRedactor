@@ -27,5 +27,6 @@ enum class CreationStep {
     POINT_BUY_ABILITIES,
     COMBAT_STATS,
     EQUIPMENT,
+    ADDITIONAL_INFO,
     FINAL
 }
