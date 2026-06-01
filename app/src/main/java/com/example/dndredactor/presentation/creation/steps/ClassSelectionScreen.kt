@@ -56,6 +56,17 @@ fun ClassSelectionScreen(
                 labelRes = R.string.archetype_selection,
                 onSelect = vm::onArchetypeSelected
             )
+
+            if (uiState.archetypeDetailsLoading) {
+                CircularProgressIndicator()
+            }
+
+            val selectedArchetype = vm.getArchetypeById(uiState.character.archetypeId)
+
+            DescriptionCard(
+                desc = selectedArchetype?.description,
+                placeholder = R.string.archetype_desc_placeholder
+            )
         }
     }
 }

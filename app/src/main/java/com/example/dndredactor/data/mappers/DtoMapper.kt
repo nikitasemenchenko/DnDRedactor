@@ -5,6 +5,7 @@ import com.example.dndredactor.data.model.CharacterClass
 import com.example.dndredactor.data.model.Race
 import com.example.dndredactor.data.model.Subrace
 import com.example.dndredactor.data.remote.dto.ApiResponseDto
+import com.example.dndredactor.data.remote.dto.ArchetypeDto
 import com.example.dndredactor.data.remote.dto.ClassDto
 import com.example.dndredactor.data.remote.dto.RaceDto
 import javax.inject.Inject
@@ -49,7 +50,8 @@ class DtoMapper @Inject constructor(){
             archetypes = dto.subclasses.map { subClass ->
                 Archetype(
                     id = subClass.index,
-                    name = subClass.name
+                    name = subClass.name,
+                    description = ""
                 )
             }
         )
@@ -62,5 +64,19 @@ class DtoMapper @Inject constructor(){
             dto.age,
             dto.sizeDescription
         ).joinToString(separator = "\n")
+    }
+
+    fun subclassDtoToDomain(dto: ArchetypeDto): Archetype {
+        return Archetype(
+            id = dto.index,
+            name = dto.name,
+            description = getSubclassDescription(dto)
+        )
+    }
+
+    fun getSubclassDescription(dto: ArchetypeDto): String {
+        return if(dto.desc.isNotEmpty()){
+            dto.desc.joinToString(" ")
+        } else ""
     }
 }

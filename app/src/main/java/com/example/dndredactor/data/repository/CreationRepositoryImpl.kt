@@ -1,6 +1,7 @@
 package com.example.dndredactor.data.repository
 
 import com.example.dndredactor.data.mappers.DtoMapper
+import com.example.dndredactor.data.model.Archetype
 import com.example.dndredactor.data.model.CharacterClass
 import com.example.dndredactor.data.model.Race
 import com.example.dndredactor.data.remote.DndApi
@@ -17,6 +18,8 @@ class CreationRepositoryImpl @Inject constructor(
 
     private val raceDetailsCache = mutableMapOf<String, Race>()
     private val classDetailsCache = mutableMapOf<String, CharacterClass>()
+
+    private val archetypeDetailsCache = mutableMapOf<String, Archetype>()
 
     override suspend fun getRaces(): List<Race> {
         cachedRaces?.let { return it }
@@ -67,5 +70,25 @@ class CreationRepositoryImpl @Inject constructor(
             if (currentClass.id == characterClass.id) characterClass else currentClass
         }
         return characterClass
+    }
+
+    override suspend fun getArchetypeDetails(index: String): Archetype {
+        archetypeDetailsCache[index]?.let { return it }
+
+        val archetype = mapper.subclassDtoToDomain(
+            dndApi.getArchetype(index)
+        )
+
+        archetypeDetailsCache[index] = archetype
+
+        cachedClasses = cachedClasses?.map { characterClass ->
+            characterClass.copy(
+                archetypes = characterClass.archetypes.map { currentArchetype ->
+                    if (currentArchetype.id == archetype.id) archetype else currentArchetype
+                }
+            )
+        }
+
+        return archetype
     }
 }

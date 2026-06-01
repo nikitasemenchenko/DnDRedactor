@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import com.example.dndredactor.presentation.characterDetails.CharacterDetailsScreen
 import com.example.dndredactor.presentation.characterEdit.CharacterEditScreen
 import com.example.dndredactor.presentation.creation.CharacterCreationScreen
-import com.example.dndredactor.presentation.diceRoller.DiceRollScreen
+import com.example.dndredactor.presentation.diceRoller.DiceRollerScreen
 import com.example.dndredactor.presentation.mainScreen.MainScreen
 import kotlinx.serialization.Serializable
 
@@ -84,7 +84,7 @@ fun AppNavHost(
         }
 
         composable<AppRoute.DiceRoller> {
-            DiceRollScreen(
+            DiceRollerScreen(
                 onBack = {
                     navController.popBackStack()
                 }

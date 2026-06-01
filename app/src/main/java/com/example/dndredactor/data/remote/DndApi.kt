@@ -1,6 +1,7 @@
 package com.example.dndredactor.data.remote
 
 import com.example.dndredactor.data.remote.dto.ApiListResponseDto
+import com.example.dndredactor.data.remote.dto.ArchetypeDto
 import com.example.dndredactor.data.remote.dto.ClassDto
 import com.example.dndredactor.data.remote.dto.RaceDto
 import retrofit2.http.GET
@@ -23,4 +24,9 @@ interface DndApi {
     suspend fun getClass(
         @Path("index") index: String
     ): ClassDto
+
+    @GET("subclasses/{index}")
+    suspend fun getArchetype(
+        @Path("index") index: String
+    ): ArchetypeDto
 }

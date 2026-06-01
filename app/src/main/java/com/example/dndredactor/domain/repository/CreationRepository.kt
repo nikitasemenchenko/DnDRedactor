@@ -1,5 +1,6 @@
 package com.example.dndredactor.domain.repository
 
+import com.example.dndredactor.data.model.Archetype
 import com.example.dndredactor.data.model.CharacterClass
 import com.example.dndredactor.data.model.Race
 
@@ -10,4 +11,6 @@ interface CreationRepository {
     suspend fun getRaceDetails(index: String): Race
 
     suspend fun getClassDetails(index: String): CharacterClass
+
+    suspend fun getArchetypeDetails(index: String): Archetype
 }

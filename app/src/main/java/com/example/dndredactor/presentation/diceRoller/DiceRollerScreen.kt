@@ -43,7 +43,7 @@ import com.example.dndredactor.presentation.theme.LightButtonColor
 import com.example.dndredactor.presentation.theme.LightColor
 
 @Composable
-fun DiceRollScreen(
+fun DiceRollerScreen(
     vm: DiceRollerViewModel = hiltViewModel(),
     onBack: () -> Unit
 ) {

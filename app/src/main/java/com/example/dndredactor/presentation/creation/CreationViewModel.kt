@@ -219,6 +219,25 @@ class CreationViewModel @Inject constructor(
         }
     }
 
+    fun getArchetypeById(id: String?): Archetype? {
+        return _uiState.value.classes
+            .flatMap { it.archetypes }
+            .find { it.id == id }
+    }
+
+    fun replaceArchetype(
+        classes: List<CharacterClass>,
+        archetype: Archetype
+    ): List<CharacterClass> {
+        return classes.map { characterClass ->
+            characterClass.copy(
+                archetypes = characterClass.archetypes.map { currentArchetype ->
+                    if (currentArchetype.id == archetype.id) archetype else currentArchetype
+                }
+            )
+        }
+    }
+
     fun onSubraceSelected(subrace: Subrace) {
         _uiState.value = _uiState.value.copy(
             character = _uiState.value.character.copy(
@@ -249,6 +268,41 @@ class CreationViewModel @Inject constructor(
                 archetypeName = archetype.name
             )
         )
+        loadArchetypeDetails(archetype.id)
+    }
+
+    fun loadArchetypeDetails(archetypeId: String) {
+        val currentArchetype = getArchetypeById(archetypeId)
+
+        if (currentArchetype != null && currentArchetype.description.isNotBlank()) {
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(
+                archetypeDetailsLoading = true
+            )
+
+            runCatching {
+                creationRepository.getArchetypeDetails(archetypeId)
+            }.onSuccess { detailedArchetype ->
+                _uiState.value = _uiState.value.copy(
+                    archetypeDetailsLoading = false,
+                    classes = replaceArchetype(
+                        classes = _uiState.value.classes,
+                        archetype = detailedArchetype
+                    )
+                )
+            }.onFailure {
+                _uiState.value = _uiState.value.copy(
+                    archetypeDetailsLoading = false
+                )
+
+                _events.emit(
+                    CreationEvent.ShowError("Не удалось загрузить описание архетипа")
+                )
+            }
+        }
     }
 
     fun getRemainingPoints(): Int {
@@ -507,7 +561,9 @@ class CreationViewModel @Inject constructor(
             }
 
             CreationStep.CLASS -> {
-                selectedClass != null && !_uiState.value.classDetailsLoading &&
+                selectedClass != null &&
+                        !_uiState.value.classDetailsLoading &&
+                        !_uiState.value.archetypeDetailsLoading &&
                         (selectedClass.archetypes.isEmpty() || character.archetypeId != null)
             }
 
@@ -574,6 +630,7 @@ class CreationViewModel @Inject constructor(
                 selectedClass != null &&
                 !_uiState.value.raceDetailsLoading &&
                 !_uiState.value.classDetailsLoading &&
+                !_uiState.value.archetypeDetailsLoading &&
                 character.armorClass > 0 &&
                 character.maxHitPoints > 0 &&
                 character.currentHitPoints in 0..character.maxHitPoints &&
