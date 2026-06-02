@@ -3,6 +3,7 @@ package com.example.dndredactor.presentation.creation
 import com.example.dndredactor.data.model.CharacterClass
 import com.example.dndredactor.data.model.CharacterDraft
 import com.example.dndredactor.data.model.Race
+import com.example.dndredactor.presentation.components.AppMessage
 
 data class CreationUiState(
     val currentStep: CreationStep = CreationStep.RACE,
@@ -14,7 +15,7 @@ data class CreationUiState(
     val classDetailsLoading: Boolean = false,
     val archetypeDetailsLoading: Boolean = false,
     val loading: Boolean = false,
-    val error: String? = null
+    val error: AppMessage? = null
 )
 
 enum class CreationStep {

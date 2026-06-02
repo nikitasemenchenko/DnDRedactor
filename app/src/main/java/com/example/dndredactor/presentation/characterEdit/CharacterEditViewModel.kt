@@ -14,6 +14,7 @@ import com.example.dndredactor.data.model.Race
 import com.example.dndredactor.data.model.Subrace
 import com.example.dndredactor.domain.repository.CreationRepository
 import com.example.dndredactor.domain.repository.LocalCharacterRepository
+import com.example.dndredactor.presentation.components.AppMessage
 import com.example.dndredactor.presentation.navigation.AppRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -50,14 +51,12 @@ class CharacterEditViewModel @Inject constructor(
                 localCharacterRepository.getCharacter(characterId).first()
             }.onSuccess { character ->
                 _uiState.value = if (character == null) {
-                    CharacterEditUiState.Error("Персонаж не найден")
+                    CharacterEditUiState.Error(AppMessage.CharacterNotFound)
                 } else {
                     CharacterEditUiState.Success(character)
                 }
             }.onFailure {
-                _uiState.value = CharacterEditUiState.Error(
-                    "Не удалось загрузить персонажа"
-                )
+                _uiState.value = CharacterEditUiState.Error(AppMessage.LoadCharacter)
             }
         }
     }
@@ -178,9 +177,7 @@ class CharacterEditViewModel @Inject constructor(
                     raceDetailsLoading = false
                 )
 
-                _events.emit(
-                    CharacterEditEvent.ShowError("Не удалось загрузить детали расы")
-                )
+                _events.emit(CharacterEditEvent.ShowError(AppMessage.LoadRace))
             }
         }
     }
@@ -252,9 +249,7 @@ class CharacterEditViewModel @Inject constructor(
                     classDetailsLoading = false
                 )
 
-                _events.emit(
-                    CharacterEditEvent.ShowError("Не удалось загрузить архетипы класса")
-                )
+                _events.emit(CharacterEditEvent.ShowError(AppMessage.LoadClass))
             }
         }
     }
@@ -381,9 +376,7 @@ class CharacterEditViewModel @Inject constructor(
                     coreLoading = false
                 )
 
-                _events.emit(
-                    CharacterEditEvent.ShowError("Не удалось загрузить расы и классы")
-                )
+                _events.emit(CharacterEditEvent.ShowError(AppMessage.LoadReferenceData))
             }
         }
     }
@@ -404,7 +397,7 @@ class CharacterEditViewModel @Inject constructor(
 
         if (state.coreLoading || state.raceDetailsLoading || state.classDetailsLoading) {
             viewModelScope.launch {
-                _events.emit(CharacterEditEvent.ShowError("Дождитесь окончания загрузки"))
+                _events.emit(CharacterEditEvent.ShowError(AppMessage.WaitForLoading))
             }
             return
         }
@@ -417,7 +410,7 @@ class CharacterEditViewModel @Inject constructor(
             character.subraceId == null
         ) {
             viewModelScope.launch {
-                _events.emit(CharacterEditEvent.ShowError("Выберите расу и подрасу"))
+                _events.emit(CharacterEditEvent.ShowError(AppMessage.SelectSubrace))
             }
             return
         }
@@ -427,7 +420,7 @@ class CharacterEditViewModel @Inject constructor(
             character.archetypeId == null
         ) {
             viewModelScope.launch {
-                _events.emit(CharacterEditEvent.ShowError("Выберите класс и архетип класса"))
+                _events.emit(CharacterEditEvent.ShowError(AppMessage.SelectArchetype))
             }
             return
         }
@@ -435,7 +428,7 @@ class CharacterEditViewModel @Inject constructor(
         if (character.name.isBlank() || character.gender == Gender.UNSPECIFIED ||
             character.level !in MIN_CHARACTER_LEVEL..MAX_CHARACTER_LEVEL) {
             viewModelScope.launch {
-                _events.emit(CharacterEditEvent.ShowError("Проверьте корректность заполнения"))
+                _events.emit(CharacterEditEvent.ShowError(AppMessage.InvalidCharacter))
             }
             return
         }
@@ -445,7 +438,7 @@ class CharacterEditViewModel @Inject constructor(
             character.currentHitPoints !in 0..character.maxHitPoints
         ) {
             viewModelScope.launch {
-                _events.emit(CharacterEditEvent.ShowError("Проверьте боевые показатели"))
+                _events.emit(CharacterEditEvent.ShowError(AppMessage.InvalidCombatStats))
             }
             return
         }
@@ -456,10 +449,7 @@ class CharacterEditViewModel @Inject constructor(
             }.onSuccess {
                 _events.emit(CharacterEditEvent.CharacterUpdated)
             }.onFailure {
-                _events.emit(CharacterEditEvent.ShowError("Не удалось сохранить изменения"))
-                _uiState.value = CharacterEditUiState.Error(
-                    "Не удалось сохранить изменения."
-                )
+                _events.emit(CharacterEditEvent.ShowError(AppMessage.UpdateCharacter))
             }
         }
     }
@@ -508,6 +498,6 @@ sealed interface CharacterEditEvent {
     data object CharacterUpdated : CharacterEditEvent
 
     data class ShowError(
-        val message: String
+        val message: AppMessage
     ) : CharacterEditEvent
 }

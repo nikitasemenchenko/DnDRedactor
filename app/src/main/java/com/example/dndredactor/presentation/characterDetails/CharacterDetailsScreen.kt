@@ -79,7 +79,7 @@ fun CharacterDetailsScreen(
             is CharacterDetailsUiState.Error -> {
                 DetailsMessage(
                     modifier = Modifier.padding(paddingValues),
-                    text = state.message
+                    text = stringResource(state.message.resId)
                 )
             }
 

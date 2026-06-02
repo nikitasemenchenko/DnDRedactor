@@ -3,6 +3,7 @@ package com.example.dndredactor.presentation.characterEdit
 import com.example.dndredactor.data.model.Character
 import com.example.dndredactor.data.model.CharacterClass
 import com.example.dndredactor.data.model.Race
+import com.example.dndredactor.presentation.components.AppMessage
 
 sealed interface CharacterEditUiState {
     data object Loading: CharacterEditUiState
@@ -18,6 +19,6 @@ sealed interface CharacterEditUiState {
     ): CharacterEditUiState
 
     data class Error(
-        val message: String
+        val message: AppMessage
     ): CharacterEditUiState
 }

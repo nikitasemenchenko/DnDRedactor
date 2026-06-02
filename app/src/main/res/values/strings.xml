@@ -119,8 +119,9 @@
 
     <string name="error_required_fields">Fill in the required character fields.</string>
     <string name="error_load_characters">Failed to load characters.</string>
+    <string name="error_load_character">Failed to load character.</string>
     <string name="error_character_not_found">Character not found.</string>
-    <string name="error_generic">Something went wrong.</string>
+    <string name="error_unknown">Something went wrong.</string>
     <string name="error_load_reference_data">Failed to load reference data.</string>
     <string name="error_load_race">Failed to load race description.</string>
     <string name="error_load_subrace">Failed to load subrace description.</string>

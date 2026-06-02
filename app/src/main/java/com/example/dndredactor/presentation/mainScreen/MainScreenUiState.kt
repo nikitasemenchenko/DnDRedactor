@@ -1,6 +1,7 @@
 package com.example.dndredactor.presentation.mainScreen
 
 import com.example.dndredactor.data.model.Character
+import com.example.dndredactor.presentation.components.AppMessage
 
 sealed interface MainScreenUiState {
     data object Loading : MainScreenUiState
@@ -9,6 +10,6 @@ sealed interface MainScreenUiState {
     ) : MainScreenUiState
 
     data class Error(
-        val message: String
+        val message: AppMessage
     ) : MainScreenUiState
 }

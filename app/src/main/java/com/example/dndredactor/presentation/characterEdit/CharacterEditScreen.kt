@@ -20,6 +20,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -27,8 +29,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -54,19 +58,28 @@ fun CharacterEditScreen(
     onSaved: () -> Unit
 ) {
     val uiState by vm.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         vm.events.collect { event ->
             when(event) {
                 CharacterEditEvent.CharacterUpdated -> onSaved()
                 is CharacterEditEvent.ShowError -> {
-                    //Snackbar добавить
+                    snackbarHostState.showSnackbar(
+                        message = context.getString(event.message.resId)
+                    )
                 }
             }
         }
     }
 
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState
+            )
+        },
         topBar = {
             CharacterEditTopBar(onBack = onBack)
         },
@@ -110,7 +123,7 @@ fun CharacterEditScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = state.message,
+                        text = stringResource(state.message.resId),
                         color = LightColor,
                         style = MaterialTheme.typography.titleLarge
                     )
@@ -230,6 +243,7 @@ fun CharacterEditContent(
         Title(R.string.character_level)
 
         LevelEdit(
+            title = stringResource(R.string.level),
             level = character.level,
             onMinus = vm::decreaseLevel,
             onPlus = vm::increaseLevel
@@ -267,9 +281,9 @@ fun CharacterEditContent(
         ) {
             Text(
                 text = if (state.coreEditEnabled) {
-                    stringResource(R.string.change_race_and_class)
-                } else {
                     stringResource(R.string.hide_race_and_class_change)
+                } else {
+                    stringResource(R.string.change_race_and_class)
                 },
                 color = LightColor
             )
@@ -516,6 +530,7 @@ fun CharacterCoreEditBlock(
 
 @Composable
 fun LevelEdit(
+    title: String,
     level: Int,
     onMinus: () -> Unit,
     onPlus: () -> Unit
@@ -526,7 +541,7 @@ fun LevelEdit(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Уровень",
+            text = title,
             color = LightColor,
             style = MaterialTheme.typography.bodyLarge
         )

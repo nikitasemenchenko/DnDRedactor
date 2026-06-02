@@ -3,6 +3,7 @@ package com.example.dndredactor.presentation.mainScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dndredactor.domain.repository.LocalCharacterRepository
+import com.example.dndredactor.presentation.components.AppMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
@@ -21,7 +22,7 @@ class MainViewModel @Inject constructor(
             MainScreenUiState.Success(characters) as MainScreenUiState
         }
         .catch {
-            emit(MainScreenUiState.Error("Не удалось загрузить персонажей"))
+            emit(MainScreenUiState.Error(AppMessage.LoadCharacters))
         }
         .stateIn(
             scope = viewModelScope,

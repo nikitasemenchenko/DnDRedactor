@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.dndredactor.domain.repository.LocalCharacterRepository
+import com.example.dndredactor.presentation.components.AppMessage
 import com.example.dndredactor.presentation.navigation.AppRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,14 +26,14 @@ class CharacterDetailsViewModel @Inject constructor(
     val uiState = localCharacterRepository.getCharacter(characterId)
         .map{ character ->
             if(character == null) {
-                CharacterDetailsUiState.Error("Персонаж не найден.")
+                CharacterDetailsUiState.Error(AppMessage.CharacterNotFound)
             }
             else {
                 CharacterDetailsUiState.Success(character)
             }
         }
         .catch {
-            emit(CharacterDetailsUiState.Error("Произошла ошибка."))
+            CharacterDetailsUiState.Error(AppMessage.Unknown)
         }
         .stateIn(
             scope = viewModelScope,

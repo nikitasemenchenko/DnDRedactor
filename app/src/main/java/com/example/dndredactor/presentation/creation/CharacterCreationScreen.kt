@@ -19,6 +19,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -26,13 +28,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dndredactor.R
+import com.example.dndredactor.presentation.components.ErrorRetry
 import com.example.dndredactor.presentation.creation.steps.AbilityGenerationMethodScreen
 import com.example.dndredactor.presentation.creation.steps.AdditionalInfoScreen
 import com.example.dndredactor.presentation.creation.steps.BackstoryScreen
@@ -54,13 +59,17 @@ fun CharacterCreationScreen(
     onReturn: () -> Unit,
 ) {
     val uiState by vm.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         vm.events.collect { event ->
             when (event) {
                 CreationEvent.CharacterSaved -> onReturn()
                 is CreationEvent.ShowError -> {
-                    // Snackbar добавить
+                    snackbarHostState.showSnackbar(
+                        message = context.getString(event.message.resId)
+                    )
                 }
             }
         }
@@ -69,6 +78,9 @@ fun CharacterCreationScreen(
     Scaffold(
         topBar = {
             CharacterCreationTopBar(onReturn)
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
         },
         bottomBar = {
             if(!uiState.loading){
@@ -83,31 +95,43 @@ fun CharacterCreationScreen(
         }
     ) { padding ->
 
-        if (uiState.loading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
+        when {
+            uiState.loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
             }
-        } else {
-            Column(
-                modifier = Modifier.padding(padding)
-            ) {
-                when (uiState.currentStep) {
-                    CreationStep.RACE -> RaceSelectionScreen(vm = vm)
-                    CreationStep.CLASS -> ClassSelectionScreen(vm = vm)
-                    CreationStep.BACKSTORY -> BackstoryScreen(vm = vm)
-                    CreationStep.TRAITS -> TraitsSelectionScreen(vm = vm)
-                    CreationStep.ABILITY_GENERATION_METHOD -> AbilityGenerationMethodScreen(vm = vm)
-                    CreationStep.RANDOM_ABILITIES -> RandomAbilityScoresScreen(vm = vm)
-                    CreationStep.POINT_BUY_ABILITIES -> PointBuyAbilityScoresScreen(vm = vm)
-                    CreationStep.COMBAT_STATS -> CombatStatsScreen(vm = vm)
-                    CreationStep.EQUIPMENT -> EquipmentScreen(vm = vm)
-                    CreationStep.ADDITIONAL_INFO -> AdditionalInfoScreen(vm = vm)
-                    CreationStep.FINAL -> CreationSummaryScreen(vm = vm)
+
+            uiState.error != null && uiState.races.isEmpty() && uiState.classes.isEmpty() -> {
+                ErrorRetry(
+                    modifier = Modifier.padding(padding),
+                    message = stringResource(uiState.error!!.resId),
+                    onRetry = vm::retryInitialDataLoading
+                )
+            }
+
+            else -> {
+                Column(
+                    modifier = Modifier.padding(padding)
+                ) {
+                    when (uiState.currentStep) {
+                        CreationStep.RACE -> RaceSelectionScreen(vm = vm)
+                        CreationStep.CLASS -> ClassSelectionScreen(vm = vm)
+                        CreationStep.BACKSTORY -> BackstoryScreen(vm = vm)
+                        CreationStep.TRAITS -> TraitsSelectionScreen(vm = vm)
+                        CreationStep.ABILITY_GENERATION_METHOD -> AbilityGenerationMethodScreen(vm = vm)
+                        CreationStep.RANDOM_ABILITIES -> RandomAbilityScoresScreen(vm = vm)
+                        CreationStep.POINT_BUY_ABILITIES -> PointBuyAbilityScoresScreen(vm = vm)
+                        CreationStep.COMBAT_STATS -> CombatStatsScreen(vm = vm)
+                        CreationStep.EQUIPMENT -> EquipmentScreen(vm = vm)
+                        CreationStep.ADDITIONAL_INFO -> AdditionalInfoScreen(vm = vm)
+                        CreationStep.FINAL -> CreationSummaryScreen(vm = vm)
+                    }
                 }
             }
         }

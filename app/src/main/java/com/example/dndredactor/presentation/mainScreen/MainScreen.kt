@@ -156,7 +156,7 @@ fun MainScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = (uiState as MainScreenUiState.Error).message,
+                            text = stringResource((uiState as MainScreenUiState.Error).message.resId),
                             color = LightColor,
                             style = MaterialTheme.typography.titleLarge,
                             textAlign = TextAlign.Center,

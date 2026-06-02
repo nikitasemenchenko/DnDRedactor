@@ -12,6 +12,7 @@ import com.example.dndredactor.data.model.Race
 import com.example.dndredactor.data.model.Subrace
 import com.example.dndredactor.domain.repository.CreationRepository
 import com.example.dndredactor.domain.repository.LocalCharacterRepository
+import com.example.dndredactor.presentation.components.AppMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -62,11 +63,15 @@ class CreationViewModel @Inject constructor(
             }.onFailure {
                 _uiState.value = _uiState.value.copy(
                     loading = false,
-                    error = "Ошибка"
+                    error = AppMessage.LoadReferenceData
                 )
-                _events.emit(CreationEvent.ShowError("Не удалось загрузить справочные данные"))
+                _events.emit(CreationEvent.ShowError(AppMessage.LoadReferenceData))
             }
         }
+    }
+
+    fun retryInitialDataLoading(){
+        loadInitialData()
     }
 
     fun onNameChanged(newName: String) {
@@ -157,9 +162,7 @@ class CreationViewModel @Inject constructor(
                     raceDetailsLoading = false
                 )
 
-                _events.emit(
-                    CreationEvent.ShowError("Не удалось загрузить описание расы")
-                )
+                _events.emit(CreationEvent.ShowError(AppMessage.LoadRace))
             }
         }
     }
@@ -197,9 +200,7 @@ class CreationViewModel @Inject constructor(
                     classDetailsLoading = false
                 )
 
-                _events.emit(
-                    CreationEvent.ShowError("Не удалось загрузить архетипы класса")
-                )
+                _events.emit(CreationEvent.ShowError(AppMessage.LoadClass))
             }
         }
     }
@@ -295,9 +296,7 @@ class CreationViewModel @Inject constructor(
                     subraceDetailsLoading = false
                 )
 
-                _events.emit(
-                    CreationEvent.ShowError("Не удалось загрузить описание подрасы")
-                )
+                _events.emit(CreationEvent.ShowError(AppMessage.LoadSubrace))
             }
         }
     }
@@ -352,9 +351,7 @@ class CreationViewModel @Inject constructor(
                     archetypeDetailsLoading = false
                 )
 
-                _events.emit(
-                    CreationEvent.ShowError("Не удалось загрузить описание архетипа")
-                )
+                _events.emit(CreationEvent.ShowError(AppMessage.LoadArchetype))
             }
         }
     }
@@ -665,7 +662,7 @@ class CreationViewModel @Inject constructor(
 
         if (!canSaveCharacter()) {
             viewModelScope.launch {
-                _events.emit(CreationEvent.ShowError("Заполните обязательные поля персонажа"))
+                _events.emit(CreationEvent.ShowError(AppMessage.RequiredFields))
             }
             return
         }
@@ -680,7 +677,7 @@ class CreationViewModel @Inject constructor(
                 _events.emit(CreationEvent.CharacterSaved)
             }.onFailure {
                 _uiState.value = _uiState.value.copy(loading = false)
-                _events.emit(CreationEvent.ShowError("Не удалось сохранить персонажа"))
+                _events.emit(CreationEvent.ShowError(AppMessage.SaveCharacter))
             }
         }
     }
@@ -735,5 +732,5 @@ class CreationViewModel @Inject constructor(
 
 sealed interface CreationEvent {
     data object CharacterSaved : CreationEvent
-    data class ShowError(val message: String) : CreationEvent
+    data class ShowError(val message: AppMessage) : CreationEvent
 }
