@@ -1,57 +1,15 @@
 package com.example.dndredactor.presentation.creation
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.dndredactor.R
-import com.example.dndredactor.presentation.components.ErrorRetry
-import com.example.dndredactor.presentation.creation.steps.AbilityGenerationMethodScreen
-import com.example.dndredactor.presentation.creation.steps.AdditionalInfoScreen
-import com.example.dndredactor.presentation.creation.steps.BackstoryScreen
-import com.example.dndredactor.presentation.creation.steps.ClassSelectionScreen
-import com.example.dndredactor.presentation.creation.steps.CombatStatsScreen
-import com.example.dndredactor.presentation.creation.steps.CreationSummaryScreen
-import com.example.dndredactor.presentation.creation.steps.EquipmentScreen
-import com.example.dndredactor.presentation.creation.steps.TraitsSelectionScreen
-import com.example.dndredactor.presentation.creation.steps.PointBuyAbilityScoresScreen
-import com.example.dndredactor.presentation.creation.steps.RaceSelectionScreen
-import com.example.dndredactor.presentation.creation.steps.RandomAbilityScoresScreen
-import com.example.dndredactor.presentation.theme.BackPurple
-import com.example.dndredactor.presentation.theme.ButtonColor
-import com.example.dndredactor.presentation.theme.LightColor
 
 @Composable
 fun CharacterCreationScreen(
@@ -66,6 +24,7 @@ fun CharacterCreationScreen(
         vm.events.collect { event ->
             when (event) {
                 CreationEvent.CharacterSaved -> onReturn()
+
                 is CreationEvent.ShowError -> {
                     snackbarHostState.showSnackbar(
                         message = context.getString(event.message.resId)
@@ -77,13 +36,17 @@ fun CharacterCreationScreen(
 
     Scaffold(
         topBar = {
-            CharacterCreationTopBar(onReturn)
+            CharacterCreationTopBar(
+                onBack = onReturn
+            )
         },
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
+            SnackbarHost(
+                hostState = snackbarHostState
+            )
         },
         bottomBar = {
-            if(!uiState.loading){
+            if (!uiState.loading) {
                 CharacterCreationBottomBar(
                     onFinished = vm::saveCharacter,
                     currentStep = uiState.currentStep,
@@ -93,135 +56,11 @@ fun CharacterCreationScreen(
                 )
             }
         }
-    ) { padding ->
-
-        when {
-            uiState.loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-
-            uiState.error != null && uiState.races.isEmpty() && uiState.classes.isEmpty() -> {
-                ErrorRetry(
-                    modifier = Modifier.padding(padding),
-                    message = stringResource(uiState.error!!.resId),
-                    onRetry = vm::retryInitialDataLoading
-                )
-            }
-
-            else -> {
-                Column(
-                    modifier = Modifier.padding(padding)
-                ) {
-                    when (uiState.currentStep) {
-                        CreationStep.RACE -> RaceSelectionScreen(vm = vm)
-                        CreationStep.CLASS -> ClassSelectionScreen(vm = vm)
-                        CreationStep.BACKSTORY -> BackstoryScreen(vm = vm)
-                        CreationStep.TRAITS -> TraitsSelectionScreen(vm = vm)
-                        CreationStep.ABILITY_GENERATION_METHOD -> AbilityGenerationMethodScreen(vm = vm)
-                        CreationStep.RANDOM_ABILITIES -> RandomAbilityScoresScreen(vm = vm)
-                        CreationStep.POINT_BUY_ABILITIES -> PointBuyAbilityScoresScreen(vm = vm)
-                        CreationStep.COMBAT_STATS -> CombatStatsScreen(vm = vm)
-                        CreationStep.EQUIPMENT -> EquipmentScreen(vm = vm)
-                        CreationStep.ADDITIONAL_INFO -> AdditionalInfoScreen(vm = vm)
-                        CreationStep.FINAL -> CreationSummaryScreen(vm = vm)
-                    }
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CharacterCreationTopBar(onBack: () -> Unit){
-    CenterAlignedTopAppBar(
-        title = {
-            Text(stringResource(R.string.create_character),
-                color = LightColor,
-                fontWeight = FontWeight.Medium)
-        },
-        navigationIcon = {
-            IconButton(
-                onClick = onBack
-            ) {
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.back)
-                )
-            }
-        },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = BackPurple
+    ) { paddingValues ->
+        CharacterCreationContent(
+            paddingValues = paddingValues,
+            uiState = uiState,
+            vm = vm
         )
-    )
-}
-
-@Composable
-fun CharacterCreationBottomBar(
-    onFinished: () -> Unit,
-    currentStep: CreationStep,
-    canGoNext: Boolean,
-    goBack: () -> Unit,
-    goNext: () -> Unit
-) {
-    Surface(
-        color = BackPurple,
-        tonalElevation = 4.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 20.dp)
-                .navigationBarsPadding(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (currentStep == CreationStep.RACE) {
-                Button(
-                    onClick = { goNext() },
-                    enabled = canGoNext,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = ButtonColor),
-                    shape = MaterialTheme.shapes.large
-                ) {
-                    Text(stringResource(R.string.next), color = LightColor)
-                }
-            } else {
-                Button(
-                    onClick = { goBack() },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = ButtonColor),
-                    shape = MaterialTheme.shapes.large
-                ) {
-                    Text(stringResource(R.string.back), color = LightColor)
-                }
-
-                Button(
-                    onClick = {
-                        if (currentStep == CreationStep.FINAL) onFinished()
-                        else goNext()
-                    },
-                    enabled = canGoNext,
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = ButtonColor),
-                    shape = MaterialTheme.shapes.large
-                ) {
-                    Text(
-                        text = if (currentStep == CreationStep.FINAL)
-                            stringResource(R.string.create)
-                        else stringResource(R.string.next),
-                        color = LightColor
-                    )
-                }
-            }
-        }
     }
 }
