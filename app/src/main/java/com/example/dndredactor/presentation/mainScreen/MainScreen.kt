@@ -86,7 +86,7 @@ fun MainScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = stringResource(R.string.russian_app_name),
+                            text = stringResource(R.string.dnd_editor),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Medium,
                             color = LightColor,
@@ -132,7 +132,7 @@ fun MainScreen(
                 shape = MaterialTheme.shapes.large
             ) {
                 Text(
-                    text = "Бросить кубики",
+                    text = stringResource(R.string.dice_roller),
                     style = MaterialTheme.typography.headlineSmall,
                     color = LightColor
                 )
@@ -332,26 +332,26 @@ private fun DeleteCharacterDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Удалить персонажа?"
+                text = stringResource(R.string.delete_character_title)
             )
         },
         text = {
             Text(
-                text = "Персонаж \"$characterName\" будет удалён без возможности восстановления."
+                text = stringResource(R.string.delete_character_message, characterName)
             )
         },
         confirmButton = {
             TextButton(
                 onClick = onConfirm
             ) {
-                Text("Удалить")
+                Text(stringResource(R.string.delete))
             }
         },
         dismissButton = {
             TextButton(
                 onClick = onDismiss
             ) {
-                Text("Отмена")
+                Text(stringResource(R.string.cancel))
             }
         }
     )

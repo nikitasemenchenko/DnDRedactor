@@ -21,7 +21,7 @@ enum class CreationStep {
     RACE,
     CLASS,
     BACKSTORY,
-    HUMAN_TRAITS,
+    TRAITS,
     ABILITY_GENERATION_METHOD,
     RANDOM_ABILITIES,
     POINT_BUY_ABILITIES,

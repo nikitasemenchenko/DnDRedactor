@@ -15,10 +15,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.R
 import com.example.dndredactor.data.model.calculateProficiencyBonus
 import com.example.dndredactor.data.model.textAsModifier
+import com.example.dndredactor.presentation.characterEdit.ReadOnlyInfo
 import com.example.dndredactor.presentation.creation.CreationViewModel
 import com.example.dndredactor.presentation.theme.ButtonColor
 import com.example.dndredactor.presentation.theme.LightColor
@@ -39,34 +41,33 @@ fun CombatStatsScreen(
         Title(R.string.combat_stats_selection)
 
         CombatCounterRow(
-            title = "Уровень",
+            title = stringResource(R.string.level),
             value = character.level.toString(),
             onMinus = vm::decreaseLevel,
             onPlus = vm::increaseLevel
         )
 
-        Text(
-            text = "Бонус мастерства: ${textAsModifier(calculateProficiencyBonus(character.level))}",
-            color = LightColor,
-            style = MaterialTheme.typography.bodyLarge
+        ReadOnlyInfo(
+            title = stringResource(R.string.proficiency_bonus),
+            value = textAsModifier(calculateProficiencyBonus(character.level))
         )
 
         CombatCounterRow(
-            title = "Класс доспеха",
+            title = stringResource(R.string.armor_class),
             value = character.armorClass.toString(),
             onMinus = vm::decreaseArmorClass,
             onPlus = vm::increaseArmorClass
         )
 
         CombatCounterRow(
-            title = "Максимум HP",
+            title = stringResource(R.string.max_hit_points),
             value = character.maxHitPoints.toString(),
             onMinus = vm::decreaseMaxHitPoints,
             onPlus = vm::increaseMaxHitPoints
         )
 
         Text(
-            text = "Текущие HP при создании будут равны максимуму HP.",
+            text = stringResource(R.string.creation_hp_hint),
             color = LightColor,
             style = MaterialTheme.typography.bodyLarge
         )

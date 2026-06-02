@@ -78,7 +78,7 @@ fun DiceRollerTopBar(
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = "Бросок кубика",
+                text = stringResource(R.string.dice_roller),
                 color = LightColor,
                 fontWeight = FontWeight.Medium
             )
@@ -120,7 +120,7 @@ fun DiceRollerBottomBar(
             shape = MaterialTheme.shapes.large
         ) {
             Text(
-                text = "Бросить",
+                text = stringResource(R.string.roll_dice),
                 color = LightColor,
                 style = MaterialTheme.typography.titleLarge
             )
@@ -142,7 +142,7 @@ fun DiceRollerContent(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "Выберите кубик",
+            text = stringResource(R.string.select_dice),
             color = LightColor,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
@@ -164,14 +164,14 @@ fun DiceRollerContent(
         }
 
         CounterCard(
-            title = "Количество кубиков",
+            title = stringResource(R.string.dice_count),
             value = state.diceCount.toString(),
             onMinus = vm::decreaseDiceCount,
             onPlus = vm::increaseDiceCount
         )
 
         CounterCard(
-            title = "Модификатор",
+            title = stringResource(R.string.modifier),
             value = if (state.modifier >= 0) "+${state.modifier}" else state.modifier.toString(),
             onMinus = vm::decreaseModifier,
             onPlus = vm::increaseModifier
@@ -186,7 +186,7 @@ fun DiceRollerContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "История бросков",
+                    text = stringResource(R.string.roll_history),
                     color = LightColor,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
@@ -196,7 +196,7 @@ fun DiceRollerContent(
                     onClick = vm::clearHistory
                 ) {
                     Text(
-                        text = "Очистить",
+                        text = stringResource(R.string.clear),
                         color = LightColor
                     )
                 }
@@ -299,7 +299,7 @@ fun LastResultCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Результат",
+                text = stringResource(R.string.result),
                 color = Color.Black,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
@@ -307,7 +307,7 @@ fun LastResultCard(
 
             if (result == null) {
                 Text(
-                    text = "Бросьте кубики",
+                    text = stringResource(R.string.roll_to_start),
                     color = Color.Black,
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -326,7 +326,7 @@ fun LastResultCard(
                 )
 
                 Text(
-                    text = "Кубики: ${result.rolls.joinToString()}",
+                    text = stringResource(R.string.rolls, result.rolls.joinToString()),
                     color = Color.Black,
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -358,7 +358,7 @@ fun HistoryItem(
             )
 
             Text(
-                text = "Броски: ${result.rolls.joinToString()}",
+                text = stringResource(R.string.rolls, result.rolls.joinToString()),
                 color = Color.Black,
                 style = MaterialTheme.typography.bodyMedium
             )

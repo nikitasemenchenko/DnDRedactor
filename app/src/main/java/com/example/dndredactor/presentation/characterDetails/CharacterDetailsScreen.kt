@@ -28,9 +28,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.dndredactor.R
 import com.example.dndredactor.data.model.Ability
 import com.example.dndredactor.data.model.calculateProficiencyBonus
 import com.example.dndredactor.data.model.getModifier
@@ -101,7 +103,7 @@ private fun CharacterDetailsTopBar(
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = "Персонаж",
+                text = stringResource(R.string.character),
                 color = LightColor,
                 fontWeight = FontWeight.Medium
             )
@@ -110,7 +112,7 @@ private fun CharacterDetailsTopBar(
             IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Назад",
+                    contentDescription = stringResource(R.string.back),
                     tint = LightColor
                 )
             }
@@ -121,7 +123,7 @@ private fun CharacterDetailsTopBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = "Изменить персонажа"
+                    contentDescription = stringResource(R.string.edit_character)
                 )
             }
         },
@@ -153,81 +155,113 @@ private fun CharacterDetailsContent(
             fontWeight = FontWeight.Bold
         )
 
-        DetailsCard(title = "Основное") {
+        DetailsCard(title = stringResource(R.string.main)) {
             Column {
-                DetailRow(label = "Пол", value = character.gender.title)
-                DetailRow(label = "Уровень", value = character.level.toString())
-                DetailRow(label = "Раса", value = character.raceName ?: "Неизвестно")
-                DetailRow(label = "Подраса", value = character.subraceName ?: "Не выбрана")
-                DetailRow(label = "Класс", value = character.className ?: "Неизвестно")
-                DetailRow(label = "Архетип", value = character.archetypeName ?: "Не выбран")
                 DetailRow(
-                    label = "Бонус мастерства",
+                    label = stringResource(R.string.character_gender),
+                    value = stringResource(character.gender.titleRes)
+                )
+                DetailRow(
+                    label = stringResource(R.string.level),
+                    value = character.level.toString()
+                )
+                DetailRow(
+                    label = stringResource(R.string.race),
+                    value = character.raceName ?: stringResource(R.string.not_selected)
+                )
+                DetailRow(
+                    label = stringResource(R.string.subrace),
+                    value = character.subraceName ?: stringResource(R.string.not_selected)
+                )
+                DetailRow(
+                    label = stringResource(R.string.class_name),
+                    value = character.className ?: stringResource(R.string.not_selected)
+                )
+                DetailRow(
+                    label = stringResource(R.string.archetype),
+                    value = character.archetypeName ?: stringResource(R.string.not_selected)
+                )
+                DetailRow(
+                    label = stringResource(R.string.proficiency_bonus),
                     value = textAsModifier(calculateProficiencyBonus(character.level))
                 )
             }
         }
 
-        DetailsCard(title = "Предыстория") {
+        DetailsCard(title = stringResource(R.string.backstory_selection)) {
             Text(
-                text = character.backstory.ifBlank { "Не указано" },
+                text = character.backstory.ifBlank { stringResource(R.string.not_specified) },
                 color = Color.Black,
                 style = MaterialTheme.typography.bodyLarge
             )
         }
 
-        DetailsCard(title = "Характеристики") {
+        DetailsCard(title = stringResource(R.string.characteristics)) {
             Column {
                 Ability.entries.forEach { ability ->
                     val score = character.abilityScores.get(ability)
                     val modifier = character.abilityScores.getModifier(ability)
 
                     DetailRow(
-                        label = ability.title,
+                        label = stringResource(ability.titleRes),
                         value = "$score (${textAsModifier(modifier)})"
                     )
                 }
             }
         }
 
-        DetailsCard(title = "Боевые показатели") {
+        DetailsCard(title = stringResource(R.string.combat_stats_selection)) {
             Column {
-                DetailRow(label = "Класс доспеха", value = character.armorClass.toString())
                 DetailRow(
-                    label = "HP",
+                    label = stringResource(R.string.armor_class),
+                    value = character.armorClass.toString())
+                DetailRow(
+                    label = stringResource(R.string.hp),
                     value = "${character.currentHitPoints}/${character.maxHitPoints}"
                 )
             }
         }
 
-        DetailsCard(title = "Снаряжение") {
+        DetailsCard(title = stringResource(R.string.equipment_selection)) {
             Text(
-                text = character.equipment.ifBlank { "Не указано" },
+                text = character.equipment.ifBlank { stringResource(R.string.not_specified) },
                 color = Color.Black,
                 style = MaterialTheme.typography.bodyLarge
             )
         }
 
-        DetailsCard(title = "Внешность") {
+        DetailsCard(title = stringResource(R.string.appearance_selection)) {
             Text(
-                text = character.appearance.ifBlank { "Не указано" },
+                text = character.appearance.ifBlank { stringResource(R.string.not_specified) },
                 color = Color.Black,
                 style = MaterialTheme.typography.bodyLarge
             )
         }
 
-        DetailsCard(title = "Черты персонажа") {
+        DetailsCard(title = stringResource(R.string.character_traits)) {
             Column {
-                DetailRow(label = "Характер", value = character.personality)
-                DetailRow(label = "Идеал", value = character.ideal)
-                DetailRow(label = "Привязанность", value = character.attachment)
-                DetailRow(label = "Слабость", value = character.weakness)
+                DetailRow(
+                    label = stringResource(R.string.personality),
+                    value = character.personality
+                )
+                DetailRow(
+                    label = stringResource(R.string.ideal),
+                    value = character.ideal
+                )
+                DetailRow(
+                    label = stringResource(R.string.attachment),
+                    value = character.attachment
+                )
+                DetailRow(
+                    label = stringResource(R.string.weakness),
+                    value = character.weakness
+                )
             }
         }
 
-        DetailsCard(title = "Дополнительные сведения") {
+        DetailsCard(title = stringResource(R.string.additional_info_selection)) {
             Text(
-                text = character.additionalInfo.ifBlank { "Не указано" },
+                text = character.additionalInfo.ifBlank { stringResource(R.string.not_specified) },
                 color = Color.Black,
                 style = MaterialTheme.typography.bodyLarge
             )
@@ -278,7 +312,7 @@ fun DetailRow(
         )
 
         Text(
-            text = value.ifBlank { "Не указано" },
+            text = value.ifBlank { stringResource(R.string.not_specified)},
             color = Color.Black
         )
     }

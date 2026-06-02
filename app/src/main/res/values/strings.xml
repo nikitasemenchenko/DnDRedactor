@@ -1,59 +1,136 @@
 <resources>
     <string name="app_name">DnDRedactor</string>
-    <string name="russian_app_name">Редактор персонажей D&amp;D</string>
-    <string name="dndredactor">Редактор персонажей D%26D</string>
-    <string name="retry">Попробовать снова</string>
-    <string name="next">Далее</string>
-    <string name="back">Назад</string>
-    <string name="create">Создать</string>
-    <string name="delete">Удалить</string>
-    <string name="create_character">Создание персонажа</string>
-    <string name="character_name">Имя и фамилия персонажа</string>
-    <string name="character_gender">Пол персонажа:</string>
-    <string name="character_race">Раса персонажа</string>
-    <string name="character_subrace">Подраса персонажа</string>
-    <string name="race_selection">Раса персонажа:</string>
-    <string name="race_desc_placeholder">Выберите расу, чтобы увидеть описание</string>
-    <string name="subrace_selection">Подраса персонажа:</string>
-    <string name="subrace_desc_placeholder">Выберите подрасу, чтобы увидеть описание</string>
-    <string name="class_selection">Класс персонажа:</string>
-    <string name="class_desc_placeholder">Выберите класс, чтобы увидеть описание</string>
-    <string name="archetype_selection">Архетип класса:</string>
-    <string name="appearance_selection">Внешность персонажа:</string>
-    <string name="backstory_selection">Предыстория персонажа:</string>
-    <string name="backstory_placeholder">Опишите предысторию персонажа</string>
-    <string name="equipment_selection">Снаряжение персонажа:</string>
-    <string name="equipment_placeholder">Введите снаряжение персонажа</string>
-    <string name="appearance_placeholder">Опишите внешность персонажа</string>
-    <string name="character_traits">Черты характера:</string>
-    <string name="personality">Характер</string>
-    <string name="ideal">Идеал</string>
-    <string name="attachment">Привязанность</string>
-    <string name="weakness">Слабость</string>
-    <string name="archetype_desc_placeholder">Выберите архетип, чтобы увидеть описание</string>
-    <string name="male">Мужской</string>
-    <string name="female">Женский</string>
-    <string name="character_level">Уровень</string>
-    <string name="no_characters">У вас пока нет персонажей</string>
-    <string name="lets_create_character">Скорее создайте своего первого персонажа!</string>
+    <string name="dnd_editor">D&amp;D Character Editor</string>
 
-    <string name="combat_stats_selection">Боевые показатели:</string>
-    <string name="armor_class">Класс доспеха</string>
-    <string name="max_hit_points">Максимум HP</string>
-    <string name="current_hit_points">Текущие HP</string>
-    <string name="additional_info_selection">Дополнительные сведения:</string>
-    <string name="additional_info_placeholder">Дополнительные сведения о персонаже</string>
-    <string name="proficiency_bonus">Бонус мастерства</string>
+    <string name="retry">Retry</string>
+    <string name="next">Next</string>
+    <string name="back">Back</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="create">Create</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="not_specified">Not specified</string>
+    <string name="unknown">Unknown</string>
+    <string name="not_selected">Not selected</string>
 
-    <string name="fieldFillingError">Все поля должны быть заполнены.</string>
-    <string name="characterLoadError">Не удалось загрузить персонажей.</string>
-    <string name="characterDeleteError">Не удалось удалить персонажа.</string>
-    <string name="internetError">Проверьте подключение к интернету.</string>
-    <string name="loadError">Ошибка загрузки. Попробуйте снова.</string>
-    <string name="raceError">Не удалось загрузить расы</string>
+    <string name="create_character">Create Character</string>
+    <string name="edit_character">Edit Character</string>
+    <string name="character">Character</string>
 
-    <string name="main">Основное</string>
-    <string name="characteristics">Характеристики:</string>
-    <string name="appearance_traits">Внешность и черты характера:</string>
+    <string name="character_name">Character name</string>
+    <string name="character_gender">Character gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
 
+    <string name="main">Main</string>
+    <string name="level">Level</string>
+    <string name="character_level">Character level</string>
+    <string name="proficiency_bonus">Proficiency bonus</string>
+
+    <string name="race">Race</string>
+    <string name="subrace">Subrace</string>
+    <string name="class_name">Class</string>
+    <string name="archetype">Archetype</string>
+
+    <string name="character_race">Character race</string>
+    <string name="character_subrace">Character subrace</string>
+    <string name="race_selection">Character race</string>
+    <string name="subrace_selection">Character subrace</string>
+    <string name="class_selection">Character class</string>
+    <string name="archetype_selection">Class archetype</string>
+
+    <string name="race_desc_placeholder">Select a race to see its description.</string>
+    <string name="subrace_desc_placeholder">Select a subrace to see its description.</string>
+    <string name="archetype_desc_placeholder">Select an archetype to see its description.</string>
+
+    <string name="change_race_and_class">Change race and class</string>
+    <string name="hide_race_and_class_change">Hide race and class change</string>
+    <string name="core_character_options">Core character options</string>
+    <string name="character_main_characteristics">Character main characteristics</string>
+
+    <string name="backstory_selection">Backstory</string>
+    <string name="backstory_description">Describe the character’s origin, past, goals, and important life events.</string>
+    <string name="backstory_placeholder">Enter character backstory</string>
+
+    <string name="equipment_selection">Equipment</string>
+    <string name="equipment_description">Enter weapons, armor, tools, gold, items, and everything the character carries.</string>
+    <string name="equipment_placeholder">Enter character equipment</string>
+
+    <string name="appearance_selection">Appearance</string>
+    <string name="appearance_traits">Appearance and personality traits</string>
+    <string name="appearance_placeholder">Describe character appearance</string>
+
+    <string name="character_traits">Personality traits</string>
+    <string name="personality">Personality</string>
+    <string name="ideal">Ideal</string>
+    <string name="attachment">Attachment</string>
+    <string name="weakness">Weakness</string>
+
+    <string name="ability_generation_method">Ability generation method</string>
+    <string name="random_generation">Random generation</string>
+    <string name="random_generation_description">Roll 4d6 and drop the lowest result.</string>
+    <string name="point_buy">Point buy</string>
+    <string name="point_buy_description">Distribute 27 points between ability scores.</string>
+    <string name="random_abilities">Random ability scores</string>
+    <string name="regenerate">Regenerate</string>
+    <string name="remaining_points">Remaining points: %1$d</string>
+
+    <string name="characteristics">Ability scores</string>
+    <string name="strength">Strength</string>
+    <string name="dexterity">Dexterity</string>
+    <string name="constitution">Constitution</string>
+    <string name="intelligence">Intelligence</string>
+    <string name="wisdom">Wisdom</string>
+    <string name="charisma">Charisma</string>
+
+    <string name="combat_stats_selection">Combat stats</string>
+    <string name="armor_class">Armor class</string>
+    <string name="max_hit_points">Max HP</string>
+    <string name="current_hit_points">Current HP</string>
+    <string name="creation_hp_hint">Current HP will be equal to max HP when the character is created.</string>
+
+    <string name="additional_info_selection">Additional information</string>
+    <string name="additional_info_description">Use this field for any extra character notes.</string>
+    <string name="additional_info_placeholder">Enter additional character information</string>
+
+    <string name="summary_title">Review character</string>
+    <string name="description">Description</string>
+    <string name="items">Items</string>
+    <string name="hp">HP</string>
+
+    <string name="no_characters">You do not have any characters yet.</string>
+    <string name="lets_create_character">Create your first character.</string>
+
+    <string name="dice_roller">Dice Roller</string>
+    <string name="roll_dice">Roll Dice</string>
+    <string name="select_dice">Select dice</string>
+    <string name="dice_count">Dice count</string>
+    <string name="modifier">Modifier</string>
+    <string name="result">Result</string>
+    <string name="roll_to_start">Roll the dice</string>
+    <string name="dice_values">Dice: %1$s</string>
+    <string name="roll_history">Roll history</string>
+    <string name="clear">Clear</string>
+    <string name="rolls">Rolls: %1$s</string>
+
+    <string name="delete_character_title">Delete character?</string>
+    <string name="delete_character_message">Character "%1$s" will be permanently deleted.</string>
+
+    <string name="error_required_fields">Fill in the required character fields.</string>
+    <string name="error_load_characters">Failed to load characters.</string>
+    <string name="error_character_not_found">Character not found.</string>
+    <string name="error_generic">Something went wrong.</string>
+    <string name="error_load_reference_data">Failed to load reference data.</string>
+    <string name="error_load_race">Failed to load race description.</string>
+    <string name="error_load_subrace">Failed to load subrace description.</string>
+    <string name="error_load_class">Failed to load class archetypes.</string>
+    <string name="error_load_archetype">Failed to load archetype description.</string>
+    <string name="error_save_character">Failed to save character.</string>
+    <string name="error_update_character">Failed to update character.</string>
+    <string name="error_wait_for_loading">Wait until loading is complete.</string>
+    <string name="error_select_subrace">Select a subrace.</string>
+    <string name="error_select_archetype">Select a class archetype.</string>
+    <string name="error_invalid_character">Check character fields.</string>
+    <string name="error_invalid_combat_stats">Check combat stats.</string>
 </resources>

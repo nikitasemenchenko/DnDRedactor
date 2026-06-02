@@ -17,7 +17,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.dndredactor.R
 import com.example.dndredactor.data.model.Ability
 import com.example.dndredactor.presentation.creation.CreationViewModel
 import com.example.dndredactor.presentation.theme.ButtonColor
@@ -39,7 +41,7 @@ fun RandomAbilityScoresScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            text = "Случайные характеристики",
+            text = stringResource(R.string.random_abilities),
             color = LightColor,
             style = MaterialTheme.typography.titleLarge
         )
@@ -51,14 +53,14 @@ fun RandomAbilityScoresScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "Сгенерировать заново",
+                text = stringResource(R.string.regenerate),
                 color = LightColor
             )
         }
 
         Ability.entries.forEach { ability ->
             AbilityResultCard(
-                title = ability.title,
+                title = stringResource(ability.titleRes),
                 value = scores.get(ability)
             )
         }

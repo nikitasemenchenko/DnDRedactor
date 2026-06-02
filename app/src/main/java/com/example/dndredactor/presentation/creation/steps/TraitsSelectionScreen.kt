@@ -16,7 +16,7 @@ import com.example.dndredactor.R
 import com.example.dndredactor.presentation.creation.CreationViewModel
 
 @Composable
-fun HumanTraitsSelectionScreen(
+fun TraitsSelectionScreen(
     vm: CreationViewModel,
 ) {
 

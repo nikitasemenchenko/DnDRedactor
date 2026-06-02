@@ -18,7 +18,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.dndredactor.R
 import com.example.dndredactor.data.model.AbilityGenerationMethod
 import com.example.dndredactor.presentation.creation.CreationViewModel
 import com.example.dndredactor.presentation.theme.LightButtonColor
@@ -38,7 +40,7 @@ fun AbilityGenerationMethodScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            text = "Способ генерации характеристик",
+            text = stringResource(R.string.ability_generation_method),
             color = LightColor,
             style = MaterialTheme.typography.titleLarge
         )
@@ -82,12 +84,12 @@ fun AbilityMethodCard(
                 )
             }
             Text(
-                text = method.title,
+                text = stringResource(method.titleRes),
                 color = Color.Black,
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = method.description,
+                text = stringResource(method.descriptionRes),
                 color = Color.Black,
                 style = MaterialTheme.typography.titleMedium
             )

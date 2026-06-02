@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.R
 import com.example.dndredactor.presentation.creation.CreationViewModel
@@ -34,7 +35,7 @@ fun AdditionalInfoScreen(
     ) {
         Title(R.string.additional_info_selection)
         Text(
-            text = "В этом поле можно ввести дополнительную информацию о персонаже.",
+            text = stringResource(R.string.additional_info_description),
             color = LightColor,
             style = MaterialTheme.typography.bodyLarge
         )

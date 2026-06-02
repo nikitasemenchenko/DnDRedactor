@@ -1,27 +1,30 @@
 package com.example.dndredactor.data.model
 
+import androidx.annotation.StringRes
+import com.example.dndredactor.R
+
 enum class Ability(
-    val title: String
+    @StringRes val titleRes: Int
 ) {
-    STRENGTH("Сила"),
-    DEXTERITY("Ловкость"),
-    CONSTITUTION("Телосложение"),
-    INTELLIGENCE("Интеллект"),
-    WISDOM("Мудрость"),
-    CHARISMA("Харизма")
+    STRENGTH(R.string.strength),
+    DEXTERITY(R.string.dexterity),
+    CONSTITUTION(R.string.constitution),
+    INTELLIGENCE(R.string.intelligence),
+    WISDOM(R.string.wisdom),
+    CHARISMA(R.string.charisma)
 }
 
 enum class AbilityGenerationMethod(
-    val title: String,
-    val description: String
+    @StringRes val titleRes: Int,
+    @StringRes val descriptionRes: Int
 ) {
     RANDOM(
-        title = "Случайная генерация",
-        description = "Бросаются 4 кубика d6, худший результат отбрасывается."
+        titleRes = R.string.random_generation,
+        descriptionRes = R.string.random_generation_description
     ),
     POINT_BUY(
-        title = "Закуп характеристик",
-        description = "Вы распределяете 27 очков между характеристиками."
+        titleRes = R.string.point_buy,
+        descriptionRes = R.string.point_buy_description
     )
 }
 

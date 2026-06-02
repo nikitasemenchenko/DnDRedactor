@@ -13,8 +13,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.dndredactor.R
 import com.example.dndredactor.data.model.Ability
 import com.example.dndredactor.data.model.calculateProficiencyBonus
 import com.example.dndredactor.data.model.getModifier
@@ -22,7 +24,6 @@ import com.example.dndredactor.data.model.textAsModifier
 import com.example.dndredactor.presentation.creation.CreationViewModel
 import com.example.dndredactor.presentation.theme.LightColor
 
-// заглушка
 @Composable
 fun CreationSummaryScreen(
     vm: CreationViewModel
@@ -45,65 +46,82 @@ fun CreationSummaryScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Проверьте персонажа",
+                text = stringResource(R.string.summary_title),
                 color = LightColor,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
 
-            SummaryBlock(title = "Основное") {
-                SummaryLine("Имя", character.fullName)
-                SummaryLine("Уровень", character.level.toString())
-                SummaryLine("Раса", character.raceName ?: "Не выбрана")
-                SummaryLine("Подраса", character.subraceName ?: "Не выбрана")
-                SummaryLine("Класс", character.className ?: "Не выбран")
-                SummaryLine("Архетип", character.archetypeName ?: "Не выбран")
+            SummaryBlock(title = stringResource(R.string.main)) {
                 SummaryLine(
-                    key = "Бонус мастерства",
+                    stringResource(R.string.character_name),
+                    character.fullName
+                )
+                SummaryLine(
+                    stringResource(R.string.level),
+                    character.level.toString()
+                )
+                SummaryLine(
+                    stringResource(R.string.race),
+                    character.raceName ?: stringResource(R.string.not_selected)
+                )
+                SummaryLine(
+                    stringResource(R.string.subrace),
+                    character.subraceName ?: stringResource(R.string.not_selected)
+                )
+                SummaryLine(stringResource(R.string.class_name),
+                    character.className ?: stringResource(R.string.not_selected)
+                )
+                SummaryLine(
+                    stringResource(R.string.archetype),
+                    character.archetypeName ?: stringResource(R.string.not_selected)
+                )
+                SummaryLine(
+                    key = stringResource(R.string.proficiency_bonus),
                     value = textAsModifier(calculateProficiencyBonus(character.level))
                 )
             }
 
-            SummaryBlock(title = "Предыстория") {
+            SummaryBlock(title = stringResource(R.string.backstory_selection)) {
                 SummaryLine(
-                    key = "Описание",
+                    key = stringResource(R.string.description),
                     value = character.backstory
                 )
             }
 
-            SummaryBlock(title =  "Характеристики") {
+            SummaryBlock(title =  stringResource(R.string.characteristics)) {
                 Ability.entries.forEach { ability ->
                     val score = character.abilityScores.get(ability)
                     val modifier = character.abilityScores.getModifier(ability)
 
                     SummaryLine(
-                        key = ability.title,
+                        key = stringResource(ability.titleRes),
                         value = "$score (${textAsModifier(modifier)})"
                     )
                 }
             }
 
-            SummaryBlock(title = "Боевые показатели") {
+            SummaryBlock(title = stringResource(R.string.combat_stats_selection)) {
                 SummaryLine(
-                    key = "Класс доспеха",
+                    key = stringResource(R.string.armor_class),
                     value = character.armorClass.toString()
                 )
                 SummaryLine(
-                    key = "HP",
+                    key = stringResource(R.string.hp),
                     value = "${character.currentHitPoints}/${character.maxHitPoints}"
                 )
             }
 
-            SummaryBlock(title = "Снаряжение") {
+            SummaryBlock(title = stringResource(R.string.equipment_selection)) {
                 SummaryLine(
-                    key = "Предметы",
+                    key = stringResource(R.string.items),
                     value = character.equipment
                 )
             }
 
-            SummaryBlock(title = "Дополнительные сведения") {
+            SummaryBlock(title = stringResource(R.string.additional_info_selection)) {
                 SummaryLine(
-                    key = "Описание",
+                    key = stringResource(R.string.description),
                     value = character.additionalInfo
                 )
             }
@@ -117,7 +135,7 @@ fun SummaryLine(
     value: String
 ){
     Text(
-        text = "$key: ${value.ifBlank { "Не указано" }}",
+        text = "$key: ${value.ifBlank { stringResource(R.string.not_specified) } }",
         color = LightColor,
         style = MaterialTheme.typography.bodyLarge
     )

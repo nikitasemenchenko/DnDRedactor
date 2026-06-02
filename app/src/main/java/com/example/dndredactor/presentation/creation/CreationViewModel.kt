@@ -565,8 +565,8 @@ class CreationViewModel @Inject constructor(
             currentStep = when (_uiState.value.currentStep) {
                 CreationStep.RACE -> CreationStep.CLASS
                 CreationStep.CLASS -> CreationStep.BACKSTORY
-                CreationStep.BACKSTORY -> CreationStep.HUMAN_TRAITS
-                CreationStep.HUMAN_TRAITS -> CreationStep.ABILITY_GENERATION_METHOD
+                CreationStep.BACKSTORY -> CreationStep.TRAITS
+                CreationStep.TRAITS -> CreationStep.ABILITY_GENERATION_METHOD
                 CreationStep.ABILITY_GENERATION_METHOD -> {
                     when (_uiState.value.character.abilityGenerationMethod) {
                         AbilityGenerationMethod.RANDOM -> CreationStep.RANDOM_ABILITIES
@@ -591,8 +591,8 @@ class CreationViewModel @Inject constructor(
                 CreationStep.RACE -> CreationStep.RACE
                 CreationStep.CLASS -> CreationStep.RACE
                 CreationStep.BACKSTORY -> CreationStep.CLASS
-                CreationStep.HUMAN_TRAITS -> CreationStep.BACKSTORY
-                CreationStep.ABILITY_GENERATION_METHOD -> CreationStep.HUMAN_TRAITS
+                CreationStep.TRAITS -> CreationStep.BACKSTORY
+                CreationStep.ABILITY_GENERATION_METHOD -> CreationStep.TRAITS
                 CreationStep.RANDOM_ABILITIES -> CreationStep.ABILITY_GENERATION_METHOD
                 CreationStep.POINT_BUY_ABILITIES -> CreationStep.ABILITY_GENERATION_METHOD
                 CreationStep.COMBAT_STATS -> {
@@ -634,7 +634,7 @@ class CreationViewModel @Inject constructor(
 
             CreationStep.BACKSTORY -> true
 
-            CreationStep.HUMAN_TRAITS -> true
+            CreationStep.TRAITS -> true
 
             CreationStep.ABILITY_GENERATION_METHOD -> {
                 _uiState.value.character.abilityGenerationMethod != null

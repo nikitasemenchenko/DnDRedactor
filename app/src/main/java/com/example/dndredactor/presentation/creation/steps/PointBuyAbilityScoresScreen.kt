@@ -18,7 +18,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.dndredactor.R
 import com.example.dndredactor.data.model.Ability
 import com.example.dndredactor.presentation.creation.CreationViewModel
 import com.example.dndredactor.presentation.theme.ButtonColor
@@ -40,20 +42,20 @@ fun PointBuyAbilityScoresScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            text = "Закуп характеристик",
+            text = stringResource(R.string.point_buy),
             color = LightColor,
             style = MaterialTheme.typography.titleLarge
         )
 
         Text(
-            text = "Осталось очков: $remainingPoints",
+            text = stringResource(R.string.remaining_points, remainingPoints),
             color = LightColor,
             style = MaterialTheme.typography.titleMedium
         )
 
         Ability.entries.forEach { ability ->
             PointBuyAbilityCard(
-                title = ability.title,
+                title = stringResource(ability.titleRes),
                 value = scores.get(ability),
                 onMinusClick = { vm.decreaseAbility(ability) },
                 onPlusClick = { vm.increaseAbility(ability) }

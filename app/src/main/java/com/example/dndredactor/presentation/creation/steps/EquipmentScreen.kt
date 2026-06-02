@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.R
 import com.example.dndredactor.presentation.creation.CreationViewModel
@@ -34,7 +35,7 @@ fun EquipmentScreen(
     ) {
         Title(R.string.equipment_selection)
         Text(
-            text = "Укажите оружие, броню, инструменты, золото, предметы и всё, что персонаж носит с собой.",
+            text = stringResource(R.string.equipment_description),
             color = LightColor,
             style = MaterialTheme.typography.bodyLarge
         )
@@ -44,6 +45,5 @@ fun EquipmentScreen(
             labelRes = R.string.equipment_placeholder,
             minLines = 8
         )
-
     }
 }

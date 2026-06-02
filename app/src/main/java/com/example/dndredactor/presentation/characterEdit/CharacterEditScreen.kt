@@ -128,7 +128,7 @@ fun CharacterEditTopBar(
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = "Редактирование персонажа",
+                text = stringResource(R.string.edit_character),
                 color = LightColor,
                 fontWeight = FontWeight.Medium
             )
@@ -172,7 +172,7 @@ fun CharacterEditBottomBar(
                 colors = ButtonDefaults.buttonColors(containerColor = ButtonColor),
                 shape = MaterialTheme.shapes.large
             ) {
-                Text("Отмена", color = LightColor)
+                Text(stringResource(R.string.cancel), color = LightColor)
             }
 
             Button(
@@ -181,7 +181,7 @@ fun CharacterEditBottomBar(
                 colors = ButtonDefaults.buttonColors(containerColor = ButtonColor),
                 shape = MaterialTheme.shapes.large
             ) {
-                Text("Сохранить", color = LightColor)
+                Text(stringResource(R.string.save), color = LightColor)
             }
         }
     }
@@ -236,28 +236,28 @@ fun CharacterEditContent(
         )
 
         ReadOnlyInfo(
-            title = "Бонус мастерства",
+            title = stringResource(R.string.proficiency_bonus),
             value = textAsModifier(calculateProficiencyBonus(character.level))
         )
 
         ReadOnlyInfo(
-            title = "Раса",
-            value = character.raceName ?: "Неизвестно"
+            title = stringResource(R.string.race),
+            value = character.raceName ?: stringResource(R.string.not_selected)
         )
 
         ReadOnlyInfo(
-            title = "Подраса",
-            value = character.subraceName ?: "Не выбрана"
+            title = stringResource(R.string.subrace),
+            value = character.subraceName ?: stringResource(R.string.not_selected)
         )
 
         ReadOnlyInfo(
-            title = "Класс",
-            value = character.className ?: "Неизвестно"
+            title = stringResource(R.string.class_name),
+            value = character.className ?: stringResource(R.string.not_selected)
         )
 
         ReadOnlyInfo(
-            title = "Архетип",
-            value = character.archetypeName ?: "Не выбран"
+            title = stringResource(R.string.archetype),
+            value = character.archetypeName ?: stringResource(R.string.not_selected)
         )
         Button(
             onClick = vm::onCoreEditClick,
@@ -267,9 +267,9 @@ fun CharacterEditContent(
         ) {
             Text(
                 text = if (state.coreEditEnabled) {
-                    "Скрыть изменение расы и класса"
+                    stringResource(R.string.change_race_and_class)
                 } else {
-                    "Изменить расу и класс"
+                    stringResource(R.string.hide_race_and_class_change)
                 },
                 color = LightColor
             )
@@ -283,21 +283,21 @@ fun CharacterEditContent(
         }
 
         EditableNumberRow(
-            title = "Класс доспеха",
+            title = stringResource(R.string.armor_class),
             value = character.armorClass.toString(),
             onMinus = vm::decreaseArmorClass,
             onPlus = vm::increaseArmorClass
         )
 
         EditableNumberRow(
-            title = "Максимум HP",
+            title = stringResource(R.string.max_hit_points),
             value = character.maxHitPoints.toString(),
             onMinus = vm::decreaseMaxHitPoints,
             onPlus = vm::increaseMaxHitPoints
         )
 
         EditableNumberRow(
-            title = "Текущие HP",
+            title = stringResource(R.string.current_hit_points),
             value = character.currentHitPoints.toString(),
             onMinus = vm::decreaseCurrentHitPoints,
             onPlus = vm::increaseCurrentHitPoints
@@ -362,7 +362,7 @@ fun CharacterEditContent(
 
         Ability.entries.forEach { ability ->
             AbilityEditRow(
-                title = ability.title,
+                title = stringResource(ability.titleRes),
                 value = character.abilityScores.get(ability),
                 onMinus = { vm.decreaseAbility(ability) },
                 onPlus = { vm.increaseAbility(ability) }
@@ -382,7 +382,7 @@ fun CharacterEditContent(
 
 
 @Composable
-private fun ReadOnlyInfo(
+fun ReadOnlyInfo(
     title: String,
     value: String
 ) {
@@ -394,7 +394,7 @@ private fun ReadOnlyInfo(
 }
 
 @Composable
-private fun AbilityEditRow(
+fun AbilityEditRow(
     title: String,
     value: Int,
     onMinus: () -> Unit,
@@ -439,7 +439,7 @@ private fun AbilityEditRow(
 }
 
 @Composable
-private fun CharacterCoreEditBlock(
+fun CharacterCoreEditBlock(
     state: CharacterEditUiState.Success,
     vm: CharacterEditViewModel
 ) {
@@ -449,7 +449,7 @@ private fun CharacterCoreEditBlock(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            text = "Основные параметры персонажа",
+            text = stringResource(R.string.character_main_characteristics),
             color = LightColor,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
@@ -559,7 +559,7 @@ fun LevelEdit(
 }
 
 @Composable
-private fun EditableNumberRow(
+fun EditableNumberRow(
     title: String,
     value: String,
     onMinus: () -> Unit,

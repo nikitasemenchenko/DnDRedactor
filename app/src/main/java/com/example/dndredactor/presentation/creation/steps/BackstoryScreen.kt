@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.R
 import com.example.dndredactor.presentation.creation.CreationViewModel
@@ -35,7 +36,7 @@ fun BackstoryScreen(
         Title(R.string.backstory_selection)
 
         Text(
-            text = "Опишите происхождение, прошлое, цели и важные события персонажа.",
+            text = stringResource(R.string.backstory_description),
             color = LightColor,
             style = MaterialTheme.typography.bodyLarge
         )

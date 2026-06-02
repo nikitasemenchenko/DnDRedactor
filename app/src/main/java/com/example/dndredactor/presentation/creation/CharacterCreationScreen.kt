@@ -40,7 +40,7 @@ import com.example.dndredactor.presentation.creation.steps.ClassSelectionScreen
 import com.example.dndredactor.presentation.creation.steps.CombatStatsScreen
 import com.example.dndredactor.presentation.creation.steps.CreationSummaryScreen
 import com.example.dndredactor.presentation.creation.steps.EquipmentScreen
-import com.example.dndredactor.presentation.creation.steps.HumanTraitsSelectionScreen
+import com.example.dndredactor.presentation.creation.steps.TraitsSelectionScreen
 import com.example.dndredactor.presentation.creation.steps.PointBuyAbilityScoresScreen
 import com.example.dndredactor.presentation.creation.steps.RaceSelectionScreen
 import com.example.dndredactor.presentation.creation.steps.RandomAbilityScoresScreen
@@ -100,7 +100,7 @@ fun CharacterCreationScreen(
                     CreationStep.RACE -> RaceSelectionScreen(vm = vm)
                     CreationStep.CLASS -> ClassSelectionScreen(vm = vm)
                     CreationStep.BACKSTORY -> BackstoryScreen(vm = vm)
-                    CreationStep.HUMAN_TRAITS -> HumanTraitsSelectionScreen(vm = vm)
+                    CreationStep.TRAITS -> TraitsSelectionScreen(vm = vm)
                     CreationStep.ABILITY_GENERATION_METHOD -> AbilityGenerationMethodScreen(vm = vm)
                     CreationStep.RANDOM_ABILITIES -> RandomAbilityScoresScreen(vm = vm)
                     CreationStep.POINT_BUY_ABILITIES -> PointBuyAbilityScoresScreen(vm = vm)
