@@ -13,6 +13,18 @@ import com.example.dndredactor.data.model.Subrace
 import com.example.dndredactor.domain.repository.CreationRepository
 import com.example.dndredactor.domain.repository.LocalCharacterRepository
 import com.example.dndredactor.presentation.components.AppMessage
+import com.example.dndredactor.presentation.creation.logic.AbilityScoreGenerator.generateScores
+import com.example.dndredactor.presentation.creation.logic.CreationLimits.MAX_ARMOR_CLASS
+import com.example.dndredactor.presentation.creation.logic.CreationLimits.MAX_CHARACTER_LEVEL
+import com.example.dndredactor.presentation.creation.logic.CreationLimits.MAX_HIT_POINTS
+import com.example.dndredactor.presentation.creation.logic.CreationLimits.MAX_POINT_BUY_SCORE
+import com.example.dndredactor.presentation.creation.logic.CreationLimits.MIN_ARMOR_CLASS
+import com.example.dndredactor.presentation.creation.logic.CreationLimits.MIN_CHARACTER_LEVEL
+import com.example.dndredactor.presentation.creation.logic.CreationLimits.MIN_HIT_POINTS
+import com.example.dndredactor.presentation.creation.logic.CreationLimits.MIN_POINT_BUY_SCORE
+import com.example.dndredactor.presentation.creation.logic.CreationStepNavigator
+import com.example.dndredactor.presentation.creation.logic.CreationValidator
+import com.example.dndredactor.presentation.creation.logic.PointBuyRules
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,7 +34,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class CreationViewModel @Inject constructor(
@@ -368,13 +379,9 @@ class CreationViewModel @Inject constructor(
     }
 
     fun getRemainingPoints(): Int {
-        val scores = _uiState.value.character.abilityScores
-
-        val spent = Ability.entries.sumOf { ability ->
-            POINT_BUY_COST[scores.get(ability)] ?: 0
-        }
-
-        return POINT_BUY_BUDGET - spent
+        return PointBuyRules.getRemainingPoints(
+            _uiState.value.character.abilityScores
+        )
     }
 
     fun onBackstoryChanged(backstory: String){
@@ -408,8 +415,8 @@ class CreationViewModel @Inject constructor(
         if (currentValue >= MAX_POINT_BUY_SCORE) return
 
         val nextValue = currentValue + 1
-        val currentCost = POINT_BUY_COST[currentValue] ?: return
-        val nextCost = POINT_BUY_COST[nextValue] ?: return
+        val currentCost = PointBuyRules.getCost(currentValue) ?: return
+        val nextCost = PointBuyRules.getCost(nextValue) ?: return
         val diff = nextCost - currentCost
 
         if (getRemainingPoints() < diff) return
@@ -447,26 +454,6 @@ class CreationViewModel @Inject constructor(
 
     fun getClassById(id: String?): CharacterClass? =
         _uiState.value.classes.find { it.id == id }
-
-    fun generateScores(): AbilityScores {
-        return AbilityScores(
-            strength = rollAbilityScore(),
-            dexterity = rollAbilityScore(),
-            constitution = rollAbilityScore(),
-            intelligence = rollAbilityScore(),
-            wisdom = rollAbilityScore(),
-            charisma = rollAbilityScore()
-        )
-    }
-
-    fun rollAbilityScore(): Int {
-        return List(4) {
-            Random.nextInt(from = 1, until = 7)
-        }
-            .sortedDescending()
-            .take(3)
-            .sum()
-    }
 
     fun regenerateScores() {
         _uiState.value = _uiState.value.copy(
@@ -569,103 +556,29 @@ class CreationViewModel @Inject constructor(
     }
 
     fun goToNextStep() {
-        _uiState.value = _uiState.value.copy(
-            currentStep = when (_uiState.value.currentStep) {
-                CreationStep.RACE -> CreationStep.CLASS
-                CreationStep.CLASS -> CreationStep.BACKSTORY
-                CreationStep.BACKSTORY -> CreationStep.TRAITS
-                CreationStep.TRAITS -> CreationStep.ABILITY_GENERATION_METHOD
-                CreationStep.ABILITY_GENERATION_METHOD -> {
-                    when (_uiState.value.character.abilityGenerationMethod) {
-                        AbilityGenerationMethod.RANDOM -> CreationStep.RANDOM_ABILITIES
-                        AbilityGenerationMethod.POINT_BUY -> CreationStep.POINT_BUY_ABILITIES
-                        else -> CreationStep.ABILITY_GENERATION_METHOD
-                    }
-                }
+        val state = _uiState.value
 
-                CreationStep.RANDOM_ABILITIES -> CreationStep.COMBAT_STATS
-                CreationStep.POINT_BUY_ABILITIES -> CreationStep.COMBAT_STATS
-                CreationStep.COMBAT_STATS -> CreationStep.EQUIPMENT
-                CreationStep.EQUIPMENT -> CreationStep.ADDITIONAL_INFO
-                CreationStep.ADDITIONAL_INFO -> CreationStep.FINAL
-                CreationStep.FINAL -> CreationStep.FINAL
-            }
+        _uiState.value = state.copy(
+            currentStep = CreationStepNavigator.getNextStep(
+                currentStep = state.currentStep,
+                character = state.character
+            )
         )
     }
 
     fun goToPreviousStep() {
-        _uiState.value = _uiState.value.copy(
-            currentStep = when (_uiState.value.currentStep) {
-                CreationStep.RACE -> CreationStep.RACE
-                CreationStep.CLASS -> CreationStep.RACE
-                CreationStep.BACKSTORY -> CreationStep.CLASS
-                CreationStep.TRAITS -> CreationStep.BACKSTORY
-                CreationStep.ABILITY_GENERATION_METHOD -> CreationStep.TRAITS
-                CreationStep.RANDOM_ABILITIES -> CreationStep.ABILITY_GENERATION_METHOD
-                CreationStep.POINT_BUY_ABILITIES -> CreationStep.ABILITY_GENERATION_METHOD
-                CreationStep.COMBAT_STATS -> {
-                    when (_uiState.value.character.abilityGenerationMethod) {
-                        AbilityGenerationMethod.RANDOM -> CreationStep.RANDOM_ABILITIES
-                        AbilityGenerationMethod.POINT_BUY -> CreationStep.POINT_BUY_ABILITIES
-                        else -> CreationStep.ABILITY_GENERATION_METHOD
-                    }
-                }
+        val state = _uiState.value
 
-                CreationStep.EQUIPMENT -> CreationStep.COMBAT_STATS
-                CreationStep.ADDITIONAL_INFO -> CreationStep.EQUIPMENT
-                CreationStep.FINAL -> CreationStep.ADDITIONAL_INFO
-            }
+        _uiState.value = state.copy(
+            currentStep = CreationStepNavigator.getPreviousStep(
+                currentStep = state.currentStep,
+                character = state.character
+            )
         )
     }
 
     fun canGoToNextStep(): Boolean {
-        val character = _uiState.value.character
-        val selectedRace = getRaceById(character.raceId)
-        val selectedClass = getClassById(character.classId)
-
-        return when (_uiState.value.currentStep) {
-            CreationStep.RACE -> {
-                character.fullName.isNotBlank() &&
-                        character.gender != Gender.UNSPECIFIED &&
-                        selectedRace != null &&
-                        !_uiState.value.raceDetailsLoading &&
-                        !_uiState.value.subraceDetailsLoading &&
-                        (selectedRace.subraces.isEmpty() || character.subraceId != null)
-            }
-
-            CreationStep.CLASS -> {
-                selectedClass != null &&
-                        !_uiState.value.classDetailsLoading &&
-                        !_uiState.value.archetypeDetailsLoading &&
-                        (selectedClass.archetypes.isEmpty() || character.archetypeId != null)
-            }
-
-            CreationStep.BACKSTORY -> true
-
-            CreationStep.TRAITS -> true
-
-            CreationStep.ABILITY_GENERATION_METHOD -> {
-                _uiState.value.character.abilityGenerationMethod != null
-            }
-
-            CreationStep.RANDOM_ABILITIES -> true
-
-            CreationStep.POINT_BUY_ABILITIES -> {
-                getRemainingPoints() >= 0
-            }
-
-            CreationStep.COMBAT_STATS -> {
-                character.armorClass > 0 &&
-                        character.maxHitPoints > 0 &&
-                        character.currentHitPoints in 0..character.maxHitPoints
-            }
-
-            CreationStep.EQUIPMENT -> true
-
-            CreationStep.ADDITIONAL_INFO -> true
-
-            CreationStep.FINAL -> true
-        }
+        return CreationValidator.canGoToNextStep(_uiState.value)
     }
 
     fun saveCharacter() {
@@ -694,50 +607,7 @@ class CreationViewModel @Inject constructor(
     }
 
     fun canSaveCharacter(): Boolean {
-        val character = _uiState.value.character
-        val selectedRace = getRaceById(character.raceId)
-        val selectedClass = getClassById(character.classId)
-
-        return character.fullName.isNotBlank() &&
-                character.gender != Gender.UNSPECIFIED &&
-                character.level in MIN_CHARACTER_LEVEL..MAX_CHARACTER_LEVEL &&
-                selectedRace != null &&
-                selectedClass != null &&
-                !_uiState.value.raceDetailsLoading &&
-                !_uiState.value.subraceDetailsLoading &&
-                !_uiState.value.classDetailsLoading &&
-                !_uiState.value.archetypeDetailsLoading &&
-                character.armorClass > 0 &&
-                character.maxHitPoints > 0 &&
-                character.currentHitPoints in 0..character.maxHitPoints &&
-                (selectedRace.subraces.isEmpty() || character.subraceId != null) &&
-                (selectedClass.archetypes.isEmpty() || character.archetypeId != null)
-    }
-
-    companion object {
-        const val POINT_BUY_BUDGET = 27
-        const val MIN_POINT_BUY_SCORE = 8
-        const val MAX_POINT_BUY_SCORE = 15
-
-        const val MIN_ARMOR_CLASS = 1
-        const val MAX_ARMOR_CLASS = 40
-
-        const val MIN_HIT_POINTS = 1
-        const val MAX_HIT_POINTS = 1000
-
-        const val MIN_CHARACTER_LEVEL = 1
-        const val MAX_CHARACTER_LEVEL = 20
-
-        val POINT_BUY_COST = mapOf(
-            8 to 0,
-            9 to 1,
-            10 to 2,
-            11 to 3,
-            12 to 4,
-            13 to 5,
-            14 to 7,
-            15 to 9
-        )
+        return CreationValidator.canSaveCharacter(_uiState.value)
     }
 }
 
