@@ -13,6 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.R
+import com.example.dndredactor.presentation.components.CustomTextField
+import com.example.dndredactor.presentation.components.Title
 import com.example.dndredactor.presentation.creation.CreationViewModel
 
 @Composable
@@ -34,7 +36,7 @@ fun TraitsSelectionScreen(
         Title(R.string.appearance_selection)
         CustomTextField(
             value = uiState.character.appearance,
-            onChange = vm::onAppearanceChanged,
+            onValueChange = vm::onAppearanceChanged,
             labelRes = R.string.appearance_placeholder,
             minLines = 3
         )
@@ -42,25 +44,25 @@ fun TraitsSelectionScreen(
         Title(R.string.character_traits)
         CustomTextField(
             value = uiState.character.personality,
-            onChange = vm::onPersonalityChanged,
+            onValueChange = vm::onPersonalityChanged,
             labelRes = R.string.personality,
             minLines = 2
         )
         CustomTextField(
             value = uiState.character.ideal,
-            onChange = vm::onIdealChanged,
+            onValueChange = vm::onIdealChanged,
             labelRes = R.string.ideal,
             minLines = 2
         )
         CustomTextField(
             value = uiState.character.attachment,
-            onChange = vm::onAttachmentChanged,
+            onValueChange = vm::onAttachmentChanged,
             labelRes = R.string.attachment,
             minLines = 2
         )
         CustomTextField(
             value = uiState.character.weakness,
-            onChange = vm::onWeaknessChanged,
+            onValueChange = vm::onWeaknessChanged,
             labelRes = R.string.weakness,
             minLines = 2
         )

@@ -2,12 +2,9 @@ package com.example.dndredactor.presentation.creation.steps
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -15,15 +12,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.R
 import com.example.dndredactor.data.model.Ability
+import com.example.dndredactor.data.model.calculateAbilityModifier
+import com.example.dndredactor.data.model.textAsModifier
+import com.example.dndredactor.presentation.components.CounterRow
 import com.example.dndredactor.presentation.creation.CreationViewModel
-import com.example.dndredactor.presentation.theme.ButtonColor
 import com.example.dndredactor.presentation.theme.LightButtonColor
 import com.example.dndredactor.presentation.theme.LightColor
 
@@ -65,7 +62,7 @@ fun PointBuyAbilityScoresScreen(
 }
 
 @Composable
-private fun PointBuyAbilityCard(
+fun PointBuyAbilityCard(
     title: String,
     value: Int,
     onMinusClick: () -> Unit,
@@ -78,43 +75,11 @@ private fun PointBuyAbilityCard(
             containerColor = LightButtonColor
         )
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = title,
-                color = Color.Black,
-                style = MaterialTheme.typography.titleMedium
-            )
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Button(
-                    onClick = onMinusClick,
-                    colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
-                ) {
-                    Text("-", color = LightColor)
-                }
-
-                Text(
-                    text = value.toString(),
-                    color = Color.Black,
-                    style = MaterialTheme.typography.titleLarge
-                )
-
-                Button(
-                    onClick = onPlusClick,
-                    colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
-                ) {
-                    Text("+", color = LightColor)
-                }
-            }
-        }
+        CounterRow(
+            title = title,
+            value = "$value (${textAsModifier(calculateAbilityModifier(value))})",
+            onPlus = onPlusClick,
+            onMinus = onMinusClick
+        )
     }
 }

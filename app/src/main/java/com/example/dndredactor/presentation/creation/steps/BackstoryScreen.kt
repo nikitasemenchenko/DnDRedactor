@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.R
+import com.example.dndredactor.presentation.components.CustomTextField
+import com.example.dndredactor.presentation.components.Title
 import com.example.dndredactor.presentation.creation.CreationViewModel
 import com.example.dndredactor.presentation.theme.LightColor
 
@@ -43,7 +45,7 @@ fun BackstoryScreen(
 
         CustomTextField(
             value = uiState.character.backstory,
-            onChange = vm::onBackstoryChanged,
+            onValueChange = vm::onBackstoryChanged,
             labelRes = R.string.backstory_placeholder,
             minLines = 8
         )

@@ -33,7 +33,7 @@ class CharacterDetailsViewModel @Inject constructor(
             }
         }
         .catch {
-            CharacterDetailsUiState.Error(AppMessage.Unknown)
+            emit(CharacterDetailsUiState.Error(AppMessage.Unknown))
         }
         .stateIn(
             scope = viewModelScope,

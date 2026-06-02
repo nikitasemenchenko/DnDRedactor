@@ -18,6 +18,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.R
 import com.example.dndredactor.data.model.Gender
+import com.example.dndredactor.presentation.components.CustomTextField
+import com.example.dndredactor.presentation.components.DescriptionCard
+import com.example.dndredactor.presentation.components.Dropdown
+import com.example.dndredactor.presentation.components.SelectableButton
+import com.example.dndredactor.presentation.components.Title
 import com.example.dndredactor.presentation.creation.CreationViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,20 +43,21 @@ fun RaceSelectionScreen(
     ) {
         CustomTextField(
             value = uiState.character.fullName,
-            onChange = vm::onNameChanged,
+            onValueChange = vm::onNameChanged,
             labelRes = R.string.character_name
         )
 
         Title(R.string.character_gender)
+
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            GenderButton(
+            SelectableButton(
                 text = stringResource(R.string.male),
                 isSelected = uiState.character.gender == Gender.MALE,
                 onClick = { vm.onGenderSelected(Gender.MALE) }
             )
-            GenderButton(
+            SelectableButton(
                 text = stringResource(R.string.female),
                 isSelected = uiState.character.gender == Gender.FEMALE,
                 onClick = { vm.onGenderSelected(Gender.FEMALE) }
@@ -68,8 +74,8 @@ fun RaceSelectionScreen(
             labelRes = R.string.character_race
         )
         DescriptionCard(
-            desc = vm.getRaceById(uiState.character.raceId)?.description,
-            placeholder = R.string.race_desc_placeholder
+            description = vm.getRaceById(uiState.character.raceId)?.description,
+            placeholderRes = R.string.race_desc_placeholder
         )
 
         if (uiState.raceDetailsLoading) {
@@ -96,8 +102,8 @@ fun RaceSelectionScreen(
             val selectedSubrace = vm.getSubraceById(uiState.character.subraceId)
 
             DescriptionCard(
-                desc = selectedSubrace?.description,
-                placeholder = R.string.subrace_desc_placeholder
+                description = selectedSubrace?.description,
+                placeholderRes = R.string.subrace_desc_placeholder
             )
         }
     }

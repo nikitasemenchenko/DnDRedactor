@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -41,19 +42,26 @@ class CreationViewModel @Inject constructor(
     private fun loadInitialData() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
-                loading = true
+                loading = true,
+                error = null
             )
 
             runCatching {
-                val racesAsync = async {
-                    creationRepository.getRaces()
-                }
-                val classesAsync = async {
-                    creationRepository.getClasses()
-                }
-                val races = racesAsync.await()
-                val classes = classesAsync.await()
+                supervisorScope {
+                    val racesAsync = async {
+                        creationRepository.getRaces()
+                    }
 
+                    val classesAsync = async {
+                        creationRepository.getClasses()
+                    }
+
+                    val races = racesAsync.await()
+                    val classes = classesAsync.await()
+
+                    races to classes
+                }
+            }.onSuccess { (races, classes) ->
                 _uiState.value = _uiState.value.copy(
                     loading = false,
                     races = races,
@@ -65,7 +73,10 @@ class CreationViewModel @Inject constructor(
                     loading = false,
                     error = AppMessage.LoadReferenceData
                 )
-                _events.emit(CreationEvent.ShowError(AppMessage.LoadReferenceData))
+
+                _events.emit(
+                    CreationEvent.ShowError(AppMessage.LoadReferenceData)
+                )
             }
         }
     }

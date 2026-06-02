@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.R
+import com.example.dndredactor.presentation.components.CustomTextField
+import com.example.dndredactor.presentation.components.Title
 import com.example.dndredactor.presentation.creation.CreationViewModel
 import com.example.dndredactor.presentation.theme.LightColor
 
@@ -41,7 +43,7 @@ fun EquipmentScreen(
         )
         CustomTextField(
             value = uiState.character.equipment,
-            onChange = vm::onEquipmentChanged,
+            onValueChange = vm::onEquipmentChanged,
             labelRes = R.string.equipment_placeholder,
             minLines = 8
         )

@@ -14,6 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.R
+import com.example.dndredactor.presentation.components.DescriptionCard
+import com.example.dndredactor.presentation.components.Dropdown
+import com.example.dndredactor.presentation.components.Title
 import com.example.dndredactor.presentation.creation.CreationViewModel
 
 @Composable
@@ -64,8 +67,8 @@ fun ClassSelectionScreen(
             val selectedArchetype = vm.getArchetypeById(uiState.character.archetypeId)
 
             DescriptionCard(
-                desc = selectedArchetype?.description,
-                placeholder = R.string.archetype_desc_placeholder
+                description = selectedArchetype?.description,
+                placeholderRes = R.string.archetype_desc_placeholder
             )
         }
     }

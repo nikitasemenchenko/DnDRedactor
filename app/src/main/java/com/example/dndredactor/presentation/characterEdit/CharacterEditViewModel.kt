@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 
 @HiltViewModel
@@ -340,7 +341,6 @@ class CharacterEditViewModel @Inject constructor(
         } else {
             loadSelectedCore()
         }
-
     }
 
     fun loadCore() {
@@ -351,16 +351,23 @@ class CharacterEditViewModel @Inject constructor(
             )
 
             runCatching {
-                val racesAsync = async {
-                    creationRepository.getRaces()
-                }
-                val classesAsync = async {
-                    creationRepository.getClasses()
-                }
-                val races = racesAsync.await()
-                val classes = classesAsync.await()
+                supervisorScope {
+                    val racesAsync = async {
+                        creationRepository.getRaces()
+                    }
 
-                val currentState = _uiState.value as? CharacterEditUiState.Success ?: return@launch
+                    val classesAsync = async {
+                        creationRepository.getClasses()
+                    }
+
+                    val races = racesAsync.await()
+                    val classes = classesAsync.await()
+
+                    races to classes
+                }
+            }.onSuccess { (races, classes) ->
+                val currentState = _uiState.value as? CharacterEditUiState.Success ?: return@onSuccess
+
                 _uiState.value = currentState.copy(
                     races = races,
                     classes = classes,
@@ -369,14 +376,15 @@ class CharacterEditViewModel @Inject constructor(
 
                 loadSelectedCore()
             }.onFailure {
-                val currentState = _uiState.value as? CharacterEditUiState.Success
-                    ?: return@launch
+                val currentState = _uiState.value as? CharacterEditUiState.Success ?: return@onFailure
 
                 _uiState.value = currentState.copy(
                     coreLoading = false
                 )
 
-                _events.emit(CharacterEditEvent.ShowError(AppMessage.LoadReferenceData))
+                _events.emit(
+                    CharacterEditEvent.ShowError(AppMessage.LoadReferenceData)
+                )
             }
         }
     }

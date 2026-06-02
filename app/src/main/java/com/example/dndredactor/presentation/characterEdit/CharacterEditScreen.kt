@@ -46,10 +46,12 @@ import com.example.dndredactor.data.model.Gender
 import com.example.dndredactor.data.model.calculateAbilityModifier
 import com.example.dndredactor.data.model.calculateProficiencyBonus
 import com.example.dndredactor.data.model.textAsModifier
-import com.example.dndredactor.presentation.creation.steps.CustomTextField
-import com.example.dndredactor.presentation.creation.steps.Dropdown
-import com.example.dndredactor.presentation.creation.steps.GenderButton
-import com.example.dndredactor.presentation.creation.steps.Title
+import com.example.dndredactor.presentation.components.CounterRow
+import com.example.dndredactor.presentation.components.CustomTextField
+import com.example.dndredactor.presentation.components.Dropdown
+import com.example.dndredactor.presentation.components.ReadOnlyInfo
+import com.example.dndredactor.presentation.components.SelectableButton
+import com.example.dndredactor.presentation.components.Title
 
 @Composable
 fun CharacterEditScreen(
@@ -217,7 +219,7 @@ fun CharacterEditContent(
         Title(R.string.main)
         CustomTextField(
             value = character.name,
-            onChange = vm::onNameChanged,
+            onValueChange = vm::onNameChanged,
             labelRes = R.string.character_name,
             minLines = 1
         )
@@ -227,13 +229,13 @@ fun CharacterEditContent(
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            GenderButton(
+            SelectableButton(
                 text = stringResource(R.string.male),
                 isSelected = character.gender == Gender.MALE,
                 onClick = { vm.onGenderChanged(Gender.MALE) }
             )
 
-            GenderButton(
+            SelectableButton(
                 text = stringResource(R.string.female),
                 isSelected = character.gender == Gender.FEMALE,
                 onClick = { vm.onGenderChanged(Gender.FEMALE) }
@@ -242,9 +244,9 @@ fun CharacterEditContent(
 
         Title(R.string.character_level)
 
-        LevelEdit(
+        CounterRow(
             title = stringResource(R.string.level),
-            level = character.level,
+            value = character.level.toString(),
             onMinus = vm::decreaseLevel,
             onPlus = vm::increaseLevel
         )
@@ -296,21 +298,21 @@ fun CharacterEditContent(
             )
         }
 
-        EditableNumberRow(
+        CounterRow(
             title = stringResource(R.string.armor_class),
             value = character.armorClass.toString(),
             onMinus = vm::decreaseArmorClass,
             onPlus = vm::increaseArmorClass
         )
 
-        EditableNumberRow(
+        CounterRow(
             title = stringResource(R.string.max_hit_points),
             value = character.maxHitPoints.toString(),
             onMinus = vm::decreaseMaxHitPoints,
             onPlus = vm::increaseMaxHitPoints
         )
 
-        EditableNumberRow(
+        CounterRow(
             title = stringResource(R.string.current_hit_points),
             value = character.currentHitPoints.toString(),
             onMinus = vm::decreaseCurrentHitPoints,
@@ -321,7 +323,7 @@ fun CharacterEditContent(
 
         CustomTextField(
             value = character.backstory,
-            onChange = vm::onBackstoryChanged,
+            onValueChange = vm::onBackstoryChanged,
             labelRes = R.string.backstory_placeholder,
             minLines = 6
         )
@@ -330,7 +332,7 @@ fun CharacterEditContent(
 
         CustomTextField(
             value = character.equipment,
-            onChange = vm::onEquipmentChanged,
+            onValueChange = vm::onEquipmentChanged,
             labelRes = R.string.equipment_placeholder,
             minLines = 6
         )
@@ -339,35 +341,35 @@ fun CharacterEditContent(
 
         CustomTextField(
             value = character.appearance,
-            onChange = vm::onAppearanceChanged,
+            onValueChange = vm::onAppearanceChanged,
             labelRes = R.string.appearance_placeholder,
             minLines = 3
         )
 
         CustomTextField(
             value = character.personality,
-            onChange = vm::onPersonalityChanged,
+            onValueChange = vm::onPersonalityChanged,
             labelRes = R.string.personality,
             minLines = 2
         )
 
         CustomTextField(
             value = character.ideal,
-            onChange = vm::onIdealChanged,
+            onValueChange = vm::onIdealChanged,
             labelRes = R.string.ideal,
             minLines = 2
         )
 
         CustomTextField(
             value = character.attachment,
-            onChange = vm::onAttachmentChanged,
+            onValueChange = vm::onAttachmentChanged,
             labelRes = R.string.attachment,
             minLines = 2
         )
 
         CustomTextField(
             value = character.weakness,
-            onChange = vm::onWeaknessChanged,
+            onValueChange = vm::onWeaknessChanged,
             labelRes = R.string.weakness,
             minLines = 2
         )
@@ -375,9 +377,12 @@ fun CharacterEditContent(
         Title(R.string.characteristics)
 
         Ability.entries.forEach { ability ->
-            AbilityEditRow(
+            val abilityScore = character.abilityScores.get(ability)
+            val modifier = calculateAbilityModifier(abilityScore)
+
+            CounterRow(
                 title = stringResource(ability.titleRes),
-                value = character.abilityScores.get(ability),
+                value = "$abilityScore (${textAsModifier(modifier)})",
                 onMinus = { vm.decreaseAbility(ability) },
                 onPlus = { vm.increaseAbility(ability) }
             )
@@ -387,70 +392,13 @@ fun CharacterEditContent(
 
         CustomTextField(
             value = character.additionalInfo,
-            onChange = vm::onAdditionalInfoChanged,
+            onValueChange = vm::onAdditionalInfoChanged,
             labelRes = R.string.additional_info_placeholder,
             minLines = 6
         )
     }
 }
 
-
-@Composable
-fun ReadOnlyInfo(
-    title: String,
-    value: String
-) {
-    Text(
-        text = "$title: $value",
-        color = LightColor,
-        style = MaterialTheme.typography.bodyLarge
-    )
-}
-
-@Composable
-fun AbilityEditRow(
-    title: String,
-    value: Int,
-    onMinus: () -> Unit,
-    onPlus: () -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = title,
-            color = LightColor,
-            style = MaterialTheme.typography.bodyLarge
-        )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Button(
-                onClick = onMinus,
-                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
-            ) {
-                Text("-", color = LightColor)
-            }
-
-            Text(
-                text = "$value (${textAsModifier(calculateAbilityModifier(value))})",
-                color = LightColor,
-                style = MaterialTheme.typography.titleLarge
-            )
-
-            Button(
-                onClick = onPlus,
-                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
-            ) {
-                Text("+", color = LightColor)
-            }
-        }
-    }
-}
 
 @Composable
 fun CharacterCoreEditBlock(
@@ -524,96 +472,6 @@ fun CharacterCoreEditBlock(
                 labelRes = R.string.archetype_selection,
                 onSelect = vm::onArchetypeSelected
             )
-        }
-    }
-}
-
-@Composable
-fun LevelEdit(
-    title: String,
-    level: Int,
-    onMinus: () -> Unit,
-    onPlus: () -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = title,
-            color = LightColor,
-            style = MaterialTheme.typography.bodyLarge
-        )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Button(
-                onClick = onMinus,
-                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
-            ) {
-                Text("-", color = LightColor)
-            }
-
-            Text(
-                text = level.toString(),
-                color = LightColor,
-                style = MaterialTheme.typography.titleLarge
-            )
-
-            Button(
-                onClick = onPlus,
-                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
-            ) {
-                Text("+", color = LightColor)
-            }
-        }
-    }
-}
-
-@Composable
-fun EditableNumberRow(
-    title: String,
-    value: String,
-    onMinus: () -> Unit,
-    onPlus: () -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = title,
-            color = LightColor,
-            style = MaterialTheme.typography.bodyLarge
-        )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Button(
-                onClick = onMinus,
-                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
-            ) {
-                Text("-", color = LightColor)
-            }
-
-            Text(
-                text = value,
-                color = LightColor,
-                style = MaterialTheme.typography.titleLarge
-            )
-
-            Button(
-                onClick = onPlus,
-                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
-            ) {
-                Text("+", color = LightColor)
-            }
         }
     }
 }
