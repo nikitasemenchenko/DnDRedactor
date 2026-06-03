@@ -5,14 +5,20 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = ButtonColor,
+    secondary = LightButtonColor,
+    background = BackPurple,
+    surface = SurfacePurple,
+    onPrimary = LightColor,
+    onSecondary = TextPrimaryDark,
+    onBackground = LightColor,
+    onSurface = LightColor,
+    error = DangerColor
 )
 
 @Composable
 fun DnDRedactorTheme(
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = DarkColorScheme.copy(background = BackPurple)

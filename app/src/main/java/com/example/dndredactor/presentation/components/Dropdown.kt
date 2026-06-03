@@ -19,7 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import com.example.dndredactor.presentation.theme.LightColor
+import com.example.dndredactor.presentation.theme.LightButtonColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,8 +66,8 @@ fun <T> Dropdown(
                 ),
             shape = MaterialTheme.shapes.large,
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = LightColor,
-                focusedContainerColor = LightColor,
+                unfocusedContainerColor = LightButtonColor,
+                focusedContainerColor = LightButtonColor,
                 focusedLabelColor = Color.Black,
                 unfocusedLabelColor = Color.Black,
                 unfocusedIndicatorColor = Color.Transparent,

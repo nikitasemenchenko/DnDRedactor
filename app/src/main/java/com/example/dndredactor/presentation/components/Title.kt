@@ -14,8 +14,8 @@ fun Title(
 ) {
     Text(
         text = stringResource(textRes),
-        style = MaterialTheme.typography.titleLarge,
-        fontWeight = FontWeight.Medium,
+        style = MaterialTheme.typography.headlineSmall,
+        fontWeight = FontWeight.Bold,
         color = LightColor
     )
 }

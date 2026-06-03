@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import com.example.dndredactor.presentation.theme.LightColor
+import com.example.dndredactor.presentation.theme.LightButtonColor
 
 @Composable
 fun CustomTextField(
@@ -34,14 +34,15 @@ fun CustomTextField(
         ),
         shape = MaterialTheme.shapes.large,
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = LightColor,
-            focusedContainerColor = LightColor,
+            unfocusedContainerColor = LightButtonColor,
+            focusedContainerColor = LightButtonColor,
             focusedLabelColor = Color.Black,
             unfocusedLabelColor = Color.Black,
             unfocusedIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             focusedTextColor = Color.Black,
-            unfocusedTextColor = Color.Black
+            unfocusedTextColor = Color.Black,
+            cursorColor = Color.Black
         ),
         minLines = minLines
     )
