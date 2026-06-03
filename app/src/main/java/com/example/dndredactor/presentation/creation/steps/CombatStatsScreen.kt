@@ -28,14 +28,9 @@ fun CombatStatsScreen(
     val uiState by vm.uiState.collectAsState()
     val character = uiState.character
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    CreationStepLayout(
+        titleRes = R.string.combat_stats_selection
     ) {
-        Title(R.string.combat_stats_selection)
-
         CounterRow(
             title = stringResource(R.string.level),
             value = character.level.toString(),

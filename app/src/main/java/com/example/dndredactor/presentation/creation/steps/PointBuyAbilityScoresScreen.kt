@@ -32,18 +32,9 @@ fun PointBuyAbilityScoresScreen(
     val scores = uiState.character.abilityScores
     val remainingPoints = vm.getRemainingPoints()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+    CreationStepLayout(
+        titleRes = R.string.point_buy
     ) {
-        Text(
-            text = stringResource(R.string.point_buy),
-            color = LightColor,
-            style = MaterialTheme.typography.titleLarge
-        )
-
         Text(
             text = stringResource(R.string.remaining_points, remainingPoints),
             color = LightColor,

@@ -33,18 +33,9 @@ fun AbilityGenerationMethodScreen(
     val uiState by vm.uiState.collectAsState()
     val selectedMethod = uiState.character.abilityGenerationMethod
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+    CreationStepLayout(
+        titleRes = R.string.ability_generation_method
     ) {
-        Text(
-            text = stringResource(R.string.ability_generation_method),
-            color = LightColor,
-            style = MaterialTheme.typography.titleLarge
-        )
-
         AbilityGenerationMethod.entries.forEach { method ->
             AbilityMethodCard(
                 method = method,
@@ -91,7 +82,7 @@ fun AbilityMethodCard(
             Text(
                 text = stringResource(method.descriptionRes),
                 color = Color.Black,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     }

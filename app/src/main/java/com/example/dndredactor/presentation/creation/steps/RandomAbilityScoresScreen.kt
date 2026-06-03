@@ -35,18 +35,9 @@ fun RandomAbilityScoresScreen(
     val uiState by vm.uiState.collectAsState()
     val scores = uiState.character.abilityScores
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+    CreationStepLayout(
+        titleRes = R.string.random_abilities
     ) {
-        Text(
-            text = stringResource(R.string.random_abilities),
-            color = LightColor,
-            style = MaterialTheme.typography.titleLarge
-        )
-
         Button(
             onClick = vm::regenerateScores,
             colors = ButtonDefaults.buttonColors(containerColor = ButtonColor),

@@ -23,17 +23,12 @@ fun TraitsSelectionScreen(
 ) {
 
     val uiState by vm.uiState.collectAsState()
-    val scrollState = rememberScrollState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 16.dp)
-            .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+    CreationStepLayout(
+        titleRes = R.string.appearance_traits
     ) {
         Title(R.string.appearance_selection)
+
         CustomTextField(
             value = uiState.character.appearance,
             onValueChange = vm::onAppearanceChanged,
@@ -42,24 +37,28 @@ fun TraitsSelectionScreen(
         )
 
         Title(R.string.character_traits)
+
         CustomTextField(
             value = uiState.character.personality,
             onValueChange = vm::onPersonalityChanged,
             labelRes = R.string.personality,
             minLines = 2
         )
+
         CustomTextField(
             value = uiState.character.ideal,
             onValueChange = vm::onIdealChanged,
             labelRes = R.string.ideal,
             minLines = 2
         )
+
         CustomTextField(
             value = uiState.character.attachment,
             onValueChange = vm::onAttachmentChanged,
             labelRes = R.string.attachment,
             minLines = 2
         )
+
         CustomTextField(
             value = uiState.character.weakness,
             onValueChange = vm::onWeaknessChanged,
