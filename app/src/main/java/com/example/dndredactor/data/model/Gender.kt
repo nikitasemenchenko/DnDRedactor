@@ -8,5 +8,15 @@ enum class Gender(
 ) {
     MALE(R.string.male),
     FEMALE(R.string.female),
-    UNSPECIFIED(R.string.not_specified)
+    UNSPECIFIED(R.string.not_specified);
+
+    companion object {
+        fun toGender(value: String): Gender {
+            return runCatching {
+                Gender.valueOf(value)
+            }.getOrElse {
+                UNSPECIFIED
+            }
+        }
+    }
 }

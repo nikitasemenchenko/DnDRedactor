@@ -236,7 +236,7 @@ class CharacterEditViewModel @Inject constructor(
                     character = if (latestState.character.classId == detailedClass.id) {
                         latestState.character.copy(
                             className = detailedClass.name,
-                            classType = detailedClass.id.toClassType(),
+                            classType = ClassType.fromApiId(detailedClass.id),
                         )
                     } else {
                         latestState.character
@@ -263,7 +263,7 @@ class CharacterEditViewModel @Inject constructor(
                 character = state.character.copy(
                     classId = characterClass.id,
                     className = characterClass.name,
-                    classType = characterClass.id.toClassType(),
+                    classType = ClassType.fromApiId(characterClass.id),
                     archetypeName = null,
                     archetypeId = null
                 )
@@ -470,24 +470,6 @@ class CharacterEditViewModel @Inject constructor(
         _uiState.value = state.copy(
             character = state.character.action()
         )
-    }
-
-    private fun String.toClassType(): ClassType {
-        return when (this) {
-            "barbarian" -> ClassType.BARBARIAN
-            "bard" -> ClassType.BARD
-            "cleric" -> ClassType.CLERIC
-            "druid" -> ClassType.DRUID
-            "fighter" -> ClassType.FIGHTER
-            "monk" -> ClassType.MONK
-            "paladin" -> ClassType.PALADIN
-            "ranger" -> ClassType.RANGER
-            "rogue" -> ClassType.ROGUE
-            "sorcerer" -> ClassType.SORCERER
-            "warlock" -> ClassType.WARLOCK
-            "wizard" -> ClassType.WIZARD
-            else -> ClassType.UNKNOWN
-        }
     }
 
     private companion object {

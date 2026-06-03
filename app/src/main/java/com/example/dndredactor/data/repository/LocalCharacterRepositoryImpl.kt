@@ -44,7 +44,7 @@ class LocalCharacterRepositoryImpl @Inject constructor(
                 subraceId = character.subraceId,
                 subraceName = character.subraceName,
 
-                classType = character.classId.toClassName(),
+                classType = ClassType.fromApiId(character.classId).name,
                 classId = character.classId,
                 className = character.className,
 
@@ -87,23 +87,5 @@ class LocalCharacterRepositoryImpl @Inject constructor(
         characterDao.updateCharacter(
             mapper.characterToEntity(character)
         )
-    }
-
-    private fun String?.toClassName(): String {
-        return when (this) {
-            "barbarian" -> ClassType.BARBARIAN.name
-            "bard" -> ClassType.BARD.name
-            "cleric" -> ClassType.CLERIC.name
-            "druid" -> ClassType.DRUID.name
-            "fighter" -> ClassType.FIGHTER.name
-            "monk" -> ClassType.MONK.name
-            "paladin" -> ClassType.PALADIN.name
-            "ranger" -> ClassType.RANGER.name
-            "rogue" -> ClassType.ROGUE.name
-            "sorcerer" -> ClassType.SORCERER.name
-            "warlock" -> ClassType.WARLOCK.name
-            "wizard" -> ClassType.WIZARD.name
-            else -> ClassType.UNKNOWN.name
-        }
     }
 }

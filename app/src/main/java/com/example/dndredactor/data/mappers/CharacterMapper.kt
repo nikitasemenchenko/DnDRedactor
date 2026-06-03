@@ -13,12 +13,12 @@ class CharacterMapper @Inject constructor() {
             id = entity.id,
             name = entity.name,
             level = entity.level,
-            gender = entity.gender.toGender(),
+            gender = Gender.toGender(entity.gender),
             raceId = entity.raceId,
             raceName = entity.raceName,
             subraceId = entity.subraceId,
             subraceName = entity.subraceName,
-            classType = entity.classType.toClassType(),
+            classType = ClassType.fromStoredName(entity.classType),
             classId = entity.classId,
             className = entity.className,
             archetypeId = entity.archetypeId,
@@ -90,22 +90,6 @@ class CharacterMapper @Inject constructor() {
 
             createdAt = character.createdAt
         )
-    }
-
-    private fun String.toClassType(): ClassType {
-        return runCatching {
-            ClassType.valueOf(this)
-        }.getOrElse {
-            ClassType.UNKNOWN
-        }
-    }
-
-    private fun String.toGender(): Gender {
-        return runCatching {
-            Gender.valueOf(this)
-        }.getOrElse {
-            Gender.UNSPECIFIED
-        }
     }
 
 }
