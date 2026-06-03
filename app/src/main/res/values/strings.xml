@@ -34,6 +34,15 @@
     <string name="character_level">Character level</string>
     <string name="proficiency_bonus">Proficiency bonus</string>
 
+    <string name="character_subtitle">Level %1$d • %2$s • %3$s</string>
+    <string name="unknown_race">Unknown race</string>
+    <string name="unknown_class">Unknown class</string>
+    <string name="character_card_level">Level %1$d</string>
+    <string name="character_card_pb">PB %1$s</string>
+    <string name="character_sheet">Character Sheet</string>
+    <string name="character_card_ac">AC %1$d</string>
+    <string name="character_card_hp">HP %1$d/%2$d</string>
+
     <string name="race">Race</string>
     <string name="subrace">Subrace</string>
     <string name="class_name">Class</string>

@@ -25,7 +25,7 @@ fun CharacterDetailsTopBar(
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = stringResource(R.string.character),
+                text = stringResource(R.string.character_sheet),
                 color = LightColor,
                 fontWeight = FontWeight.Medium
             )
