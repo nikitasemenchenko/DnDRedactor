@@ -12,6 +12,7 @@ import com.example.dndredactor.data.model.Race
 import com.example.dndredactor.data.model.Subrace
 import com.example.dndredactor.domain.repository.CreationRepository
 import com.example.dndredactor.domain.repository.LocalCharacterRepository
+import com.example.dndredactor.domain.repository.usecase.GetCreationDataUseCase
 import com.example.dndredactor.presentation.components.AppMessage
 import com.example.dndredactor.presentation.creation.logic.AbilityScoreGenerator.generateScores
 import com.example.dndredactor.presentation.creation.logic.CreationLimits.MAX_ARMOR_CLASS
@@ -26,19 +27,18 @@ import com.example.dndredactor.presentation.creation.logic.CreationStepNavigator
 import com.example.dndredactor.presentation.creation.logic.CreationValidator
 import com.example.dndredactor.presentation.creation.logic.PointBuyRules
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 
 @HiltViewModel
 class CreationViewModel @Inject constructor(
     private val creationRepository: CreationRepository,
-    private val localCharacterRepository: LocalCharacterRepository
+    private val localCharacterRepository: LocalCharacterRepository,
+    private val getCreationDataUseCase: GetCreationDataUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreationUiState(loading = true))
     val uiState = _uiState.asStateFlow()
@@ -58,25 +58,12 @@ class CreationViewModel @Inject constructor(
             )
 
             runCatching {
-                supervisorScope {
-                    val racesAsync = async {
-                        creationRepository.getRaces()
-                    }
-
-                    val classesAsync = async {
-                        creationRepository.getClasses()
-                    }
-
-                    val races = racesAsync.await()
-                    val classes = classesAsync.await()
-
-                    races to classes
-                }
-            }.onSuccess { (races, classes) ->
+                getCreationDataUseCase()
+            }.onSuccess { data ->
                 _uiState.value = _uiState.value.copy(
                     loading = false,
-                    races = races,
-                    classes = classes,
+                    races = data.races,
+                    classes = data.classes,
                     error = null
                 )
             }.onFailure {
