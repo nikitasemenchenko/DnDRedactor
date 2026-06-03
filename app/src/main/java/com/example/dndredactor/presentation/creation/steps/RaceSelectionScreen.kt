@@ -26,7 +26,7 @@ fun RaceSelectionScreen(
     val uiState by vm.uiState.collectAsState()
 
     CreationStepLayout(
-        titleRes = R.string.race_selection
+        titleRes = R.string.character_name
     ) {
         CustomTextField(
             value = uiState.character.fullName,
@@ -70,7 +70,7 @@ fun RaceSelectionScreen(
         }
 
         val selectedRace = vm.getRaceById(uiState.character.raceId)
-        
+
         if (selectedRace != null && selectedRace.subraces.isNotEmpty()) {
             Title(R.string.subrace_selection)
 

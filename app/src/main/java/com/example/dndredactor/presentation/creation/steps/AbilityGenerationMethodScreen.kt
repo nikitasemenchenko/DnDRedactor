@@ -3,7 +3,6 @@ package com.example.dndredactor.presentation.creation.steps
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -24,7 +23,6 @@ import com.example.dndredactor.R
 import com.example.dndredactor.data.model.AbilityGenerationMethod
 import com.example.dndredactor.presentation.creation.CreationViewModel
 import com.example.dndredactor.presentation.theme.LightButtonColor
-import com.example.dndredactor.presentation.theme.LightColor
 
 @Composable
 fun AbilityGenerationMethodScreen(
@@ -53,7 +51,7 @@ fun AbilityMethodCard(
     method: AbilityGenerationMethod,
     isSelected: Boolean,
     onClick: () -> Unit
-){
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -67,7 +65,7 @@ fun AbilityMethodCard(
             modifier = Modifier.padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if(isSelected) {
+            if (isSelected) {
                 Icon(
                     imageVector = Icons.Default.Check,
                     contentDescription = null,

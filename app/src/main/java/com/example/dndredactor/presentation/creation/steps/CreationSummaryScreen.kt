@@ -1,20 +1,12 @@
 package com.example.dndredactor.presentation.creation.steps
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.R
 import com.example.dndredactor.data.model.Ability
@@ -22,140 +14,147 @@ import com.example.dndredactor.data.model.calculateProficiencyBonus
 import com.example.dndredactor.data.model.getModifier
 import com.example.dndredactor.data.model.textAsModifier
 import com.example.dndredactor.presentation.creation.CreationViewModel
-import com.example.dndredactor.presentation.theme.LightColor
 
 @Composable
 fun CreationSummaryScreen(
     vm: CreationViewModel
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        val uiState by vm.uiState.collectAsState()
-        val character = uiState.character
+    val uiState by vm.uiState.collectAsState()
+    val character = uiState.character
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.summary_title),
-                color = LightColor,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+    CreationStepLayout(
+        titleRes = R.string.summary_title
+    ) {
+        SummaryCard(titleRes = R.string.main) {
+            SummaryRow(
+                labelRes = R.string.character_name,
+                value = character.fullName
             )
 
-            SummaryBlock(title = stringResource(R.string.main)) {
-                SummaryLine(
-                    stringResource(R.string.character_name),
-                    character.fullName
-                )
-                SummaryLine(
-                    stringResource(R.string.level),
-                    character.level.toString()
-                )
-                SummaryLine(
-                    stringResource(R.string.race),
-                    character.raceName ?: stringResource(R.string.not_selected)
-                )
-                SummaryLine(
-                    stringResource(R.string.subrace),
-                    character.subraceName ?: stringResource(R.string.not_selected)
-                )
-                SummaryLine(stringResource(R.string.class_name),
-                    character.className ?: stringResource(R.string.not_selected)
-                )
-                SummaryLine(
-                    stringResource(R.string.archetype),
-                    character.archetypeName ?: stringResource(R.string.not_selected)
-                )
-                SummaryLine(
-                    key = stringResource(R.string.proficiency_bonus),
-                    value = textAsModifier(calculateProficiencyBonus(character.level))
-                )
-            }
+            SummaryRow(
+                labelRes = R.string.level,
+                value = character.level.toString()
+            )
 
-            SummaryBlock(title = stringResource(R.string.backstory_selection)) {
-                SummaryLine(
-                    key = stringResource(R.string.description),
-                    value = character.backstory
-                )
-            }
+            SummaryRow(
+                labelRes = R.string.character_gender,
+                value = stringResource(character.gender.titleRes)
+            )
 
-            SummaryBlock(title =  stringResource(R.string.characteristics)) {
-                Ability.entries.forEach { ability ->
-                    val score = character.abilityScores.get(ability)
-                    val modifier = character.abilityScores.getModifier(ability)
+            SummaryRow(
+                labelRes = R.string.race,
+                value = character.raceName ?: stringResource(R.string.not_selected)
+            )
 
-                    SummaryLine(
-                        key = stringResource(ability.titleRes),
-                        value = "$score (${textAsModifier(modifier)})"
+            SummaryRow(
+                labelRes = R.string.subrace,
+                value = character.subraceName ?: stringResource(R.string.not_selected)
+            )
+
+            SummaryRow(
+                labelRes = R.string.class_name,
+                value = character.className ?: stringResource(R.string.not_selected)
+            )
+
+            SummaryRow(
+                labelRes = R.string.archetype,
+                value = character.archetypeName ?: stringResource(R.string.not_selected)
+            )
+
+            SummaryRow(
+                labelRes = R.string.proficiency_bonus,
+                value = textAsModifier(calculateProficiencyBonus(character.level))
+            )
+        }
+
+        SummaryCard(titleRes = R.string.characteristics) {
+            Ability.entries.forEach { ability ->
+                val score = character.abilityScores.get(ability)
+                val modifier = character.abilityScores.getModifier(ability)
+
+                SummaryRow(
+                    labelRes = ability.titleRes,
+                    value = stringResource(
+                        R.string.ability_score_value,
+                        score,
+                        textAsModifier(modifier)
                     )
-                }
-            }
-
-            SummaryBlock(title = stringResource(R.string.combat_stats_selection)) {
-                SummaryLine(
-                    key = stringResource(R.string.armor_class),
-                    value = character.armorClass.toString()
-                )
-                SummaryLine(
-                    key = stringResource(R.string.hp),
-                    value = "${character.currentHitPoints}/${character.maxHitPoints}"
-                )
-            }
-
-            SummaryBlock(title = stringResource(R.string.equipment_selection)) {
-                SummaryLine(
-                    key = stringResource(R.string.items),
-                    value = character.equipment
-                )
-            }
-
-            SummaryBlock(title = stringResource(R.string.additional_info_selection)) {
-                SummaryLine(
-                    key = stringResource(R.string.description),
-                    value = character.additionalInfo
                 )
             }
         }
-    }
-}
 
-@Composable
-fun SummaryLine(
-    key: String,
-    value: String
-){
-    Text(
-        text = "$key: ${value.ifBlank { stringResource(R.string.not_specified) } }",
-        color = LightColor,
-        style = MaterialTheme.typography.bodyLarge
-    )
-}
+        SummaryCard(titleRes = R.string.combat_stats_selection) {
+            SummaryRow(
+                labelRes = R.string.armor_class,
+                value = character.armorClass.toString()
+            )
 
-@Composable
-fun SummaryBlock(
-    title: String,
-    content: @Composable () -> Unit
-){
-    Column(
-        verticalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
-        Text(
-            text = title,
-            color = LightColor,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
+            SummaryRow(
+                labelRes = R.string.hp,
+                value = stringResource(
+                    R.string.hit_points_value,
+                    character.currentHitPoints,
+                    character.maxHitPoints
+                )
+            )
+        }
 
-        content()
+        SummaryCard(titleRes = R.string.backstory_selection) {
+            SummaryTextSection(
+                titleRes = R.string.description,
+                text = character.backstory
+            )
+        }
+
+        SummaryCard(titleRes = R.string.equipment_selection) {
+            SummaryTextSection(
+                titleRes = R.string.items,
+                text = character.equipment
+            )
+        }
+
+        SummaryCard(titleRes = R.string.appearance_traits) {
+            SummaryTextSection(
+                titleRes = R.string.appearance_selection,
+                text = character.appearance
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            SummaryTextSection(
+                titleRes = R.string.personality,
+                text = character.personality
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            SummaryTextSection(
+                titleRes = R.string.ideal,
+                text = character.ideal
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            SummaryTextSection(
+                titleRes = R.string.attachment,
+                text = character.attachment
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            SummaryTextSection(
+                titleRes = R.string.weakness,
+                text = character.weakness
+            )
+        }
+
+        SummaryCard(titleRes = R.string.additional_info_selection) {
+            SummaryTextSection(
+                titleRes = R.string.description,
+                text = character.additionalInfo
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
     }
 }

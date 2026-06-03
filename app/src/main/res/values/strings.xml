@@ -64,6 +64,9 @@
     <string name="core_character_options">Core character options</string>
     <string name="character_main_characteristics">Character main characteristics</string>
 
+    <string name="ability_score_value">%1$d (%2$s)</string>
+    <string name="hit_points_value">%1$d/%2$d</string>
+
     <string name="backstory_selection">Backstory</string>
     <string name="backstory_description">Describe the character’s origin, past, goals, and important life events.</string>
     <string name="backstory_placeholder">Enter character backstory</string>
@@ -128,6 +131,18 @@
     <string name="roll_history">Roll history</string>
     <string name="clear">Clear</string>
     <string name="rolls">Rolls: %1$s</string>
+    <string name="roll_setup">Roll setup</string>
+    <string name="latest_result">Latest result</string>
+    <string name="no_roll_yet">No roll yet</string>
+    <string name="dice_type">d%1$d</string>
+    <string name="dice_expression">%1$dd%2$d%3$s</string>
+    <string name="dice_modifier_positive">&#160;(+%1$d)</string>
+    <string name="dice_modifier_negative">&#160;(-%1$d)</string>
+    <string name="modifier_positive">+%1$d</string>
+    <string name="modifier_plain">%1$d</string>
+    <string name="dice_history_expression">%1$s = %2$d</string>
+    <string name="plus">+</string>
+    <string name="minus">−</string>
 
     <string name="delete_character_title">Delete character?</string>
     <string name="delete_character_message">Character "%1$s" will be permanently deleted.</string>

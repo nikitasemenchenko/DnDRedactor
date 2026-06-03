@@ -19,7 +19,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.R
+import com.example.dndredactor.presentation.components.CustomCard
 import com.example.dndredactor.presentation.theme.LightColor
+import com.example.dndredactor.presentation.theme.TextPrimaryDark
+import com.example.dndredactor.presentation.theme.TextSecondaryDark
 
 @Composable
 fun DiceRollerContent(
@@ -34,49 +37,72 @@ fun DiceRollerContent(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text = stringResource(R.string.select_dice),
-            color = LightColor,
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
+        DiceResult(
+            state = state
         )
 
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            listOf(4, 6, 8, 10, 12, 20, 100).forEach { sides ->
-                DiceTypeButton(
-                    text = "d$sides",
-                    isSelected = state.selectedDiceSides == sides,
-                    onClick = {
-                        vm.selectDice(sides)
-                    }
-                )
+        CustomCard {
+            Text(
+                text = stringResource(R.string.roll_setup),
+                color = TextPrimaryDark,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = formatDiceExpression(
+                    diceCount = state.diceCount,
+                    diceSides = state.selectedDiceSides,
+                    modifier = state.modifier
+                ),
+                color = TextSecondaryDark,
+                style = MaterialTheme.typography.bodyLarge
+            )
+
+            Text(
+                text = stringResource(R.string.select_dice),
+                color = TextPrimaryDark,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 12.dp)
+            )
+
+            FlowRow(
+                modifier = Modifier.padding(top = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                listOf(4, 6, 8, 10, 12, 20, 100).forEach { sides ->
+                    DiceTypeButton(
+                        text = stringResource(R.string.dice_type, sides),
+                        isSelected = state.selectedDiceSides == sides,
+                        onClick = {
+                            vm.selectDice(sides)
+                        }
+                    )
+                }
             }
+
+            DiceControlRow(
+                title = stringResource(R.string.dice_count),
+                value = state.diceCount.toString(),
+                onMinus = vm::decreaseDiceCount,
+                onPlus = vm::increaseDiceCount,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+
+            DiceControlRow(
+                title = stringResource(R.string.modifier),
+                value = if (state.modifier >= 0) {
+                    stringResource(R.string.modifier_positive, state.modifier)
+                } else {
+                    stringResource(R.string.modifier_plain, state.modifier)
+                },
+                onMinus = vm::decreaseModifier,
+                onPlus = vm::increaseModifier,
+                modifier = Modifier.padding(top = 12.dp)
+            )
         }
-
-        DiceCounterCard(
-            title = stringResource(R.string.dice_count),
-            value = state.diceCount.toString(),
-            onMinus = vm::decreaseDiceCount,
-            onPlus = vm::increaseDiceCount
-        )
-
-        DiceCounterCard(
-            title = stringResource(R.string.modifier),
-            value = if (state.modifier >= 0) {
-                "+${state.modifier}"
-            } else {
-                state.modifier.toString()
-            },
-            onMinus = vm::decreaseModifier,
-            onPlus = vm::increaseModifier
-        )
-
-        LastResultCard(
-            result = state.lastResult
-        )
 
         if (state.history.isNotEmpty()) {
             Row(
