@@ -46,7 +46,11 @@ fun CharacterCreationScreen(
             )
         },
         bottomBar = {
-            if (!uiState.loading) {
+            val initialLoadingFailed = uiState.error != null &&
+                    uiState.races.isEmpty() &&
+                    uiState.classes.isEmpty()
+
+            if (!uiState.loading && !initialLoadingFailed) {
                 CharacterCreationBottomBar(
                     onFinished = vm::saveCharacter,
                     currentStep = uiState.currentStep,
