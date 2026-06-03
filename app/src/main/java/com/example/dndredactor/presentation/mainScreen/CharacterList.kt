@@ -5,14 +5,13 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.data.model.Character
 import kotlinx.coroutines.delay
@@ -33,8 +32,8 @@ fun CharacterList(
     }
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        contentPadding = PaddingValues(bottom = 24.dp)
     ) {
         items(
             items = characters,
@@ -44,7 +43,7 @@ fun CharacterList(
                 visible = !firstLoad.value,
                 enter = slideInHorizontally(
                     initialOffsetX = { -it },
-                    animationSpec = tween(800)
+                    animationSpec = tween(700)
                 ) + fadeIn()
             ) {
                 CharacterCard(

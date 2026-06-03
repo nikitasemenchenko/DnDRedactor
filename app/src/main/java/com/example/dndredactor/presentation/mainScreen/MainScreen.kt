@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dndredactor.data.model.Character
+import com.example.dndredactor.presentation.theme.BackPurple
 
 @Composable
 fun MainScreen(
@@ -26,7 +27,8 @@ fun MainScreen(
     Scaffold(
         topBar = {
             MainTopBar()
-        }
+        },
+        containerColor = BackPurple
     ) { paddingValues ->
         MainContent(
             paddingValues = paddingValues,

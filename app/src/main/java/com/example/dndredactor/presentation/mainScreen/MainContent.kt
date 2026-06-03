@@ -8,21 +8,30 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Casino
+import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.R
 import com.example.dndredactor.data.model.Character
+import com.example.dndredactor.presentation.components.CustomCard
 import com.example.dndredactor.presentation.theme.ButtonColor
 import com.example.dndredactor.presentation.theme.LightColor
+import com.example.dndredactor.presentation.theme.TextPrimaryDark
 
 @Composable
 fun MainContent(
@@ -40,21 +49,24 @@ fun MainContent(
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        MainActionButton(
-            text = stringResource(R.string.create),
-            onClick = onCreateClick
+        MainHeroCard(
+            onCreateClick = onCreateClick,
+            onDiceRollerClick = onDiceRollerClick
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(18.dp))
 
-        MainActionButton(
-            text = stringResource(R.string.dice_roller),
-            onClick = onDiceRollerClick
+        Text(
+            text = stringResource(R.string.your_characters),
+            modifier = Modifier.fillMaxWidth(),
+            color = LightColor,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         when (uiState) {
             MainScreenUiState.Loading -> {
@@ -83,21 +95,72 @@ fun MainContent(
 }
 
 @Composable
-private fun MainActionButton(
-    text: String,
-    onClick: () -> Unit
+fun MainHeroCard(
+    onCreateClick: () -> Unit,
+    onDiceRollerClick: () -> Unit
 ) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-        colors = ButtonDefaults.buttonColors(containerColor = ButtonColor),
-        shape = MaterialTheme.shapes.large
-    ) {
+    CustomCard {
         Text(
-            text = text,
+            text = stringResource(R.string.main_hero_title),
+            color = TextPrimaryDark,
             style = MaterialTheme.typography.headlineSmall,
-            color = LightColor
+            fontWeight = FontWeight.Bold
         )
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Text(
+            text = stringResource(R.string.main_hero_description),
+            color = TextPrimaryDark.copy(alpha = 0.78f),
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = onCreateClick,
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = ButtonColor,
+                contentColor = LightColor
+            ),
+            shape = MaterialTheme.shapes.large
+        ) {
+            Icon(
+                imageVector = Icons.Default.PersonAdd,
+                contentDescription = null
+            )
+
+            Spacer(modifier = Modifier.size(8.dp))
+
+            Text(
+                text = stringResource(R.string.create_character),
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedButton(
+            onClick = onDiceRollerClick,
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = TextPrimaryDark
+            ),
+            shape = MaterialTheme.shapes.large
+        ) {
+            Icon(
+                imageVector = Icons.Default.Casino,
+                contentDescription = null
+            )
+
+            Spacer(modifier = Modifier.size(8.dp))
+
+            Text(
+                text = stringResource(R.string.open_dice_roller),
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
     }
 }
 
@@ -107,7 +170,9 @@ private fun MainLoading() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(
+            color = LightColor
+        )
     }
 }
 

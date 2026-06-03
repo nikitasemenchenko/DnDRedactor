@@ -1,12 +1,14 @@
 <resources>
     <string name="app_name">DnDRedactor</string>
     <string name="dnd_editor">D&amp;D Character Editor</string>
+    <string name="app_subtitle">Create, edit, and manage D&amp;D heroes</string>
 
     <string name="retry">Retry</string>
     <string name="next">Next</string>
     <string name="back">Back</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
+    <string name="more">More</string>
     <string name="create">Create</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
@@ -14,6 +16,10 @@
     <string name="unknown">Unknown</string>
     <string name="not_selected">Not selected</string>
 
+    <string name="your_characters">Your characters</string>
+    <string name="main_hero_title">Build your next adventurer</string>
+    <string name="main_hero_description">Create a complete D&amp;D character sheet with race, class, abilities, combat stats, equipment, and story notes.</string>
+    <string name="open_dice_roller">Open Dice Roller</string>
     <string name="create_character">Create Character</string>
     <string name="edit_character">Edit Character</string>
     <string name="character">Character</string>

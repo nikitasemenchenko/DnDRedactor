@@ -1,6 +1,7 @@
 package com.example.dndredactor.presentation.mainScreen
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,8 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -22,8 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.data.model.Character
+import com.example.dndredactor.presentation.components.CustomCard
 import com.example.dndredactor.presentation.mappers.toClassIcon
-import com.example.dndredactor.presentation.theme.LightColor
 
 @Composable
 fun CharacterCard(
@@ -33,14 +32,9 @@ fun CharacterCard(
 ) {
     val classIcon = character.classType.toClassIcon()
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
-        shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(
-            containerColor = LightColor
-        )
+    CustomCard(
+        modifier = Modifier.clickable(onClick = onClick),
+        contentPadding = PaddingValues(8.dp)
     ) {
         Row(
             modifier = Modifier
