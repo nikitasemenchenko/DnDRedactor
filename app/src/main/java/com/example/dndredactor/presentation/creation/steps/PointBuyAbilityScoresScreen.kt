@@ -63,7 +63,11 @@ fun PointBuyAbilityCard(
     ) {
         CounterRow(
             title = title,
-            value = "$value (${textAsModifier(calculateAbilityModifier(value))})",
+            value = stringResource(
+                R.string.ability_score_value,
+                value,
+                textAsModifier(calculateAbilityModifier(value))
+            ),
             onPlus = onPlusClick,
             onMinus = onMinusClick
         )

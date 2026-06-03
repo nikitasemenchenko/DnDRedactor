@@ -84,7 +84,11 @@ fun CharacterDetailsContent(
 
                 DetailRow(
                     label = stringResource(ability.titleRes),
-                    value = "$score (${textAsModifier(modifier)})"
+                    value = stringResource(
+                        R.string.ability_score_value,
+                        score,
+                        textAsModifier(modifier)
+                    )
                 )
             }
         }

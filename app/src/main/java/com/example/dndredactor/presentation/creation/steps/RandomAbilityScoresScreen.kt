@@ -84,7 +84,11 @@ private fun AbilityResultCard(
             )
 
             Text(
-                text = "$value ($modifierText)",
+                text = stringResource(
+                    R.string.ability_score_value,
+                    value,
+                    modifierText
+                ),
                 color = Color.Black,
                 style = MaterialTheme.typography.titleMedium
             )

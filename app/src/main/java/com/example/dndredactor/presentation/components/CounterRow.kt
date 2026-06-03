@@ -10,7 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.dndredactor.R
 import com.example.dndredactor.presentation.theme.ButtonColor
 import com.example.dndredactor.presentation.theme.LightColor
 
@@ -41,7 +43,10 @@ fun CounterRow(
                 onClick = onMinus,
                 colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
             ) {
-                Text("-", color = LightColor)
+                Text(
+                    text = stringResource(R.string.minus),
+                    color = LightColor
+                )
             }
 
             Text(
@@ -54,7 +59,10 @@ fun CounterRow(
                 onClick = onPlus,
                 colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
             ) {
-                Text("+", color = LightColor)
+                Text(
+                    text = stringResource(R.string.plus),
+                    color = LightColor
+                )
             }
         }
     }

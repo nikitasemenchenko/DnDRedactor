@@ -24,9 +24,7 @@ import com.example.dndredactor.data.model.calculateProficiencyBonus
 import com.example.dndredactor.data.model.textAsModifier
 import com.example.dndredactor.presentation.components.CounterRow
 import com.example.dndredactor.presentation.components.CustomTextField
-import com.example.dndredactor.presentation.components.ReadOnlyInfo
 import com.example.dndredactor.presentation.components.SelectableButton
-import com.example.dndredactor.presentation.components.Title
 import com.example.dndredactor.presentation.theme.ButtonColor
 import com.example.dndredactor.presentation.theme.LightColor
 
@@ -45,189 +43,189 @@ fun CharacterEditContent(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Title(R.string.main)
-
-        CustomTextField(
-            value = character.name,
-            onValueChange = vm::onNameChanged,
-            labelRes = R.string.character_name,
-            minLines = 1
-        )
-
-        Title(R.string.character_gender)
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            SelectableButton(
-                text = stringResource(R.string.male),
-                isSelected = character.gender == Gender.MALE,
-                onClick = { vm.onGenderChanged(Gender.MALE) }
+        CharacterEditSection(R.string.main) {
+            CustomTextField(
+                value = character.name,
+                onValueChange = vm::onNameChanged,
+                labelRes = R.string.character_name,
+                minLines = 1
             )
 
-            SelectableButton(
-                text = stringResource(R.string.female),
-                isSelected = character.gender == Gender.FEMALE,
-                onClick = { vm.onGenderChanged(Gender.FEMALE) }
-            )
-        }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                SelectableButton(
+                    text = stringResource(R.string.male),
+                    isSelected = character.gender == Gender.MALE,
+                    onClick = { vm.onGenderChanged(Gender.MALE) }
+                )
 
-        Title(R.string.character_level)
-
-        CounterRow(
-            title = stringResource(R.string.level),
-            value = character.level.toString(),
-            onMinus = vm::decreaseLevel,
-            onPlus = vm::increaseLevel
-        )
-
-        ReadOnlyInfo(
-            title = stringResource(R.string.proficiency_bonus),
-            value = textAsModifier(calculateProficiencyBonus(character.level))
-        )
-
-        ReadOnlyInfo(
-            title = stringResource(R.string.race),
-            value = character.raceName ?: stringResource(R.string.not_selected)
-        )
-
-        ReadOnlyInfo(
-            title = stringResource(R.string.subrace),
-            value = character.subraceName ?: stringResource(R.string.not_selected)
-        )
-
-        ReadOnlyInfo(
-            title = stringResource(R.string.class_name),
-            value = character.className ?: stringResource(R.string.not_selected)
-        )
-
-        ReadOnlyInfo(
-            title = stringResource(R.string.archetype),
-            value = character.archetypeName ?: stringResource(R.string.not_selected)
-        )
-
-        Button(
-            onClick = vm::onCoreEditClick,
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = ButtonColor),
-            shape = MaterialTheme.shapes.large
-        ) {
-            Text(
-                text = if (state.coreEditEnabled) {
-                    stringResource(R.string.hide_race_and_class_change)
-                } else {
-                    stringResource(R.string.change_race_and_class)
-                },
-                color = LightColor
-            )
-        }
-
-        if (state.coreEditEnabled) {
-            CharacterEditCoreBlock(
-                state = state,
-                vm = vm
-            )
-        }
-
-        Title(R.string.combat_stats_selection)
-
-        CounterRow(
-            title = stringResource(R.string.armor_class),
-            value = character.armorClass.toString(),
-            onMinus = vm::decreaseArmorClass,
-            onPlus = vm::increaseArmorClass
-        )
-
-        CounterRow(
-            title = stringResource(R.string.max_hit_points),
-            value = character.maxHitPoints.toString(),
-            onMinus = vm::decreaseMaxHitPoints,
-            onPlus = vm::increaseMaxHitPoints
-        )
-
-        CounterRow(
-            title = stringResource(R.string.current_hit_points),
-            value = character.currentHitPoints.toString(),
-            onMinus = vm::decreaseCurrentHitPoints,
-            onPlus = vm::increaseCurrentHitPoints
-        )
-
-        Title(R.string.backstory_selection)
-
-        CustomTextField(
-            value = character.backstory,
-            onValueChange = vm::onBackstoryChanged,
-            labelRes = R.string.backstory_placeholder,
-            minLines = 6
-        )
-
-        Title(R.string.equipment_selection)
-
-        CustomTextField(
-            value = character.equipment,
-            onValueChange = vm::onEquipmentChanged,
-            labelRes = R.string.equipment_placeholder,
-            minLines = 6
-        )
-
-        Title(R.string.appearance_traits)
-
-        CustomTextField(
-            value = character.appearance,
-            onValueChange = vm::onAppearanceChanged,
-            labelRes = R.string.appearance_placeholder,
-            minLines = 3
-        )
-
-        CustomTextField(
-            value = character.personality,
-            onValueChange = vm::onPersonalityChanged,
-            labelRes = R.string.personality,
-            minLines = 2
-        )
-
-        CustomTextField(
-            value = character.ideal,
-            onValueChange = vm::onIdealChanged,
-            labelRes = R.string.ideal,
-            minLines = 2
-        )
-
-        CustomTextField(
-            value = character.attachment,
-            onValueChange = vm::onAttachmentChanged,
-            labelRes = R.string.attachment,
-            minLines = 2
-        )
-
-        CustomTextField(
-            value = character.weakness,
-            onValueChange = vm::onWeaknessChanged,
-            labelRes = R.string.weakness,
-            minLines = 2
-        )
-
-        Title(R.string.characteristics)
-
-        Ability.entries.forEach { ability ->
-            val abilityScore = character.abilityScores.get(ability)
-            val modifier = calculateAbilityModifier(abilityScore)
+                SelectableButton(
+                    text = stringResource(R.string.female),
+                    isSelected = character.gender == Gender.FEMALE,
+                    onClick = { vm.onGenderChanged(Gender.FEMALE) }
+                )
+            }
 
             CounterRow(
-                title = stringResource(ability.titleRes),
-                value = "$abilityScore (${textAsModifier(modifier)})",
-                onMinus = { vm.decreaseAbility(ability) },
-                onPlus = { vm.increaseAbility(ability) }
+                title = stringResource(R.string.level),
+                value = character.level.toString(),
+                onMinus = vm::decreaseLevel,
+                onPlus = vm::increaseLevel
+            )
+
+            CharacterEditInfoRow(
+                titleRes = R.string.proficiency_bonus,
+                value = textAsModifier(calculateProficiencyBonus(character.level))
+            )
+
+            CharacterEditInfoRow(
+                titleRes = R.string.race,
+                value = character.raceName ?: stringResource(R.string.not_selected)
+            )
+
+            CharacterEditInfoRow(
+                titleRes = R.string.subrace,
+                value = character.subraceName ?: stringResource(R.string.not_selected)
+            )
+
+            CharacterEditInfoRow(
+                titleRes = R.string.class_name,
+                value = character.className ?: stringResource(R.string.not_selected)
+            )
+
+            CharacterEditInfoRow(
+                titleRes = R.string.archetype,
+                value = character.archetypeName ?: stringResource(R.string.not_selected)
+            )
+
+            Button(
+                onClick = vm::onCoreEditClick,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor),
+                shape = MaterialTheme.shapes.large
+            ) {
+                Text(
+                    text = if (state.coreEditEnabled) {
+                        stringResource(R.string.hide_race_and_class_change)
+                    } else {
+                        stringResource(R.string.change_race_and_class)
+                    },
+                    color = LightColor
+                )
+            }
+
+            if (state.coreEditEnabled) {
+                CharacterEditCoreBlock(
+                    state = state,
+                    vm = vm
+                )
+            }
+        }
+
+        CharacterEditSection(R.string.combat_stats_selection) {
+            CounterRow(
+                title = stringResource(R.string.armor_class),
+                value = character.armorClass.toString(),
+                onMinus = vm::decreaseArmorClass,
+                onPlus = vm::increaseArmorClass
+            )
+
+            CounterRow(
+                title = stringResource(R.string.max_hit_points),
+                value = character.maxHitPoints.toString(),
+                onMinus = vm::decreaseMaxHitPoints,
+                onPlus = vm::increaseMaxHitPoints
+            )
+
+            CounterRow(
+                title = stringResource(R.string.current_hit_points),
+                value = character.currentHitPoints.toString(),
+                onMinus = vm::decreaseCurrentHitPoints,
+                onPlus = vm::increaseCurrentHitPoints
             )
         }
 
-        Title(R.string.additional_info_selection)
+        CharacterEditSection(R.string.backstory_selection) {
+            CustomTextField(
+                value = character.backstory,
+                onValueChange = vm::onBackstoryChanged,
+                labelRes = R.string.backstory_placeholder,
+                minLines = 6
+            )
+        }
 
-        CustomTextField(
-            value = character.additionalInfo,
-            onValueChange = vm::onAdditionalInfoChanged,
-            labelRes = R.string.additional_info_placeholder,
-            minLines = 6
-        )
+        CharacterEditSection(R.string.equipment_selection) {
+            CustomTextField(
+                value = character.equipment,
+                onValueChange = vm::onEquipmentChanged,
+                labelRes = R.string.equipment_placeholder,
+                minLines = 6
+            )
+        }
+
+        CharacterEditSection(R.string.appearance_traits) {
+            CustomTextField(
+                value = character.appearance,
+                onValueChange = vm::onAppearanceChanged,
+                labelRes = R.string.appearance_placeholder,
+                minLines = 3
+            )
+
+            CustomTextField(
+                value = character.personality,
+                onValueChange = vm::onPersonalityChanged,
+                labelRes = R.string.personality,
+                minLines = 3
+            )
+
+            CustomTextField(
+                value = character.ideal,
+                onValueChange = vm::onIdealChanged,
+                labelRes = R.string.ideal,
+                minLines = 3
+            )
+
+            CustomTextField(
+                value = character.attachment,
+                onValueChange = vm::onAttachmentChanged,
+                labelRes = R.string.attachment,
+                minLines = 3
+            )
+
+            CustomTextField(
+                value = character.weakness,
+                onValueChange = vm::onWeaknessChanged,
+                labelRes = R.string.weakness,
+                minLines = 3
+            )
+        }
+
+        CharacterEditSection(R.string.characteristics) {
+            Ability.entries.forEach { ability ->
+                val abilityScore = character.abilityScores.get(ability)
+                val modifier = calculateAbilityModifier(abilityScore)
+
+                CounterRow(
+                    title = stringResource(ability.titleRes),
+                    value = stringResource(
+                        R.string.ability_score_value,
+                        abilityScore,
+                        textAsModifier(modifier)
+                    ),
+                    onMinus = { vm.decreaseAbility(ability) },
+                    onPlus = { vm.increaseAbility(ability) }
+                )
+            }
+        }
+
+        CharacterEditSection(R.string.additional_info_selection) {
+            CustomTextField(
+                value = character.additionalInfo,
+                onValueChange = vm::onAdditionalInfoChanged,
+                labelRes = R.string.additional_info_placeholder,
+                minLines = 6
+            )
+        }
     }
 }

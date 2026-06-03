@@ -147,6 +147,7 @@
     <string name="delete_character_title">Delete character?</string>
     <string name="delete_character_message">Character "%1$s" will be permanently deleted.</string>
 
+    <string name="readonly_info_value">%1$s: %2$s</string>
     <string name="error_required_fields">Fill in the required character fields.</string>
     <string name="error_load_characters">Failed to load characters.</string>
     <string name="error_load_character">Failed to load character.</string>
