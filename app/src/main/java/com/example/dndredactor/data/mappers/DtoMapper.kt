@@ -45,6 +45,14 @@ class DtoMapper @Inject constructor(){
         )
     }
 
+    fun subraceDtoToDomain(dto: SubraceDto): Subrace {
+        return Subrace(
+            id = dto.index,
+            name = dto.name,
+            description = dto.desc ?: ""
+        )
+    }
+
     fun classDtoToDomain(dto: ClassDto): CharacterClass {
         return CharacterClass(
             id = dto.index,
@@ -78,15 +86,7 @@ class DtoMapper @Inject constructor(){
 
     fun getSubclassDescription(dto: ArchetypeDto): String {
         return if(dto.desc.isNotEmpty()){
-            dto.desc.joinToString(" ")
+            dto.desc.joinToString("\n")
         } else ""
-    }
-
-    fun subraceDtoToDomain(dto: SubraceDto): Subrace {
-        return Subrace(
-            id = dto.index,
-            name = dto.name,
-            description = dto.desc ?: ""
-        )
     }
 }

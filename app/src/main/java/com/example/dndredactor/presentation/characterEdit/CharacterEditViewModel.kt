@@ -14,7 +14,9 @@ import com.example.dndredactor.data.model.Race
 import com.example.dndredactor.data.model.Subrace
 import com.example.dndredactor.domain.repository.CreationRepository
 import com.example.dndredactor.domain.repository.LocalCharacterRepository
+import com.example.dndredactor.presentation.characterEdit.logic.CharacterEditValidator
 import com.example.dndredactor.presentation.components.AppMessage
+import com.example.dndredactor.presentation.creation.logic.CreationLimits.MIN_CHARACTER_LEVEL
 import com.example.dndredactor.presentation.navigation.AppRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -75,7 +77,7 @@ class CharacterEditViewModel @Inject constructor(
     }
 
     fun increaseLevel() = updateCharacter {
-        if(level >= MAX_CHARACTER_LEVEL) return@updateCharacter this
+        if(level >= CharacterEditValidator.MAX_CHARACTER_LEVEL) return@updateCharacter this
         copy(level = level+1)
     }
 
@@ -178,7 +180,7 @@ class CharacterEditViewModel @Inject constructor(
                     raceDetailsLoading = false
                 )
 
-                _events.emit(CharacterEditEvent.ShowError(AppMessage.LoadRace))
+                showError(AppMessage.LoadRace)
             }
         }
     }
@@ -250,7 +252,7 @@ class CharacterEditViewModel @Inject constructor(
                     classDetailsLoading = false
                 )
 
-                _events.emit(CharacterEditEvent.ShowError(AppMessage.LoadClass))
+                showError(AppMessage.LoadClass)
             }
         }
     }
@@ -284,17 +286,17 @@ class CharacterEditViewModel @Inject constructor(
     }
 
     fun increaseArmorClass() = updateCharacter {
-        if (armorClass >= MAX_ARMOR_CLASS) return@updateCharacter this
+        if (armorClass >= CharacterEditValidator.MAX_ARMOR_CLASS) return@updateCharacter this
         copy(armorClass = armorClass + 1)
     }
 
     fun decreaseArmorClass() = updateCharacter {
-        if (armorClass <= MIN_ARMOR_CLASS) return@updateCharacter this
+        if (armorClass <= CharacterEditValidator.MIN_ARMOR_CLASS) return@updateCharacter this
         copy(armorClass = armorClass - 1)
     }
 
     fun increaseMaxHitPoints() = updateCharacter {
-        if (maxHitPoints >= MAX_HIT_POINTS) return@updateCharacter this
+        if (maxHitPoints >= CharacterEditValidator.MAX_HIT_POINTS) return@updateCharacter this
 
         copy(
             maxHitPoints = maxHitPoints + 1
@@ -302,7 +304,7 @@ class CharacterEditViewModel @Inject constructor(
     }
 
     fun decreaseMaxHitPoints() = updateCharacter {
-        if (maxHitPoints <= MIN_HIT_POINTS) return@updateCharacter this
+        if (maxHitPoints <= CharacterEditValidator.MIN_HIT_POINTS) return@updateCharacter this
 
         val nextMaxHitPoints = maxHitPoints - 1
 
@@ -382,9 +384,7 @@ class CharacterEditViewModel @Inject constructor(
                     coreLoading = false
                 )
 
-                _events.emit(
-                    CharacterEditEvent.ShowError(AppMessage.LoadReferenceData)
-                )
+                showError(AppMessage.LoadReferenceData)
             }
         }
     }
@@ -403,51 +403,10 @@ class CharacterEditViewModel @Inject constructor(
         val state = _uiState.value as? CharacterEditUiState.Success ?: return
         val character = state.character
 
-        if (state.coreLoading || state.raceDetailsLoading || state.classDetailsLoading) {
-            viewModelScope.launch {
-                _events.emit(CharacterEditEvent.ShowError(AppMessage.WaitForLoading))
-            }
-            return
-        }
+        val validationError = CharacterEditValidator.validateBeforeSave(state)
 
-        val selectedRace = state.races.find {it.id == character.raceId}
-        val selectedClass = state.classes.find {it.id == character.classId}
-
-        if (selectedRace != null &&
-            selectedRace.subraces.isNotEmpty() &&
-            character.subraceId == null
-        ) {
-            viewModelScope.launch {
-                _events.emit(CharacterEditEvent.ShowError(AppMessage.SelectSubrace))
-            }
-            return
-        }
-
-        if (selectedClass != null &&
-            selectedClass.archetypes.isNotEmpty() &&
-            character.archetypeId == null
-        ) {
-            viewModelScope.launch {
-                _events.emit(CharacterEditEvent.ShowError(AppMessage.SelectArchetype))
-            }
-            return
-        }
-
-        if (character.name.isBlank() || character.gender == Gender.UNSPECIFIED ||
-            character.level !in MIN_CHARACTER_LEVEL..MAX_CHARACTER_LEVEL) {
-            viewModelScope.launch {
-                _events.emit(CharacterEditEvent.ShowError(AppMessage.InvalidCharacter))
-            }
-            return
-        }
-
-        if (character.armorClass <= 0 ||
-            character.maxHitPoints <= 0 ||
-            character.currentHitPoints !in 0..character.maxHitPoints
-        ) {
-            viewModelScope.launch {
-                _events.emit(CharacterEditEvent.ShowError(AppMessage.InvalidCombatStats))
-            }
+        if (validationError != null) {
+            showError(validationError)
             return
         }
 
@@ -457,7 +416,7 @@ class CharacterEditViewModel @Inject constructor(
             }.onSuccess {
                 _events.emit(CharacterEditEvent.CharacterUpdated)
             }.onFailure {
-                _events.emit(CharacterEditEvent.ShowError(AppMessage.UpdateCharacter))
+                showError(AppMessage.UpdateCharacter)
             }
         }
     }
@@ -472,15 +431,12 @@ class CharacterEditViewModel @Inject constructor(
         )
     }
 
-    private companion object {
-        const val MIN_CHARACTER_LEVEL = 1
-        const val MAX_CHARACTER_LEVEL = 20
-
-        const val MIN_ARMOR_CLASS = 1
-        const val MAX_ARMOR_CLASS = 40
-
-        const val MIN_HIT_POINTS = 1
-        const val MAX_HIT_POINTS = 1000
+    private fun showError(message: AppMessage) {
+        viewModelScope.launch {
+            _events.emit(
+                CharacterEditEvent.ShowError(message)
+            )
+        }
     }
 }
 
