@@ -1,23 +1,17 @@
 package com.example.dndredactor.presentation.creation.steps
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.dndredactor.R
 import com.example.dndredactor.data.model.Ability
-import com.example.dndredactor.data.model.calculateAbilityModifier
-import com.example.dndredactor.data.model.textAsModifier
-import com.example.dndredactor.presentation.components.CounterRow
+import com.example.dndredactor.presentation.components.CustomCard
 import com.example.dndredactor.presentation.creation.CreationViewModel
-import com.example.dndredactor.presentation.theme.LightButtonColor
-import com.example.dndredactor.presentation.theme.LightColor
+import com.example.dndredactor.presentation.theme.TextPrimaryDark
+import com.example.dndredactor.presentation.theme.TextSecondaryDark
 
 @Composable
 fun PointBuyAbilityScoresScreen(
@@ -30,46 +24,31 @@ fun PointBuyAbilityScoresScreen(
     CreationStepLayout(
         titleRes = R.string.point_buy
     ) {
-        Text(
-            text = stringResource(R.string.remaining_points, remainingPoints),
-            color = LightColor,
-            style = MaterialTheme.typography.titleMedium
-        )
+        CustomCard {
+            Text(
+                text = stringResource(R.string.remaining_points, remainingPoints),
+                color = TextPrimaryDark,
+                style = MaterialTheme.typography.titleLarge
+            )
 
-        Ability.entries.forEach { ability ->
-            PointBuyAbilityCard(
-                title = stringResource(ability.titleRes),
-                value = scores.get(ability),
-                onMinusClick = { vm.decreaseAbility(ability) },
-                onPlusClick = { vm.increaseAbility(ability) }
+            Text(
+                text = stringResource(R.string.point_buy_description),
+                color = TextSecondaryDark,
+                style = MaterialTheme.typography.bodyLarge
             )
         }
-    }
-}
 
-@Composable
-fun PointBuyAbilityCard(
-    title: String,
-    value: Int,
-    onMinusClick: () -> Unit,
-    onPlusClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(
-            containerColor = LightButtonColor
-        )
-    ) {
-        CounterRow(
-            title = title,
-            value = stringResource(
-                R.string.ability_score_value,
-                value,
-                textAsModifier(calculateAbilityModifier(value))
-            ),
-            onPlus = onPlusClick,
-            onMinus = onMinusClick
-        )
+        Ability.entries.forEach { ability ->
+            AbilityScoreControlCard(
+                titleRes = ability.titleRes,
+                value = scores.get(ability),
+                onMinusClick = {
+                    vm.decreaseAbility(ability)
+                },
+                onPlusClick = {
+                    vm.increaseAbility(ability)
+                }
+            )
+        }
     }
 }

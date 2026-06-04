@@ -17,11 +17,13 @@ fun EquipmentScreen(
         titleRes = R.string.equipment_selection,
         descriptionRes = R.string.equipment_description
     ) {
-        CustomTextField(
-            value = uiState.character.equipment,
-            onValueChange = vm::onEquipmentChanged,
-            labelRes = R.string.equipment_placeholder,
-            minLines = 8
-        )
+        CreationSection(R.string.items) {
+            CustomTextField(
+                value = uiState.character.equipment,
+                onValueChange = vm::onEquipmentChanged,
+                labelRes = R.string.equipment_placeholder,
+                minLines = 8
+            )
+        }
     }
 }

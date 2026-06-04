@@ -30,6 +30,7 @@ import com.example.dndredactor.data.model.Ability
 import com.example.dndredactor.data.model.calculateProficiencyBonus
 import com.example.dndredactor.data.model.getModifier
 import com.example.dndredactor.data.model.textAsModifier
+import com.example.dndredactor.presentation.components.CustomCard
 import com.example.dndredactor.presentation.mappers.toClassIcon
 import com.example.dndredactor.presentation.theme.TextPrimaryDark
 import com.example.dndredactor.presentation.theme.TextSecondaryDark
@@ -50,40 +51,40 @@ fun CharacterDetailsContent(
     ) {
         CharacterDetailsHero(state)
 
-        DetailsCard(title = stringResource(R.string.main)) {
-            DetailRow(
-                label = stringResource(R.string.character_gender),
+        DetailsSection(titleRes = R.string.main) {
+            DetailsInfoRow(
+                labelRes = R.string.character_gender,
                 value = stringResource(character.gender.titleRes)
             )
 
-            DetailRow(
-                label = stringResource(R.string.race),
+            DetailsInfoRow(
+                labelRes = R.string.race,
                 value = character.raceName ?: stringResource(R.string.not_selected)
             )
 
-            DetailRow(
-                label = stringResource(R.string.subrace),
+            DetailsInfoRow(
+                labelRes = R.string.subrace,
                 value = character.subraceName ?: stringResource(R.string.not_selected)
             )
 
-            DetailRow(
-                label = stringResource(R.string.class_name),
+            DetailsInfoRow(
+                labelRes = R.string.class_name,
                 value = character.className ?: stringResource(R.string.not_selected)
             )
 
-            DetailRow(
-                label = stringResource(R.string.archetype),
+            DetailsInfoRow(
+                labelRes = R.string.archetype,
                 value = character.archetypeName ?: stringResource(R.string.not_selected)
             )
         }
 
-        DetailsCard(title = stringResource(R.string.characteristics)) {
+        DetailsSection(titleRes = R.string.characteristics) {
             Ability.entries.forEach { ability ->
                 val score = character.abilityScores.get(ability)
                 val modifier = character.abilityScores.getModifier(ability)
 
-                DetailRow(
-                    label = stringResource(ability.titleRes),
+                DetailsInfoRow(
+                    labelRes = ability.titleRes,
                     value = stringResource(
                         R.string.ability_score_value,
                         score,
@@ -93,54 +94,50 @@ fun CharacterDetailsContent(
             }
         }
 
-        DetailsCard(title = stringResource(R.string.backstory_selection)) {
-            DetailsTextBlock(
+        DetailsSection(titleRes = R.string.backstory_selection) {
+            DetailsTextSection(
+                titleRes = R.string.description,
                 text = character.backstory
             )
         }
 
-        DetailsCard(title = stringResource(R.string.equipment_selection)) {
-            DetailsTextBlock(
+        DetailsSection(titleRes = R.string.equipment_selection) {
+            DetailsTextSection(
+                titleRes = R.string.items,
                 text = character.equipment
             )
         }
 
-        DetailsCard(title = stringResource(R.string.appearance_selection)) {
-            DetailsTextBlock(
+        DetailsSection(titleRes = R.string.appearance_traits) {
+            DetailsTextSection(
+                titleRes = R.string.appearance_selection,
                 text = character.appearance
             )
-        }
 
-        DetailsCard(title = stringResource(R.string.character_traits)) {
-            DetailTextSection(
+            DetailsTextSection(
                 titleRes = R.string.personality,
                 text = character.personality
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            DetailTextSection(
+            DetailsTextSection(
                 titleRes = R.string.ideal,
                 text = character.ideal
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            DetailTextSection(
+            DetailsTextSection(
                 titleRes = R.string.attachment,
                 text = character.attachment
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            DetailTextSection(
+            DetailsTextSection(
                 titleRes = R.string.weakness,
                 text = character.weakness
             )
         }
 
-        DetailsCard(title = stringResource(R.string.additional_info_selection)) {
-            DetailsTextBlock(
+        DetailsSection(titleRes = R.string.additional_info_selection) {
+            DetailsTextSection(
+                titleRes = R.string.description,
                 text = character.additionalInfo
             )
         }
@@ -156,7 +153,7 @@ private fun CharacterDetailsHero(
     val character = state.character
     val classIcon = character.classType.toClassIcon()
 
-    DetailsCard {
+    CustomCard {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {

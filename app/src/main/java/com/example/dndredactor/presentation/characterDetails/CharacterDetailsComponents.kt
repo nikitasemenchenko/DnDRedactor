@@ -7,12 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,40 +26,44 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.dndredactor.R
-import com.example.dndredactor.presentation.components.CustomCard
 import com.example.dndredactor.presentation.theme.LightColor
 import com.example.dndredactor.presentation.theme.SurfacePurpleLight
 import com.example.dndredactor.presentation.theme.TextPrimaryDark
-import com.example.dndredactor.presentation.theme.TextSecondaryDark
 
 @Composable
-fun DetailsCard(
-    title: String? = null,
+fun DetailsSection(
+    @StringRes titleRes: Int,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    CustomCard {
-        if (title != null) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(
+            containerColor = SurfacePurpleLight
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 6.dp
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
             Text(
-                text = title,
-                color = TextPrimaryDark,
+                text = stringResource(titleRes),
+                color = LightColor,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
             content()
         }
     }
 }
 
 @Composable
-fun DetailRow(
-    label: String,
+fun DetailsInfoRow(
+    @StringRes labelRes: Int,
     value: String
 ) {
     Row(
@@ -68,10 +72,9 @@ fun DetailRow(
         verticalAlignment = Alignment.Top
     ) {
         Text(
-            text = label,
-            color = TextSecondaryDark,
+            text = stringResource(labelRes),
+            color = LightColor.copy(alpha = 0.76f),
             style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Medium,
             modifier = Modifier.weight(1f)
         )
 
@@ -79,7 +82,7 @@ fun DetailRow(
             text = value.ifBlank {
                 stringResource(R.string.not_specified)
             },
-            color = TextPrimaryDark,
+            color = LightColor,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.End,
@@ -89,16 +92,29 @@ fun DetailRow(
 }
 
 @Composable
-fun DetailsTextBlock(
+fun DetailsTextSection(
+    @StringRes titleRes: Int,
     text: String
 ) {
-    Text(
-        text = text.ifBlank {
-            stringResource(R.string.not_specified)
-        },
-        color = TextPrimaryDark,
-        style = MaterialTheme.typography.bodyLarge
-    )
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(
+            text = stringResource(titleRes),
+            color = LightColor.copy(alpha = 0.76f),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
+
+        Text(
+            text = text.ifBlank {
+                stringResource(R.string.not_specified)
+            },
+            color = LightColor,
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
 }
 
 @Composable
@@ -165,32 +181,5 @@ fun CharacterDetailsError(
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center
         )
-    }
-}
-
-@Composable
-fun DetailTextSection(
-    @StringRes titleRes: Int,
-    text: String
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        Text(
-            text = stringResource(titleRes),
-            color = TextSecondaryDark,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
-
-        Text(
-            text = text.ifBlank {
-                stringResource(R.string.not_specified)
-            },
-            color = TextPrimaryDark,
-            style = MaterialTheme.typography.bodyLarge
-        )
-
     }
 }

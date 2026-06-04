@@ -17,11 +17,13 @@ fun BackstoryScreen(
         titleRes = R.string.backstory_selection,
         descriptionRes = R.string.backstory_description
     ) {
-        CustomTextField(
-            value = uiState.character.backstory,
-            onValueChange = vm::onBackstoryChanged,
-            labelRes = R.string.backstory_placeholder,
-            minLines = 8
-        )
+        CreationSection(R.string.description) {
+            CustomTextField(
+                value = uiState.character.backstory,
+                onValueChange = vm::onBackstoryChanged,
+                labelRes = R.string.backstory_placeholder,
+                minLines = 8
+            )
+        }
     }
 }

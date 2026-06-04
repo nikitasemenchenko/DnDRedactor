@@ -24,36 +24,38 @@ fun CombatStatsScreen(
     CreationStepLayout(
         titleRes = R.string.combat_stats_selection
     ) {
-        CounterRow(
-            title = stringResource(R.string.level),
-            value = character.level.toString(),
-            onMinus = vm::decreaseLevel,
-            onPlus = vm::increaseLevel
-        )
+        CreationSection(R.string.combat_stats_selection) {
+            CounterRow(
+                title = stringResource(R.string.level),
+                value = character.level.toString(),
+                onMinus = vm::decreaseLevel,
+                onPlus = vm::increaseLevel
+            )
 
-        ReadOnlyInfo(
-            title = stringResource(R.string.proficiency_bonus),
-            value = textAsModifier(calculateProficiencyBonus(character.level))
-        )
+            ReadOnlyInfo(
+                title = stringResource(R.string.proficiency_bonus),
+                value = textAsModifier(calculateProficiencyBonus(character.level))
+            )
 
-        CounterRow(
-            title = stringResource(R.string.armor_class),
-            value = character.armorClass.toString(),
-            onMinus = vm::decreaseArmorClass,
-            onPlus = vm::increaseArmorClass
-        )
+            CounterRow(
+                title = stringResource(R.string.armor_class),
+                value = character.armorClass.toString(),
+                onMinus = vm::decreaseArmorClass,
+                onPlus = vm::increaseArmorClass
+            )
 
-        CounterRow(
-            title = stringResource(R.string.max_hit_points),
-            value = character.maxHitPoints.toString(),
-            onMinus = vm::decreaseMaxHitPoints,
-            onPlus = vm::increaseMaxHitPoints
-        )
+            CounterRow(
+                title = stringResource(R.string.max_hit_points),
+                value = character.maxHitPoints.toString(),
+                onMinus = vm::decreaseMaxHitPoints,
+                onPlus = vm::increaseMaxHitPoints
+            )
 
-        Text(
-            text = stringResource(R.string.creation_hp_hint),
-            color = LightColor,
-            style = MaterialTheme.typography.bodyLarge
-        )
+            Text(
+                text = stringResource(R.string.creation_hp_hint),
+                color = LightColor.copy(alpha = 0.78f),
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
     }
 }

@@ -1,0 +1,147 @@
+package com.example.dndredactor.presentation.creation.steps
+
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import com.example.dndredactor.R
+import com.example.dndredactor.data.model.calculateAbilityModifier
+import com.example.dndredactor.data.model.textAsModifier
+import com.example.dndredactor.presentation.components.CustomCard
+import com.example.dndredactor.presentation.theme.ButtonColor
+import com.example.dndredactor.presentation.theme.LightColor
+import com.example.dndredactor.presentation.theme.TextPrimaryDark
+import com.example.dndredactor.presentation.theme.TextSecondaryDark
+
+@Composable
+fun AbilityScoreDisplayCard(
+    @StringRes titleRes: Int,
+    value: Int
+) {
+    val modifier = textAsModifier(calculateAbilityModifier(value))
+
+    CustomCard {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = stringResource(titleRes),
+                    color = TextPrimaryDark,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Text(
+                    text = stringResource(
+                        R.string.ability_score_value,
+                        value,
+                        modifier
+                    ),
+                    color = TextSecondaryDark,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun AbilityScoreControlCard(
+    @StringRes titleRes: Int,
+    value: Int,
+    onMinusClick: () -> Unit,
+    onPlusClick: () -> Unit
+) {
+    val modifier = textAsModifier(calculateAbilityModifier(value))
+
+    CustomCard {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = stringResource(titleRes),
+                    color = TextPrimaryDark,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Text(
+                    text = stringResource(
+                        R.string.ability_score_value,
+                        value,
+                        modifier
+                    ),
+                    color = TextSecondaryDark,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                AbilitySmallButton(
+                    text = stringResource(R.string.minus),
+                    onClick = onMinusClick
+                )
+
+                Text(
+                    text = value.toString(),
+                    color = TextPrimaryDark,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+
+                AbilitySmallButton(
+                    text = stringResource(R.string.plus),
+                    onClick = onPlusClick
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun AbilitySmallButton(
+    text: String,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier.size(42.dp),
+        contentPadding = PaddingValues(0.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = ButtonColor,
+            contentColor = LightColor
+        ),
+        shape = MaterialTheme.shapes.large
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}

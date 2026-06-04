@@ -11,12 +11,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.dndredactor.presentation.theme.LightColor
+import com.example.dndredactor.presentation.components.CustomCard
+import com.example.dndredactor.presentation.theme.TextPrimaryDark
+import com.example.dndredactor.presentation.theme.TextSecondaryDark
 
 @Composable
 fun CreationStepLayout(
@@ -30,22 +31,24 @@ fun CreationStepLayout(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text = stringResource(titleRes),
-            color = LightColor,
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold
-        )
-
-        if (descriptionRes != null) {
+        CustomCard {
             Text(
-                text = stringResource(descriptionRes),
-                color = LightColor.copy(alpha = 0.82f),
-                style = MaterialTheme.typography.bodyLarge
+                text = stringResource(titleRes),
+                color = TextPrimaryDark,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
             )
+
+            if (descriptionRes != null) {
+                Text(
+                    text = stringResource(descriptionRes),
+                    color = TextSecondaryDark,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(top = 6.dp)
+                )
+            }
         }
 
         content()

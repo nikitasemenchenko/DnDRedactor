@@ -3,7 +3,6 @@ package com.example.dndredactor.presentation.creation.steps
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -15,84 +14,88 @@ import com.example.dndredactor.presentation.components.CustomTextField
 import com.example.dndredactor.presentation.components.DescriptionCard
 import com.example.dndredactor.presentation.components.Dropdown
 import com.example.dndredactor.presentation.components.SelectableButton
-import com.example.dndredactor.presentation.components.Title
 import com.example.dndredactor.presentation.creation.CreationViewModel
+import com.example.dndredactor.presentation.theme.LightColor
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RaceSelectionScreen(
-    vm: CreationViewModel,
+    vm: CreationViewModel
 ) {
     val uiState by vm.uiState.collectAsState()
 
     CreationStepLayout(
-        titleRes = R.string.character_name
+        titleRes = R.string.race_selection
     ) {
-        CustomTextField(
-            value = uiState.character.fullName,
-            onValueChange = vm::onNameChanged,
-            labelRes = R.string.character_name
-        )
-
-        Title(R.string.character_gender)
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            SelectableButton(
-                text = stringResource(R.string.male),
-                isSelected = uiState.character.gender == Gender.MALE,
-                onClick = { vm.onGenderSelected(Gender.MALE) }
+        CreationSection(R.string.main) {
+            CustomTextField(
+                value = uiState.character.fullName,
+                onValueChange = vm::onNameChanged,
+                labelRes = R.string.character_name
             )
-            SelectableButton(
-                text = stringResource(R.string.female),
-                isSelected = uiState.character.gender == Gender.FEMALE,
-                onClick = { vm.onGenderSelected(Gender.FEMALE) }
-            )
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                SelectableButton(
+                    text = stringResource(R.string.male),
+                    isSelected = uiState.character.gender == Gender.MALE,
+                    onClick = { vm.onGenderSelected(Gender.MALE) }
+                )
+
+                SelectableButton(
+                    text = stringResource(R.string.female),
+                    isSelected = uiState.character.gender == Gender.FEMALE,
+                    onClick = { vm.onGenderSelected(Gender.FEMALE) }
+                )
+            }
         }
 
-        Title(R.string.race_selection)
-        Dropdown(
-            items = uiState.races,
-            selectedId = uiState.character.raceId,
-            onSelect = vm::onRaceSelected,
-            idSelector = { it.id },
-            nameSelector = { it.name },
-            labelRes = R.string.character_race
-        )
-        DescriptionCard(
-            description = vm.getRaceById(uiState.character.raceId)?.description,
-            placeholderRes = R.string.race_desc_placeholder
-        )
-
-        if (uiState.raceDetailsLoading) {
-            CircularProgressIndicator()
-        }
-
-        val selectedRace = vm.getRaceById(uiState.character.raceId)
-
-        if (selectedRace != null && selectedRace.subraces.isNotEmpty()) {
-            Title(R.string.subrace_selection)
-
+        CreationSection(R.string.race_selection) {
             Dropdown(
-                items = selectedRace.subraces,
-                selectedId = uiState.character.subraceId,
-                onSelect = vm::onSubraceSelected,
+                items = uiState.races,
+                selectedId = uiState.character.raceId,
+                onSelect = vm::onRaceSelected,
                 idSelector = { it.id },
                 nameSelector = { it.name },
-                labelRes = R.string.character_subrace
+                labelRes = R.string.character_race
             )
-
-            if (uiState.subraceDetailsLoading) {
-                CircularProgressIndicator()
-            }
-
-            val selectedSubrace = vm.getSubraceById(uiState.character.subraceId)
 
             DescriptionCard(
-                description = selectedSubrace?.description,
-                placeholderRes = R.string.subrace_desc_placeholder
+                description = vm.getRaceById(uiState.character.raceId)?.description,
+                placeholderRes = R.string.race_desc_placeholder
             )
+
+            if (uiState.raceDetailsLoading) {
+                CircularProgressIndicator(
+                    color = LightColor
+                )
+            }
+
+            val selectedRace = vm.getRaceById(uiState.character.raceId)
+
+            if (selectedRace != null && selectedRace.subraces.isNotEmpty()) {
+                Dropdown(
+                    items = selectedRace.subraces,
+                    selectedId = uiState.character.subraceId,
+                    onSelect = vm::onSubraceSelected,
+                    idSelector = { it.id },
+                    nameSelector = { it.name },
+                    labelRes = R.string.character_subrace
+                )
+
+                if (uiState.subraceDetailsLoading) {
+                    CircularProgressIndicator(
+                        color = LightColor
+                    )
+                }
+
+                val selectedSubrace = vm.getSubraceById(uiState.character.subraceId)
+
+                DescriptionCard(
+                    description = selectedSubrace?.description,
+                    placeholderRes = R.string.subrace_desc_placeholder
+                )
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.dndredactor.presentation.theme.BackPurple
 
 @Composable
 fun CharacterCreationScreen(
@@ -59,7 +60,8 @@ fun CharacterCreationScreen(
                     goNext = vm::goToNextStep
                 )
             }
-        }
+        },
+        containerColor = BackPurple
     ) { paddingValues ->
         CharacterCreationContent(
             paddingValues = paddingValues,
