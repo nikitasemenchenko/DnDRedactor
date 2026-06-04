@@ -13,7 +13,8 @@ import androidx.compose.ui.res.stringResource
 import com.example.dndredactor.presentation.components.ErrorRetry
 import com.example.dndredactor.presentation.creation.steps.AbilityGenerationMethodScreen
 import com.example.dndredactor.presentation.creation.steps.AdditionalInfoScreen
-import com.example.dndredactor.presentation.creation.steps.BackstoryScreen
+import com.example.dndredactor.presentation.creation.steps.CharacterIdentityScreen
+import com.example.dndredactor.presentation.creation.steps.CharacterStoryScreen
 import com.example.dndredactor.presentation.creation.steps.ClassSelectionScreen
 import com.example.dndredactor.presentation.creation.steps.CombatStatsScreen
 import com.example.dndredactor.presentation.creation.steps.CreationSummaryScreen
@@ -21,7 +22,6 @@ import com.example.dndredactor.presentation.creation.steps.EquipmentScreen
 import com.example.dndredactor.presentation.creation.steps.PointBuyAbilityScoresScreen
 import com.example.dndredactor.presentation.creation.steps.RaceSelectionScreen
 import com.example.dndredactor.presentation.creation.steps.RandomAbilityScoresScreen
-import com.example.dndredactor.presentation.creation.steps.TraitsSelectionScreen
 
 @Composable
 fun CharacterCreationContent(
@@ -78,13 +78,13 @@ private fun CharacterCreationStepContent(
         modifier = modifier
     ) {
         when (currentStep) {
+            CreationStep.IDENTITY -> CharacterIdentityScreen(vm = vm)
+
+            CreationStep.STORY -> CharacterStoryScreen(vm = vm)
+
             CreationStep.RACE -> RaceSelectionScreen(vm = vm)
 
             CreationStep.CLASS -> ClassSelectionScreen(vm = vm)
-
-            CreationStep.BACKSTORY -> BackstoryScreen(vm = vm)
-
-            CreationStep.TRAITS -> TraitsSelectionScreen(vm = vm)
 
             CreationStep.ABILITY_GENERATION_METHOD -> {
                 AbilityGenerationMethodScreen(vm = vm)

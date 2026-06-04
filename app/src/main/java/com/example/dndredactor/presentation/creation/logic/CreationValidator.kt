@@ -12,10 +12,15 @@ object CreationValidator {
         val selectedClass = state.classes.find { it.id == character.classId }
 
         return when (state.currentStep) {
-            CreationStep.RACE -> {
+            CreationStep.IDENTITY -> {
                 character.fullName.isNotBlank() &&
-                        character.gender != Gender.UNSPECIFIED &&
-                        selectedRace != null &&
+                        character.gender != Gender.UNSPECIFIED
+            }
+
+            CreationStep.STORY -> true
+
+            CreationStep.RACE -> {
+                selectedRace != null &&
                         !state.raceDetailsLoading &&
                         !state.subraceDetailsLoading &&
                         (
@@ -33,10 +38,6 @@ object CreationValidator {
                                         character.archetypeId != null
                                 )
             }
-
-            CreationStep.BACKSTORY -> true
-
-            CreationStep.TRAITS -> true
 
             CreationStep.ABILITY_GENERATION_METHOD -> {
                 character.abilityGenerationMethod != null

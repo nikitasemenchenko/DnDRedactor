@@ -16,7 +16,7 @@ fun CharacterCreationBottomBar(
     goNext: () -> Unit
 ) {
     AppBottomBar {
-        if (currentStep == CreationStep.RACE) {
+        if (currentStep == CreationStep.IDENTITY) {
             AppBottomBarButton(
                 textRes = R.string.next,
                 onClick = goNext,

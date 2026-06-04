@@ -1,10 +1,13 @@
 package com.example.dndredactor.presentation.creation.steps
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -19,51 +22,60 @@ import androidx.compose.ui.unit.dp
 import com.example.dndredactor.R
 import com.example.dndredactor.data.model.calculateAbilityModifier
 import com.example.dndredactor.data.model.textAsModifier
-import com.example.dndredactor.presentation.components.CustomCard
+import com.example.dndredactor.presentation.theme.BackPurple
 import com.example.dndredactor.presentation.theme.ButtonColor
 import com.example.dndredactor.presentation.theme.LightColor
-import com.example.dndredactor.presentation.theme.TextPrimaryDark
-import com.example.dndredactor.presentation.theme.TextSecondaryDark
 
 @Composable
-fun AbilityScoreDisplayCard(
+fun AbilityScoreDisplayRow(
     @StringRes titleRes: Int,
     value: Int
 ) {
     val modifier = textAsModifier(calculateAbilityModifier(value))
 
-    CustomCard {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = BackPurple.copy(alpha = 0.34f),
+                shape = MaterialTheme.shapes.large
+            )
+            .padding(14.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Text(
-                    text = stringResource(titleRes),
-                    color = TextPrimaryDark,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
+            Text(
+                text = stringResource(titleRes),
+                color = LightColor,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
 
-                Text(
-                    text = stringResource(
-                        R.string.ability_score_value,
-                        value,
-                        modifier
-                    ),
-                    color = TextSecondaryDark,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
+            Text(
+                text = stringResource(
+                    R.string.ability_score_value,
+                    value,
+                    modifier
+                ),
+                color = LightColor.copy(alpha = 0.78f),
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
+
+        Text(
+            text = value.toString(),
+            color = LightColor,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
 @Composable
-fun AbilityScoreControlCard(
+fun AbilityScoreControlRow(
     @StringRes titleRes: Int,
     value: Int,
     onMinusClick: () -> Unit,
@@ -71,54 +83,59 @@ fun AbilityScoreControlCard(
 ) {
     val modifier = textAsModifier(calculateAbilityModifier(value))
 
-    CustomCard {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = BackPurple.copy(alpha = 0.34f),
+                shape = MaterialTheme.shapes.large
+            )
+            .padding(14.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(
+                text = stringResource(titleRes),
+                color = LightColor,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = stringResource(
+                    R.string.ability_score_value,
+                    value,
+                    modifier
+                ),
+                color = LightColor.copy(alpha = 0.78f),
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Text(
-                    text = stringResource(titleRes),
-                    color = TextPrimaryDark,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
+            AbilitySmallButton(
+                text = stringResource(R.string.minus),
+                onClick = onMinusClick
+            )
 
-                Text(
-                    text = stringResource(
-                        R.string.ability_score_value,
-                        value,
-                        modifier
-                    ),
-                    color = TextSecondaryDark,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
+            Text(
+                text = value.toString(),
+                color = LightColor,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                AbilitySmallButton(
-                    text = stringResource(R.string.minus),
-                    onClick = onMinusClick
-                )
-
-                Text(
-                    text = value.toString(),
-                    color = TextPrimaryDark,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-
-                AbilitySmallButton(
-                    text = stringResource(R.string.plus),
-                    onClick = onPlusClick
-                )
-            }
+            AbilitySmallButton(
+                text = stringResource(R.string.plus),
+                onClick = onPlusClick
+            )
         }
     }
 }

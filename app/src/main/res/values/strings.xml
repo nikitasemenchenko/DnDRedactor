@@ -112,6 +112,7 @@
     <string name="additional_info_description">Use this field for any extra character notes.</string>
     <string name="additional_info_placeholder">Enter additional character information</string>
 
+    <string name="notes">Notes</string>
     <string name="summary_title">Review character</string>
     <string name="description">Description</string>
     <string name="items">Items</string>

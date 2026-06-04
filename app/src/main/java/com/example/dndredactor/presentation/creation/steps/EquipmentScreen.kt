@@ -13,10 +13,7 @@ fun EquipmentScreen(
 ) {
     val uiState by vm.uiState.collectAsState()
 
-    CreationStepLayout(
-        titleRes = R.string.equipment_selection,
-        descriptionRes = R.string.equipment_description
-    ) {
+    CreationStepLayout{
         CreationSection(R.string.items) {
             CustomTextField(
                 value = uiState.character.equipment,

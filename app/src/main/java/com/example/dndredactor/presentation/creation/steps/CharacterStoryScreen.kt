@@ -8,23 +8,12 @@ import com.example.dndredactor.presentation.components.CustomTextField
 import com.example.dndredactor.presentation.creation.CreationViewModel
 
 @Composable
-fun TraitsSelectionScreen(
+fun CharacterStoryScreen(
     vm: CreationViewModel
 ) {
     val uiState by vm.uiState.collectAsState()
 
-    CreationStepLayout(
-        titleRes = R.string.appearance_traits
-    ) {
-        CreationSection(R.string.appearance_selection) {
-            CustomTextField(
-                value = uiState.character.appearance,
-                onValueChange = vm::onAppearanceChanged,
-                labelRes = R.string.appearance_placeholder,
-                minLines = 3
-            )
-        }
-
+    CreationStepLayout {
         CreationSection(R.string.character_traits) {
             CustomTextField(
                 value = uiState.character.personality,
@@ -52,6 +41,15 @@ fun TraitsSelectionScreen(
                 onValueChange = vm::onWeaknessChanged,
                 labelRes = R.string.weakness,
                 minLines = 3
+            )
+        }
+
+        CreationSection(R.string.backstory_selection) {
+            CustomTextField(
+                value = uiState.character.backstory,
+                onValueChange = vm::onBackstoryChanged,
+                labelRes = R.string.backstory_placeholder,
+                minLines = 8
             )
         }
     }

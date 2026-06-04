@@ -21,9 +21,7 @@ fun CombatStatsScreen(
     val uiState by vm.uiState.collectAsState()
     val character = uiState.character
 
-    CreationStepLayout(
-        titleRes = R.string.combat_stats_selection
-    ) {
+    CreationStepLayout {
         CreationSection(R.string.combat_stats_selection) {
             CounterRow(
                 title = stringResource(R.string.level),

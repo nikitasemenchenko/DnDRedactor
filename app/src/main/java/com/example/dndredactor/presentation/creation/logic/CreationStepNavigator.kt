@@ -11,10 +11,10 @@ object CreationStepNavigator {
         character: CharacterDraft
     ): CreationStep {
         return when (currentStep) {
+            CreationStep.IDENTITY -> CreationStep.STORY
+            CreationStep.STORY -> CreationStep.RACE
             CreationStep.RACE -> CreationStep.CLASS
-            CreationStep.CLASS -> CreationStep.BACKSTORY
-            CreationStep.BACKSTORY -> CreationStep.TRAITS
-            CreationStep.TRAITS -> CreationStep.ABILITY_GENERATION_METHOD
+            CreationStep.CLASS -> CreationStep.ABILITY_GENERATION_METHOD
 
             CreationStep.ABILITY_GENERATION_METHOD -> {
                 when (character.abilityGenerationMethod) {
@@ -38,11 +38,11 @@ object CreationStepNavigator {
         character: CharacterDraft
     ): CreationStep {
         return when (currentStep) {
-            CreationStep.RACE -> CreationStep.RACE
+            CreationStep.IDENTITY -> CreationStep.IDENTITY
+            CreationStep.STORY -> CreationStep.IDENTITY
+            CreationStep.RACE -> CreationStep.STORY
             CreationStep.CLASS -> CreationStep.RACE
-            CreationStep.BACKSTORY -> CreationStep.CLASS
-            CreationStep.TRAITS -> CreationStep.BACKSTORY
-            CreationStep.ABILITY_GENERATION_METHOD -> CreationStep.TRAITS
+            CreationStep.ABILITY_GENERATION_METHOD -> CreationStep.CLASS
             CreationStep.RANDOM_ABILITIES -> CreationStep.ABILITY_GENERATION_METHOD
             CreationStep.POINT_BUY_ABILITIES -> CreationStep.ABILITY_GENERATION_METHOD
 

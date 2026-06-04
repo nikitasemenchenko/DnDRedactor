@@ -16,9 +16,7 @@ fun ClassSelectionScreen(
 ) {
     val uiState by vm.uiState.collectAsState()
 
-    CreationStepLayout(
-        titleRes = R.string.class_selection
-    ) {
+    CreationStepLayout {
         CreationSection(R.string.class_selection) {
             Dropdown(
                 items = uiState.classes,

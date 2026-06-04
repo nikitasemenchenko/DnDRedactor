@@ -6,7 +6,7 @@ import com.example.dndredactor.data.model.Race
 import com.example.dndredactor.presentation.components.AppMessage
 
 data class CreationUiState(
-    val currentStep: CreationStep = CreationStep.RACE,
+    val currentStep: CreationStep = CreationStep.IDENTITY,
     val character: CharacterDraft = CharacterDraft(),
     val races: List<Race> = emptyList(),
     val classes: List<CharacterClass> = emptyList(),
@@ -19,10 +19,10 @@ data class CreationUiState(
 )
 
 enum class CreationStep {
+    IDENTITY,
+    STORY,
     RACE,
     CLASS,
-    BACKSTORY,
-    TRAITS,
     ABILITY_GENERATION_METHOD,
     RANDOM_ABILITIES,
     POINT_BUY_ABILITIES,

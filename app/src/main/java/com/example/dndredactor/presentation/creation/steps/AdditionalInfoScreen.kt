@@ -13,11 +13,8 @@ fun AdditionalInfoScreen(
 ) {
     val uiState by vm.uiState.collectAsState()
 
-    CreationStepLayout(
-        titleRes = R.string.additional_info_selection,
-        descriptionRes = R.string.additional_info_description
-    ) {
-        CreationSection(R.string.description) {
+    CreationStepLayout {
+        CreationSection(R.string.notes) {
             CustomTextField(
                 value = uiState.character.additionalInfo,
                 onValueChange = vm::onAdditionalInfoChanged,
