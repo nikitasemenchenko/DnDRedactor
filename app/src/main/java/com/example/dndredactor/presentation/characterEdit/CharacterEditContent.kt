@@ -81,22 +81,22 @@ fun CharacterEditContent(
 
             CharacterEditInfoRow(
                 titleRes = R.string.race,
-                value = character.raceName ?: stringResource(R.string.not_selected)
+                value = character.raceName ?: stringResource(R.string.not_select)
             )
 
             CharacterEditInfoRow(
                 titleRes = R.string.subrace,
-                value = character.subraceName ?: stringResource(R.string.not_selected)
+                value = character.subraceName ?: stringResource(R.string.not_select)
             )
 
             CharacterEditInfoRow(
                 titleRes = R.string.class_name,
-                value = character.className ?: stringResource(R.string.not_selected)
+                value = character.className ?: stringResource(R.string.not_select)
             )
 
             CharacterEditInfoRow(
                 titleRes = R.string.archetype,
-                value = character.archetypeName ?: stringResource(R.string.not_selected)
+                value = character.archetypeName ?: stringResource(R.string.not_select)
             )
 
             Button(

@@ -59,22 +59,22 @@ fun CharacterDetailsContent(
 
             DetailsInfoRow(
                 labelRes = R.string.race,
-                value = character.raceName ?: stringResource(R.string.not_selected)
+                value = character.raceName ?: stringResource(R.string.not_select)
             )
 
             DetailsInfoRow(
                 labelRes = R.string.subrace,
-                value = character.subraceName ?: stringResource(R.string.not_selected)
+                value = character.subraceName ?: stringResource(R.string.not_select)
             )
 
             DetailsInfoRow(
                 labelRes = R.string.class_name,
-                value = character.className ?: stringResource(R.string.not_selected)
+                value = character.className ?: stringResource(R.string.not_select)
             )
 
             DetailsInfoRow(
                 labelRes = R.string.archetype,
-                value = character.archetypeName ?: stringResource(R.string.not_selected)
+                value = character.archetypeName ?: stringResource(R.string.not_select)
             )
         }
 

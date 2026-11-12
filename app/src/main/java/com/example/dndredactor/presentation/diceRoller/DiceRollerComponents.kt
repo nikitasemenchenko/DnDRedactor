@@ -162,7 +162,7 @@ fun DiceControlRow(
             Text(
                 text = title,
                 color = TextPrimaryDark,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )
 

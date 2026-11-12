@@ -16,7 +16,7 @@ class DtoMapper @Inject constructor(){
     fun racesResponseToDomain(dto: ApiResponseDto): Race {
         return Race(
             id = dto.index,
-            name = dto.name,
+            name = DndRussianText.nameById(dto.index, dto.name),
             description = "",
             subraces = emptyList()
         )
@@ -25,7 +25,7 @@ class DtoMapper @Inject constructor(){
     fun classesResponseToDomain(dto: ApiResponseDto): CharacterClass {
         return CharacterClass(
             id = dto.index,
-            name = dto.name,
+            name = DndRussianText.nameById(dto.index, dto.name),
             archetypes = emptyList()
         )
     }
@@ -33,12 +33,12 @@ class DtoMapper @Inject constructor(){
     fun raceDtoToDomain(dto: RaceDto): Race {
         return Race(
             id = dto.index,
-            name = dto.name,
-            description = getRaceDescription(dto),
+            name = DndRussianText.nameById(dto.index, dto.name),
+            description = DndRussianText.raceDescription(dto.index),
             subraces = dto.subraces.map { subrace ->
                 Subrace(
                     id = subrace.index,
-                    name = subrace.name,
+                    name = DndRussianText.nameById(subrace.index, subrace.name),
                     description = ""
                 )
             }
@@ -48,24 +48,31 @@ class DtoMapper @Inject constructor(){
     fun subraceDtoToDomain(dto: SubraceDto): Subrace {
         return Subrace(
             id = dto.index,
-            name = dto.name,
-            description = dto.desc ?: ""
+            name = DndRussianText.nameById(dto.index, dto.name),
+            description = DndRussianText.subraceDescription(dto.index)
         )
     }
 
     fun classDtoToDomain(dto: ClassDto): CharacterClass {
         return CharacterClass(
             id = dto.index,
-            name = dto.name,
+            name = DndRussianText.nameById(dto.index, dto.name),
             archetypes = dto.subclasses.map { subClass ->
                 Archetype(
                     id = subClass.index,
-                    name = subClass.name,
+                    name = DndRussianText.nameById(subClass.index, subClass.name),
                     description = ""
                 )
             }
         )
+    }
 
+    fun subclassDtoToDomain(dto: ArchetypeDto): Archetype {
+        return Archetype(
+            id = dto.index,
+            name = DndRussianText.nameById(dto.index, dto.name),
+            description = DndRussianText.archetypeDescription(dto.index)
+        )
     }
 
     fun getRaceDescription(dto: RaceDto): String {
@@ -74,14 +81,6 @@ class DtoMapper @Inject constructor(){
             dto.age,
             dto.sizeDescription
         ).joinToString(separator = "\n")
-    }
-
-    fun subclassDtoToDomain(dto: ArchetypeDto): Archetype {
-        return Archetype(
-            id = dto.index,
-            name = dto.name,
-            description = getSubclassDescription(dto)
-        )
     }
 
     fun getSubclassDescription(dto: ArchetypeDto): String {

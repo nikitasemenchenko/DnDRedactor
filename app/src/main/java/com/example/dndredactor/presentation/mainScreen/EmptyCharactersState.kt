@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
@@ -24,13 +25,14 @@ import com.example.dndredactor.presentation.theme.TextSecondaryDark
 fun EmptyCharactersState() {
     CustomCard {
         Column(
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Image(
                 painter = painterResource(R.drawable.d20),
                 contentDescription = null,
-                modifier = Modifier.size(100.dp)
+                modifier = Modifier.size(88.dp)
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -39,7 +41,8 @@ fun EmptyCharactersState() {
                 text = stringResource(R.string.no_characters),
                 color = TextPrimaryDark,
                 style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -48,7 +51,8 @@ fun EmptyCharactersState() {
                 text = stringResource(R.string.lets_create_character),
                 color = TextSecondaryDark,
                 style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }

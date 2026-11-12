@@ -45,30 +45,11 @@ fun MainTopBar() {
                 Column {
                     Text(
                         text = stringResource(R.string.dnd_editor),
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = LightColor
                     )
-
-                    Text(
-                        text = stringResource(R.string.app_subtitle),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = LightColor.copy(alpha = 0.75f)
-                    )
                 }
-            }
-        },
-        actions = {
-            IconButton(
-                onClick = {
-                //Заглушка для смены языка
-                     }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = stringResource(R.string.more),
-                    tint = LightColor
-                )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
