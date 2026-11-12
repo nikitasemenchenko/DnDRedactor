@@ -35,6 +35,7 @@ The app allows you to build a character step by step: choose race, class, archet
   <img src="screenshots/screenshot7.jpg" width="200" alt="Screenshot 7"/>
   <img src="screenshots/screenshot8.jpg" width="200" alt="Screenshot 8"/>
 </p>
+
 ## Installation
 
 1. Clone the repository:
